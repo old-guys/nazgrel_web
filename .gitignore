@@ -1,0 +1,7 @@
+/build
+/dist
+/docs
+/node_modules
+/config/travis/deploy.key
+*.diff.png
+*.new.png
