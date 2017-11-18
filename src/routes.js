@@ -1,5 +1,5 @@
 const routes = {
-  '/': 'Home',
+  '/': '首页',
   '/dashboard': 'Dashboard',
   '/components': 'Components',
   '/charts': 'Charts',
@@ -14,6 +14,7 @@ const routes = {
   '/icons': 'Icons',
   '/icons/font-awesome': 'Font Awesome',
   '/icons/simple-line-icons': 'Simple Line Icons',
-  '/widgets': 'Widgets'
+  '/widgets': 'Widgets',
+  '/channel': '渠道设置'
 };
 export default routes;

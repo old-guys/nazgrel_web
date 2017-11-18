@@ -135,6 +135,18 @@ export default {
       ]
     },
     {
+      name: '后台管理',
+      url: '/manage',
+      icon: 'icon-star',
+      children: [
+        {
+          name: '渠道设置',
+          url: '/channel',
+          icon: 'icon-star'
+        }
+      ]
+    },
+    {
       name: 'Download CoreUI',
       url: 'http://coreui.io/react/',
       icon: 'icon-cloud-download',
