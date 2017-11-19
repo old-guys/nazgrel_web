@@ -10,7 +10,15 @@ class Channel extends Component {
 
     this.state = {
       channelModal: false,
-      dangerModal: false
+      dangerModal: false,
+      queryDisabled: false,
+      saveDisabled: true,
+      channerType: '', 
+      channerClass: '', 
+      channerName: '', 
+      shopPhone: '', 
+      shopName: '',
+      password: '',
     }
   }
 
@@ -19,15 +27,25 @@ class Channel extends Component {
   }
 
   dangerToggle () {
-    this.setState({ dangerModal: !this.state.dangerModal })
+    this.setState({ dangerModal: false })
   }
 
   saveChannel () {
-    this.setState({ dangerModal: !this.state.dangerModal })
+    const { channerType, channerClass, channerName, shopPhone, shopName } = this.state
+    this.setState({ dangerModal: true })
+  }
+
+  queryPhone () {
+    this.setState({queryDisabled: true})
+
+    setTimeout(() => {
+      this.setState({queryDisabled: false})
+    }, 5000)
   }
 
   render() {
-    const { channelModal, dangerModal } = this.state
+    const { channelModal, dangerModal, queryDisabled, channerType, password,
+      channerClass, channerName, shopPhone, shopName, saveDisabled} = this.state
 
     return (
       <div className='channel-setting'>
@@ -57,8 +75,8 @@ class Channel extends Component {
               <th>1</th>
               <th>1</th>
               <th>
-                <Button size="sm" color="primary">冻结</Button>
-                <Button size="sm" color="primary">编辑</Button>
+                <Button size="sm" cssModule={{ margin: 10}} color="primary">冻结</Button>
+                <Button size="sm" color="primary" onClick={() => {this.channelToggle()}}>编辑</Button>
               </th>
             </tr>
             <tr>
@@ -82,8 +100,13 @@ class Channel extends Component {
                 <Col xs='3'>店主手机号</Col>
                 <Col xs='9'>
                   <InputGroup>
-                    <Input placeholder="输入店主手机号" onChange={(e) => {console.log(e.target.value)}} innerRef={(ref) => {this.shopMobile = ref}} />
-                    <Button color="primary">查询</Button>
+                    <Input
+                      placeholder="输入店主手机号" 
+                      value={shopPhone} 
+                      onChange={(e) => {
+                        this.setState({ shopPhone: e.target.value})
+                      }} />
+                    <Button disabled={queryDisabled} onClick={() => {this.queryPhone()}} color="primary">查询</Button>
                   </InputGroup>
                 </Col>
               </Row>
@@ -91,7 +114,26 @@ class Channel extends Component {
                 <Col xs='3'>店主姓名</Col>
                 <Col xs='9'>
                   <InputGroup>
-                    <Input placeholder="输入店主姓名" />
+                    <Input 
+                      value={shopName} 
+                      placeholder="输入店主姓名" 
+                      onChange={(e) => {
+                        this.setState({ shopName: e.target.value})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs='3'>密码</Col>
+                <Col xs='9'>
+                  <InputGroup>
+                    <Input
+                      type="password"
+                      value={password} 
+                      placeholder="输入店主姓名" 
+                      onChange={(e) => {
+                        this.setState({ password: e.target.value})
+                      }}/>
                   </InputGroup>
                 </Col>
               </Row>
@@ -99,14 +141,24 @@ class Channel extends Component {
                 <Col xs='3'>渠道名称</Col>
                 <Col xs='9'>
                   <InputGroup>
-                    <Input placeholder="输入渠道名称" />
+                    <Input 
+                      value={channerName} 
+                      placeholder="输入渠道名称" 
+                      onChange={(e) => {
+                        this.setState({ channerName: e.target.value})
+                      }}/>
                   </InputGroup>
                 </Col>
               </Row>
               <Row>
                 <Col xs='3'>渠道类型</Col>
                 <Col xs='9'>
-                  <Input type="select" name="select">
+                  <Input 
+                    type="select" 
+                    value={channerType} 
+                    onChange={(e) => {
+                      this.setState({ channerType: e.target.value})
+                    }}>
                     <option>种子店主</option>
                     <option>一级代理</option>
                     <option>渠道经理</option>
@@ -116,7 +168,13 @@ class Channel extends Component {
               <Row>
                 <Col xs='3'>渠道分类</Col>
                 <Col xs='9'>
-                  <Input type="select" name="select">
+                  <Input 
+                    type="select" 
+                    name="select" 
+                    value={channerClass}
+                    onChange={(e) => {
+                      this.setState({ channerClass: e.target.value})
+                    }}>
                     <option>奥维斯</option>
                     <option>微差事</option>
                     <option>其他渠道</option>
@@ -127,21 +185,18 @@ class Channel extends Component {
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" onClick={() => {this.channelToggle()}}>取消</Button>
-            <Button color="primary" onClick={() => {this.saveChannel()}}>保存</Button>
+            <Button color="primary" disabled={saveDisabled} onClick={() => {this.saveChannel()}}>保存</Button>
           </ModalFooter>
         </Modal>
-        {/* <Modal isOpen={dangerModal} className='modal-danger'>
+        <Modal isOpen={dangerModal} className='modal-danger'>
           <ModalHeader>提示</ModalHeader>
           <ModalBody>
             手机号格式错误
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" >确定</Button>
+            <Button color="danger" onClick={() => {this.dangerToggle()}}>确定</Button>
           </ModalFooter>
-        </Modal> */}
-        <Alert color="danger" isOpen={dangerModal} toggle={() => {this.dangerToggle()}}>
-        手机号格式错误
-        </Alert>
+        </Modal>
       </div>
     )
   }
