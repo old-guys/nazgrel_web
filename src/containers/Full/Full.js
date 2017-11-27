@@ -25,8 +25,8 @@ import Tabs from '../../views/Components/Tabs/';
 import FontAwesome from '../../views/Icons/FontAwesome/';
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
 
-//manage 
-import Channel from '../../views/Manage/Channel/'
+//manage
+import Channel from '../../modules/screens/Channel'
 class Full extends Component {
   render() {
     return (
