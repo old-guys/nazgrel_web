@@ -58,14 +58,8 @@
 	},
 
 	"scripts": {
-		"dev": "WEBPACK_ENV=dev webpack-dev-server --progress -d --progress --watch --profile --json > compilation-stats.json --env.dev",
 		"start": "WEBPACK_ENV=dev webpack-dev-server --progress --colors --inline --env.dev",
-		"build": "webpack -p --progress --env.prod",
-		"clean:build": "rimraf build/*",
-		"clean:dist": "rimraf dist/*",
-		"clean:docs": "rimraf build/docs/*",
-		"clean:icons": "rimraf build/icons/*",
-		"clean": "run-p clean:build clean:dist",
+		"www": "rm -rf www && WEBPACK_ENV=prod webpack --progress && webpack-dev-server --content-base www/",
 		"deploy-dev": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/dev.sh",
 		"deploy-test": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/test.sh",
 		"deploy-prod": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/prod.sh"
