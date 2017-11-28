@@ -1006,7 +1006,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/1.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/1.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-success"></span>
                       </div>
                     </td>
@@ -1017,7 +1017,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/USA.png'} alt="USA" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/USA.png'} alt="USA" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
@@ -1041,7 +1041,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-danger"></span>
                       </div>
                     </td>
@@ -1053,7 +1053,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/Brazil.png'} alt="Brazil" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/Brazil.png'} alt="Brazil" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
@@ -1077,7 +1077,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/3.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/3.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-warning"></span>
                       </div>
                     </td>
@@ -1088,7 +1088,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/India.png'} alt="India" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/India.png'} alt="India" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
@@ -1112,7 +1112,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/4.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/4.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-secondary"></span>
                       </div>
                     </td>
@@ -1123,7 +1123,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/France.png'} alt="France" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/France.png'} alt="France" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
@@ -1147,7 +1147,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/5.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/5.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-success"></span>
                       </div>
                     </td>
@@ -1158,7 +1158,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/Spain.png'} alt="Spain" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/Spain.png'} alt="Spain" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
@@ -1182,7 +1182,7 @@ class Dashboard extends Component {
                   <tr>
                     <td className="text-center">
                       <div className="avatar">
-                        <img src={'img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+                        <img src={'images/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
                         <span className="avatar-status badge-danger"></span>
                       </div>
                     </td>
@@ -1193,7 +1193,7 @@ class Dashboard extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <img src={'img/flags/Poland.png'} alt="Poland" style={{height: 24 + 'px'}}/>
+                      <img src={'images/flags/Poland.png'} alt="Poland" style={{height: 24 + 'px'}}/>
                     </td>
                     <td>
                       <div className="clearfix">
