@@ -10,6 +10,7 @@ export const shopkeeper = (config) => {
   const endpoint = `api/web/shopkeepers`;
 
   const resource = {
+    schema: SHOPKEEPER,
     request: {
       endpoint,
     },
