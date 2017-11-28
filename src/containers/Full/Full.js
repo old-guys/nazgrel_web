@@ -53,7 +53,7 @@ class Full extends Component {
                 <Route path="/widgets" name="Widgets" component={Widgets}/>
                 <Route path="/charts" name="Charts" component={Charts}/>
                 <Route path="/channel" name="Channel" component={Channel}/>
-                <Route path="/channel_manage" name="Manage" component={Manage}/>
+                <Route path="/channel_region" name="Manage" component={Manage}/>
                 <Redirect from="/" to="/dashboard"/>
               </Switch>
             </Container>
