@@ -15,6 +15,7 @@ const routes = {
   '/icons/font-awesome': 'Font Awesome',
   '/icons/simple-line-icons': 'Simple Line Icons',
   '/widgets': 'Widgets',
-  '/channel': '渠道设置'
+  '/channel': '渠道设置',
+  '/channel_manage': '渠道管理员',
 };
 export default routes;
