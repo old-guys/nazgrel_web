@@ -10,6 +10,7 @@ import Dashboard from '../../views/Dashboard/';
 import Charts from '../../views/Charts/';
 import Widgets from '../../views/Widgets/';
 
+
 // Components
 import Buttons from '../../views/Components/Buttons/';
 import Cards from '../../views/Components/Cards/';
@@ -24,6 +25,8 @@ import Tabs from '../../views/Components/Tabs/';
 import FontAwesome from '../../views/Icons/FontAwesome/';
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
 
+//manage
+import Channel from '../../modules/screens/Channel'
 class Full extends Component {
   render() {
     return (
@@ -48,6 +51,7 @@ class Full extends Component {
                 <Route path="/icons/simple-line-icons" name="Simple Line Icons" component={SimpleLineIcons}/>
                 <Route path="/widgets" name="Widgets" component={Widgets}/>
                 <Route path="/charts" name="Charts" component={Charts}/>
+                <Route path="/channel" name="Channel" component={Channel}/>
                 <Redirect from="/" to="/dashboard"/>
               </Switch>
             </Container>

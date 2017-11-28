@@ -1,0 +1,24 @@
+server {
+
+  listen 7920;
+  server_name localhost;
+
+  root  /dyne/apps/nazgrel_web_production;
+  index index.html;
+
+  gzip_static on;
+  expires max;
+  add_header Cache-Control public;
+  autoindex on;
+
+  access_log /var/log/nginx/nazgrel_web_production_access.log;
+  error_log /var/log/nginx/nazgrel_web_production_error.log;
+
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+
+}
+
+# cd /etc/nginx/conf.d/;
+# sudo ln -nfs /dyne/apps/nazgrel_web_production/nginx.conf /etc/nginx/conf.d/nazgrel_web_production.conf
+# sudo /etc/init.d/nginx reload

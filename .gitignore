@@ -5,3 +5,22 @@
 /config/travis/deploy.key
 *.diff.png
 *.new.png
+www
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.idea
+*.DS_Store
+.*.swp
+.*.swo
+*~
+*.bak
+*_bak
+*.log
+nohup.out
