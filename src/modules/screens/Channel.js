@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Card, CardBody, CardTitle } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter,
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
@@ -118,6 +119,8 @@ class Channel extends Component {
 
   renderChannelList() {
     return (
+      <Card>
+      <CardBody>
       <Table bordered size="sm">
         <thead>
           <tr>
@@ -134,6 +137,8 @@ class Channel extends Component {
         </thead>
         { this.renderList() }
       </Table>
+      </CardBody>
+      </Card>
     );
   }
 

@@ -38,12 +38,6 @@ require.ensure([], () => {
   require('./modules/services/auth')
 }, 'chunk2')
 
-const searchContainer = (location, cb) => {
-    require.ensure([], require => {
-        cb(null, require('./modules/screens/login').default)
-    },'search')
-}
-
 class App extends Component{
   constructor(props, context){
     super(props, context);
@@ -53,7 +47,6 @@ class App extends Component{
     return (
       <HashRouter>
 				<Switch>
-          <Route path="search" getComponent={searchContainer} />
 				  <Route path="/login" name="Login Page" render={(props)=>{
             return <Login auth={auth} {...props} />
           }} />

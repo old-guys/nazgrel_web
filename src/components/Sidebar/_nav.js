@@ -105,7 +105,7 @@ export default {
     },
     {
       title: true,
-      name: 'Extras'
+      name: '后台管理'
     },
     {
       name: 'Pages',
@@ -135,29 +135,21 @@ export default {
       ]
     },
     {
-      name: '后台管理',
-      url: '/manage',
-      icon: 'icon-star',
+      name: '渠道管理',
+      url: '/channel',
+      icon: 'icon-puzzle',
       children: [
         {
-          name: '渠道设置',
+          name: '渠道',
           url: '/channel',
+          icon: 'icon-star'
+        },
+        {
+          name: '渠道管理员',
+          url: '/channel_region',
           icon: 'icon-star'
         }
       ]
-    },
-    {
-      name: 'Download CoreUI',
-      url: 'http://coreui.io/react/',
-      icon: 'icon-cloud-download',
-      class: 'mt-auto',
-      variant: 'success'
-    },
-    {
-      name: 'Try CoreUI PRO',
-      url: 'http://coreui.io/pro/react/',
-      icon: 'icon-layers',
-      variant: 'danger'
     }
   ]
 };
