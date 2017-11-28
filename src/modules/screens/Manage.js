@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter,
+import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Progress,
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert, Card, CardBody
 } from 'reactstrap';
 
@@ -58,7 +58,7 @@ class Manage extends Component {
                     <th>2017年11月28日11:21:32</th>
                     <th>
                       <Button size="sm" className='btn-edit' color="primary">冻结</Button>
-                      <Button size="sm" className='btn-edit' color="primary">编辑</Button>
+                      <Button size="sm" className='btn-edit' color="primary" onClick={() => this.setState({addManageModal: true})}>编辑</Button>
                       <Button size="sm" className='btn-edit' color="primary" onClick={() => {this.setState({addChannelModal: true})}}>添加渠道</Button>
                     </th>
                   </tr>
@@ -104,6 +104,7 @@ class Manage extends Component {
                         <Input placeholder="输入渠道手机号查询" />
                         <Button color="primary">查询</Button>
                       </InputGroup>
+                      <Progress value="100" color='danger'>未查询到店主</Progress>
                     </Col>
                   </Row>
                   <Row>
