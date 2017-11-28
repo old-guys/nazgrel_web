@@ -7,6 +7,8 @@ environment.setAll({
   env: () => {
     if (ENV === 'dev') {
       return 'dev';
+    } else if (ENV === 'local') {
+      return 'dev';
     } else if (ENV.indexOf('test') > -1) {
       return 'test';
     }
