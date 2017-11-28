@@ -1,40 +1,46 @@
 import React, {Component} from 'react';
 import { Card, CardBody, CardTitle } from 'reactstrap';
+import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter,
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import { fetchChannelAll } from '../reducers/channel';
+import { fetchShopkeeperCheck } from '../reducers/shopkeeper';
 import _ from 'lodash';
 import fecha from 'fecha';
 
 // import './style.scss'
-
 @connect(state => ({
-  channel: state.channel
-}), { fetchChannelAll })
-
+  channel: state.channel,
+  shopkeeper: state.shopkeeper
+}), { fetchChannelAll, fetchShopkeeperCheck })
 class Channel extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
       channelModal: false,
+      addChannelModal: false,
       dangerModal: false,
-      queryDisabled: false,
+      queryShopkeeperDisabled: false,
+      showNoShopkeeperModal: false,
       saveDisabled: true,
-      channerType: '',
-      channerClass: '',
-      channerName: '',
-      shopPhone: '',
-      shopName: '',
-      password: '',
+      addChannel: {
+        channelType: null,
+        source: null,
+        name: '',
+        shopkeeperPhone: '',
+        shopkeeperName: '',
+        password: Math.random().toString(36).substring(7),
+      }
+
     }
   }
 
   channelToggle () {
-    this.setState({ channelModal: !this.state.channelModal })
+    this.setState({ addChannelModal: !this.state.addChannelModal })
   }
 
   dangerToggle () {
@@ -46,12 +52,35 @@ class Channel extends Component {
     this.setState({ dangerModal: true })
   }
 
-  queryPhone () {
-    this.setState({queryDisabled: true})
+  async queryShopkeeper () {
+    try {
+      this.setState({queryShopkeeperDisabled: true})
+      const response = await this.props.fetchShopkeeperCheck({
+        params: {
+          phone: this.state.addChannel.shopkeeperPhone
+        }
+      });
+      console.log()
 
-    setTimeout(() => {
-      this.setState({queryDisabled: false})
-    }, 5000)
+      if (Number(response.code) === 0) {
+        this.setState({
+          addChannel: {...this.state.addChannel,
+            shopkeeperPhone: response.data.user_phone,
+            shopkeeperName: response.data.user_name,
+          }
+        });
+      } else {
+        console.log('查询店主失败');
+        this.setState({showNoShopkeeperModal: true})
+      }
+      this.setState({queryShopkeeperDisabled: false})
+    } catch(e) {
+      console.log(e)
+      this.setState({
+        networkError: true,
+        queryShopkeeperDisabled: false
+      });
+    }
   }
 
   componentDidMount () {
@@ -69,15 +98,17 @@ class Channel extends Component {
     }
   }
 
-  renderItem(item) {
-    return (
-      <OrderLine
-        key={item.id}
-        data={item}
-        isShowTime={true}/>
-    );
+  handleNewChannelClick() {
+    this.setState({addChannelModal: true});
   }
 
+  renderNav() {
+    return (
+      <div class="pull-right">
+        <Button color="primary" onClick={() => {this.handleNewChannelClick()}}>新增渠道</Button>
+      </div>
+    )
+  }
 
   renderList() {
     const { channels: { isFetching, list, current_page } } = this.props.channel;
@@ -119,8 +150,6 @@ class Channel extends Component {
 
   renderChannelList() {
     return (
-      <Card>
-      <CardBody>
       <Table bordered size="sm">
         <thead>
           <tr>
@@ -137,18 +166,31 @@ class Channel extends Component {
         </thead>
         { this.renderList() }
       </Table>
-      </CardBody>
-      </Card>
     );
   }
 
+  renderNoShopkeeper () {
+    const { showNoShopkeeperModal } = this.state;
+
+    return (
+      <Modal isOpen={showNoShopkeeperModal} className='modal-no-shoppkeeper'>
+        <ModalHeader>提示</ModalHeader>
+        <ModalBody>
+          查询店主失败
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => this.setState({showNoShopkeeperModal: false})}>确定</Button>
+        </ModalFooter>
+      </Modal>
+    )
+  }
+
   renderAddChannel() {
-    const { channelModal, dangerModal, queryDisabled, channerType, password,
-      channerClass, channerName, shopPhone, shopName, saveDisabled} = this.state;
+    const { addChannelModal, dangerModal, queryShopkeeperDisabled, addChannel, saveDisabled} = this.state;
 
     return (
       <div>
-      <Modal isOpen={channelModal} className='channel-modal'>
+      <Modal isOpen={addChannelModal} className='channel-modal'>
         <ModalHeader>新增渠道人员</ModalHeader>
         <ModalBody>
           <Container>
@@ -158,11 +200,11 @@ class Channel extends Component {
                 <InputGroup>
                   <Input
                     placeholder="输入店主手机号"
-                    value={shopPhone}
+                    value={addChannel.shopkeeperPhone}
                     onChange={(e) => {
-                      this.setState({ shopPhone: e.target.value})
+                      this.setState({ addChannel: {...this.state.addChannel, shopkeeperPhone: e.target.value}})
                     }} />
-                  <Button disabled={queryDisabled} onClick={() => {this.queryPhone()}} color="primary">查询</Button>
+                  <Button disabled={queryShopkeeperDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
                 </InputGroup>
               </Col>
             </Row>
@@ -170,11 +212,11 @@ class Channel extends Component {
               <Col xs='3'>店主姓名</Col>
               <Col xs='9'>
                 <InputGroup>
-                  <Input
-                    value={shopName}
+                  <Input readOnly
+                    value={addChannel.shopkeeperName}
                     placeholder="输入店主姓名"
                     onChange={(e) => {
-                      this.setState({ shopName: e.target.value})
+                      this.setState({ addChannel: {...this.state.addChannel, shopName: e.target.value}})
                     }}/>
                 </InputGroup>
               </Col>
@@ -184,11 +226,10 @@ class Channel extends Component {
               <Col xs='9'>
                 <InputGroup>
                   <Input
-                    type="password"
-                    value={password}
+                    value={addChannel.password}
                     placeholder="输入店主姓名"
                     onChange={(e) => {
-                      this.setState({ password: e.target.value})
+                      this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
                     }}/>
                 </InputGroup>
               </Col>
@@ -198,10 +239,10 @@ class Channel extends Component {
               <Col xs='9'>
                 <InputGroup>
                   <Input
-                    value={channerName}
+                    value={addChannel.name}
                     placeholder="输入渠道名称"
                     onChange={(e) => {
-                      this.setState({ channerName: e.target.value})
+                      this.setState({ addChannel: {...this.state.addChannel, name: e.target.value}})
                     }}/>
                 </InputGroup>
               </Col>
@@ -211,9 +252,9 @@ class Channel extends Component {
               <Col xs='9'>
                 <Input
                   type="select"
-                  value={channerType}
+                  value={addChannel.channelType}
                   onChange={(e) => {
-                    this.setState({ channerType: e.target.value})
+                    this.setState({ addChannel: {...this.state.addChannel, channelType: e.target.value}})
                   }}>
                   <option>种子店主</option>
                   <option>一级代理</option>
@@ -227,9 +268,9 @@ class Channel extends Component {
                 <Input
                   type="select"
                   name="select"
-                  value={channerClass}
+                  value={addChannel.source}
                   onChange={(e) => {
-                    this.setState({ channerClass: e.target.value})
+                    this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
                   }}>
                   <option>奥维斯</option>
                   <option>微差事</option>
@@ -260,8 +301,15 @@ class Channel extends Component {
   render() {
     return (
       <div className='channel-setting'>
-        { this.renderChannelList() }
-        { this.renderAddChannel() }
+        <Card>
+          <CardBody>
+            { this.renderNav() }
+            { this.renderChannelList() }
+
+            { this.renderAddChannel() }
+            { this.renderNoShopkeeper() }
+          </CardBody>
+        </Card>
       </div>
     )
   }
