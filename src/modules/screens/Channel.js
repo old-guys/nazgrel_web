@@ -80,7 +80,7 @@ class Channel extends Component {
 
 
   renderList() {
-    const { orders: { isFetching, list, current_page } } = this.props.channel;
+    const { channels: { isFetching, list, current_page } } = this.props.channel;
     const { networkError, isLoading } = this.state;
 
     if (isLoading) {
@@ -99,12 +99,12 @@ class Channel extends Component {
               <tr key={ item.id }>
                 <th>{ item.id }</th>
                 <th>{ item.name }</th>
-                <th>xxx</th>
-                <th>110</th>
+                <th>{ item.shopkeeper_name }</th>
+                <th>{ item.shopkeeper_phone }</th>
                 <th>{ item.category_text }</th>
                 <th>{ item.source_text }</th>
+                <th>{ fecha.format(new Date(item.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>{ fecha.format(new Date(item.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
-                <th>1</th>
                 <th>
                   <Button size="sm" cssModule={{ margin: 10}} color="primary">冻结</Button>
                   <Button size="sm" color="primary" onClick={() => {this.channelToggle()}}>编辑</Button>

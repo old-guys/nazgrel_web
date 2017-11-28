@@ -1,8 +1,8 @@
 import createReducer from '../../store/create-reducer';
 import { ChannelApi } from '../api';
 
-const CHANNEL_ALL = '@ORDER_ALL';
-const CHANNEL_DETAILS = '@ORDER_DETAILS';
+const CHANNEL_ALL = '@CHANNEL_ALL';
+const CHANNEL_DETAILS = '@CHANNEL_DETAILS';
 
 function response(res) {
   if (res.code === 0 || res.code === '0') return true;
@@ -40,11 +40,7 @@ export function fetchChannelDetails(params) {
 }
 
 export const initialState = {
-  todayOrder: {
-    isFetching: true,
-    list: [],
-  },
-  orders: {
+  channels: {
     isFetching: true,
     list: {},
   },
@@ -56,15 +52,15 @@ const actionHandler = {
 
     const res = action.data;
     let list = res.models;
-    if (Number(res.current_page) > 1) list = [...state.orders.list, ...res.models];
+    if (Number(res.current_page) > 1) list = [...state.channels.list, ...res.models];
 
-    const orders = {
+    const channels = {
       list,
       isFetching: false,
       ...res,
     };
 
-    return { ...state, orders };
+    return { ...state, channels };
   },
   [CHANNEL_DETAILS]: (state, action) => {
     const details = action.data;
@@ -73,4 +69,3 @@ const actionHandler = {
 };
 
 export default createReducer(initialState, actionHandler);
-
