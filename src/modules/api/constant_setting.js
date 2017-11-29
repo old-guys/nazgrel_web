@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
 import {
-  constantSetting as constantSettingResource,
+  constant_setting as constantSettingResource,
   enum_field as enumFieldConstantSettingResource
 } from '../resources/constant_setting';
 

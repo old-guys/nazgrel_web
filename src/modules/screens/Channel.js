@@ -1,21 +1,23 @@
 import React, {Component} from 'react';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import { Nav, NavItem, NavLink } from 'reactstrap';
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter,
-  InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
+import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
+  FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import { fetchChannelAll } from '../reducers/channel';
 import { fetchShopkeeperCheck } from '../reducers/shopkeeper';
+import { fetchConstantSettingEnumField } from '../reducers/constant_setting';
 import _ from 'lodash';
 import fecha from 'fecha';
 
 // import './style.scss'
 @connect(state => ({
   channel: state.channel,
-  shopkeeper: state.shopkeeper
-}), { fetchChannelAll, fetchShopkeeperCheck })
+  shopkeeper: state.shopkeeper,
+  enum_field: state.enum_field
+}), { fetchChannelAll, fetchShopkeeperCheck, fetchConstantSettingEnumField })
 class Channel extends Component {
   constructor (props) {
     super(props)
@@ -23,7 +25,6 @@ class Channel extends Component {
     this.state = {
       channelModal: false,
       addChannelModal: false,
-      dangerModal: false,
       queryShopkeeperDisabled: false,
       showNoShopkeeperModal: false,
       saveDisabled: true,
@@ -34,8 +35,12 @@ class Channel extends Component {
         shopkeeperPhone: '',
         shopkeeperName: '',
         password: Math.random().toString(36).substring(7),
+      },
+      enumField: {
+        channelCategory: {},
+        channelSource: {},
+        channelUserRoleType: {}
       }
-
     }
   }
 
@@ -43,13 +48,8 @@ class Channel extends Component {
     this.setState({ addChannelModal: !this.state.addChannelModal })
   }
 
-  dangerToggle () {
-    this.setState({ dangerModal: false })
-  }
-
   saveChannel () {
     const { channerType, channerClass, channerName, shopPhone, shopName } = this.state
-    this.setState({ dangerModal: true })
   }
 
   async queryShopkeeper () {
@@ -84,10 +84,11 @@ class Channel extends Component {
   }
 
   componentDidMount () {
-    this.fetch();
+    this.fetchChannel();
+    this.fetchConstantSettingEnumField()
   }
 
-  async fetch(params = {}) {
+  async fetchChannel() {
     try {
       const response = await this.props.fetchChannelAll({});
       this.setState({
@@ -95,6 +96,22 @@ class Channel extends Component {
       });
     } catch(e) {
       this.setState({ networkError: true });
+    }
+  }
+
+  async fetchConstantSettingEnumField(params = {}) {
+    try {
+      const response = await this.props.fetchConstantSettingEnumField({});
+      this.setState({
+        enumField: {
+          ...this.state.enumField,
+          channelCategory: response.data.channel.category,
+          channelSource: response.data.channel.source,
+          channelUserRoleType: response.data.channel_user.role_type
+        }
+      });
+    } catch(e) {
+      console.error(`failure to load enum field, ${e}`)
     }
   }
 
@@ -173,7 +190,7 @@ class Channel extends Component {
     const { showNoShopkeeperModal } = this.state;
 
     return (
-      <Modal isOpen={showNoShopkeeperModal} className='modal-no-shoppkeeper'>
+      <Modal isOpen={showNoShopkeeperModal} className='modal-no-shoppkeeper modal-danger'>
         <ModalHeader>提示</ModalHeader>
         <ModalBody>
           查询店主失败
@@ -186,7 +203,8 @@ class Channel extends Component {
   }
 
   renderAddChannel() {
-    const { addChannelModal, dangerModal, queryShopkeeperDisabled, addChannel, saveDisabled} = this.state;
+    const { addChannelModal, queryShopkeeperDisabled, addChannel, saveDisabled, enumField} = this.state;
+    const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
 
     return (
       <div>
@@ -194,104 +212,106 @@ class Channel extends Component {
         <ModalHeader>新增渠道人员</ModalHeader>
         <ModalBody>
           <Container>
-            <Row>
-              <Col xs='3'>店主手机号</Col>
-              <Col xs='9'>
-                <InputGroup>
+            <Form>
+              <FormGroup row>
+                <Label sm={3}>店主手机号</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input required
+                      placeholder="输入店主手机号"
+                      value={addChannel.shopkeeperPhone}
+                      onChange={(e) => {
+                        this.setState({ addChannel: {...this.state.addChannel, shopkeeperPhone: e.target.value}})
+                      }} />
+                    <Button disabled={queryShopkeeperDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>店主姓名</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input readOnly required
+                      value={addChannel.shopkeeperName}
+                      placeholder="输入店主姓名"
+                      onChange={(e) => {
+                        this.setState({ addChannel: {...this.state.addChannel, shopName: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>密码</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={addChannel.password}
+                      placeholder="输入店主姓名"
+                      onChange={(e) => {
+                        this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>渠道名称</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={addChannel.name}
+                      placeholder="输入渠道名称"
+                      onChange={(e) => {
+                        this.setState({ addChannel: {...this.state.addChannel, name: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>渠道类型</Label>
+                <Col xs={9}>
                   <Input
-                    placeholder="输入店主手机号"
-                    value={addChannel.shopkeeperPhone}
+                    type="select"
+                    value={addChannel.channelType}
                     onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, shopkeeperPhone: e.target.value}})
-                    }} />
-                  <Button disabled={queryShopkeeperDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
-                </InputGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>店主姓名</Col>
-              <Col xs='9'>
-                <InputGroup>
-                  <Input readOnly
-                    value={addChannel.shopkeeperName}
-                    placeholder="输入店主姓名"
-                    onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, shopName: e.target.value}})
-                    }}/>
-                </InputGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>密码</Col>
-              <Col xs='9'>
-                <InputGroup>
+                      this.setState({ addChannel: {...this.state.addChannel, channelType: e.target.value}})
+                    }}>
+
+                    {
+                      _.map(channelCategory, (value, key) => {
+                        return (
+                          <option value={key}>{value}</option>
+                        )
+                      })
+                    }
+                  </Input>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>渠道分类</Label>
+                <Col xs={9}>
                   <Input
-                    value={addChannel.password}
-                    placeholder="输入店主姓名"
+                    type="select"
+                    name="select"
+                    value={addChannel.source}
                     onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
-                    }}/>
-                </InputGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>渠道名称</Col>
-              <Col xs='9'>
-                <InputGroup>
-                  <Input
-                    value={addChannel.name}
-                    placeholder="输入渠道名称"
-                    onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, name: e.target.value}})
-                    }}/>
-                </InputGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>渠道类型</Col>
-              <Col xs='9'>
-                <Input
-                  type="select"
-                  value={addChannel.channelType}
-                  onChange={(e) => {
-                    this.setState({ addChannel: {...this.state.addChannel, channelType: e.target.value}})
-                  }}>
-                  <option>种子店主</option>
-                  <option>一级代理</option>
-                  <option>渠道经理</option>
-                </Input>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>渠道分类</Col>
-              <Col xs='9'>
-                <Input
-                  type="select"
-                  name="select"
-                  value={addChannel.source}
-                  onChange={(e) => {
-                    this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
-                  }}>
-                  <option>奥维斯</option>
-                  <option>微差事</option>
-                  <option>其他渠道</option>
-                </Input>
-              </Col>
-            </Row>
+                      this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
+                    }}>
+                    {
+                      _.map(channelSource, (value, key) => {
+                        return (
+                          <option value={key}>{value}</option>
+                        )
+                      })
+                    }
+                  </Input>
+                </Col>
+              </FormGroup>
+            </Form>
           </Container>
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => {this.channelToggle()}}>取消</Button>
           <Button color="primary" disabled={saveDisabled} onClick={() => {this.saveChannel()}}>保存</Button>
-        </ModalFooter>
-      </Modal>
-      <Modal isOpen={dangerModal} className='modal-danger'>
-        <ModalHeader>提示</ModalHeader>
-        <ModalBody>
-          手机号格式错误
-        </ModalBody>
-        <ModalFooter>
-          <Button color="danger" onClick={() => {this.dangerToggle()}}>确定</Button>
         </ModalFooter>
       </Modal>
       </div>
