@@ -9,6 +9,6 @@ export default combineReducers({
   constant_setting,
   channel,
   shopkeeper,
-  auth
+  auth,
   channel_region
 });

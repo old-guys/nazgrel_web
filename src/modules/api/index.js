@@ -11,6 +11,6 @@ export {
   ConstantSettingApi,
   ChannelApi,
   ShopkeeperApi,
-  AuthApi
+  AuthApi,
   ChannelRegionApi
 };
