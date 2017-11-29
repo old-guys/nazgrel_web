@@ -2,7 +2,8 @@ import createReducer from '../../store/create-reducer';
 import { ChannelApi } from '../api';
 
 const CHANNEL_ALL = '@CHANNEL_ALL';
-const CHANNEL_DETAILS = '@CHANNEL_DETAILS';
+const CHANNEL_SHOW = '@CHANNEL_SHOW';
+const CHANNEL_CREATE = '@CHANNEL_CREATE';
 
 function response(res) {
   if (res.code === 0 || res.code === '0') return true;
@@ -11,7 +12,7 @@ function response(res) {
 
 export function fetchChannelAll(params) {
   return dispatch => {
-    return ChannelApi.instance().get(params)
+    return ChannelApi.instance().index(params)
       .then((res) => {
         if (response(res)) {
           dispatch({
@@ -24,13 +25,28 @@ export function fetchChannelAll(params) {
   };
 }
 
-export function fetchChannelDetails(params) {
+export function fetchChannelShow(params) {
   return dispatch => {
-    return ChannelApi.instance().get(params)
+    return ChannelApi.instance().show(params)
       .then((res) => {
         if (response(res)) {
           dispatch({
-            type: CHANNEL_DETAILS,
+            type: CHANNEL_SHOW,
+            data: res.data,
+          });
+        }
+        return res;
+      });
+  };
+}
+
+export function createChannel(params) {
+  return dispatch => {
+    return ChannelApi.instance().create(params)
+      .then((res) => {
+        if (response(res)) {
+          dispatch({
+            type: CHANNEL_CREATE,
             data: res.data,
           });
         }
@@ -52,7 +68,7 @@ const actionHandler = {
 
     const res = action.data;
     let list = res.models;
-    if (Number(res.current_page) > 1) list = [...state.channels.list, ...res.models];
+    if (Number(res.current_page) > 1) list = [...state.channels.list, ...list];
 
     const channels = {
       list,
@@ -60,11 +76,15 @@ const actionHandler = {
       ...res,
     };
 
-    return { ...state, channels };
+    return { ...state.channels, channels };
   },
-  [CHANNEL_DETAILS]: (state, action) => {
-    const details = action.data;
-    return { ...state, details };
+  [CHANNEL_CREATE]: (state, action) => {
+    const record = action.data;
+    return { ...state, record };
+  },
+  [CHANNEL_SHOW]: (state, action) => {
+    const record = action.data;
+    return { ...state, record };
   }
 };
 

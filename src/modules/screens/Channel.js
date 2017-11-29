@@ -6,7 +6,7 @@ import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
 } from 'reactstrap';
 
 import { connect } from 'react-redux';
-import { fetchChannelAll } from '../reducers/channel';
+import { fetchChannelAll, createChannel } from '../reducers/channel';
 import { fetchShopkeeperCheck } from '../reducers/shopkeeper';
 import { fetchConstantSettingEnumField } from '../reducers/constant_setting';
 import _ from 'lodash';
@@ -14,10 +14,13 @@ import fecha from 'fecha';
 
 // import './style.scss'
 @connect(state => ({
-  channel: state.channel,
-  shopkeeper: state.shopkeeper,
-  enum_field: state.enum_field
-}), { fetchChannelAll, fetchShopkeeperCheck, fetchConstantSettingEnumField })
+    channels: state.channel,
+    shopkeeper: state.shopkeeper,
+    constant_setting: state.constant_setting
+  }), {
+    fetchChannelAll, createChannel,
+    fetchShopkeeperCheck, fetchConstantSettingEnumField
+})
 class Channel extends Component {
   constructor (props) {
     super(props)
@@ -27,14 +30,15 @@ class Channel extends Component {
       addChannelModal: false,
       queryShopkeeperDisabled: false,
       showNoShopkeeperModal: false,
-      saveDisabled: true,
+      createDisabled: true,
       addChannel: {
-        channelType: null,
+        channelCategory: null,
         source: null,
         name: '',
         shopkeeperPhone: '',
         shopkeeperName: '',
         password: Math.random().toString(36).substring(7),
+        shopkeeperUserId: null
       },
       enumField: {
         channelCategory: {},
@@ -48,8 +52,46 @@ class Channel extends Component {
     this.setState({ addChannelModal: !this.state.addChannelModal })
   }
 
-  saveChannel () {
-    const { channerType, channerClass, channerName, shopPhone, shopName } = this.state
+  async createChannel () {
+    const { addChannel } = this.state
+
+    try {
+      this.setState({createDisabled: true})
+      const response = await this.props.createChannel({
+        name: addChannel.name,
+        category: addChannel.channelCategory,
+        city: addChannel.city,
+        shopkeeper_user_id: addChannel.shopkeeperUserId,
+        channel_user: {
+          name: addChannel.shopkeeperName,
+          password: addChannel.password
+        }
+      });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          addChannel: {
+            channelCategory: null,
+            source: null,
+            name: '',
+            shopkeeperPhone: '',
+            shopkeeperName: '',
+            password: Math.random().toString(36).substring(7),
+            shopkeeperUserId: null
+          }
+        });
+        this.channelToggle();
+      } else {
+        console.log('创建渠道失败:', response);
+      }
+      this.setState({createDisabled: false})
+    } catch(e) {
+      console.log(e)
+      this.setState({
+        networkError: true,
+        createDisabled: false
+      });
+    }
   }
 
   async queryShopkeeper () {
@@ -60,18 +102,21 @@ class Channel extends Component {
           phone: this.state.addChannel.shopkeeperPhone
         }
       });
-      console.log()
 
       if (Number(response.code) === 0) {
         this.setState({
           addChannel: {...this.state.addChannel,
             shopkeeperPhone: response.data.user_phone,
             shopkeeperName: response.data.user_name,
-          }
+            shopkeeperUserId: response.data.user_id
+          },
+          createDisabled: false
         });
       } else {
         console.log('查询店主失败');
-        this.setState({showNoShopkeeperModal: true})
+        this.setState({
+          showNoShopkeeperModal: true, createDisabled: true
+        });
       }
       this.setState({queryShopkeeperDisabled: false})
     } catch(e) {
@@ -95,6 +140,7 @@ class Channel extends Component {
         isLoading: false,
       });
     } catch(e) {
+      console.error(`failure to load enum field, ${e}`)
       this.setState({ networkError: true });
     }
   }
@@ -128,7 +174,7 @@ class Channel extends Component {
   }
 
   renderList() {
-    const { channels: { isFetching, list, current_page } } = this.props.channel;
+    const { channels: { isFetching, list, current_page } } = this.props.channels;
     const { networkError, isLoading } = this.state;
 
     if (isLoading) {
@@ -203,7 +249,7 @@ class Channel extends Component {
   }
 
   renderAddChannel() {
-    const { addChannelModal, queryShopkeeperDisabled, addChannel, saveDisabled, enumField} = this.state;
+    const { addChannelModal, queryShopkeeperDisabled, addChannel, createDisabled, enumField} = this.state;
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
 
     return (
@@ -271,9 +317,9 @@ class Channel extends Component {
                 <Col xs={9}>
                   <Input
                     type="select"
-                    value={addChannel.channelType}
+                    value={addChannel.channelCategory}
                     onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, channelType: e.target.value}})
+                      this.setState({ addChannel: {...this.state.addChannel, channelCategory: e.target.value}})
                     }}>
 
                     {
@@ -311,7 +357,7 @@ class Channel extends Component {
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={() => {this.channelToggle()}}>取消</Button>
-          <Button color="primary" disabled={saveDisabled} onClick={() => {this.saveChannel()}}>保存</Button>
+          <Button color="primary" disabled={createDisabled} onClick={() => {this.createChannel()}}>保存</Button>
         </ModalFooter>
       </Modal>
       </div>

@@ -33,7 +33,7 @@ export const initialState = {
 const actionHandler = {
   [CONSTANT_SETTING_ENUM_FIELD]: (state, action) => {
     const model = action.data;
-    return { ...state, model };
+    return { ...state.enum_field, model };
   }
 };
 
