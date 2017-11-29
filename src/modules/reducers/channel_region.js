@@ -1,6 +1,7 @@
 import createReducer from '../../store/create-reducer';
 import { ChannelRegionApi } from '../api';
 
+const CHANNEL_REGION_ADD = '@CHANNEL_REGION_ADD';
 const CHANNEL_REGION_ALL = '@CHANNEL_REGION_ALL';
 const CHANNEL_REGION_DETAILS = '@CHANNEL_REGION_DETAILS';
 
@@ -39,6 +40,30 @@ export function fetchChannelRegionDetails(params) {
   };
 }
 
+export function createChannelRegion(params) {
+  return dispatch => {
+    return ChannelRegionApi.instance().create(params)
+      .then((res) => {
+        if (response(res)) {
+          dispatch({
+            type: CHANNEL_REGION_ADD,
+            data: res.data,
+          });
+        }
+        return res;
+      });
+  };
+}
+
+export function updateChannelRegion(params) {
+  return dispatch => {
+    return ChannelRegionApi.instance().update(params)
+      .then((res) => {
+        return res;
+      });
+  };
+}
+
 export const initialState = {
   channel_regions: {
     isFetching: true,
@@ -63,6 +88,10 @@ const actionHandler = {
     return { ...state, channel_regions };
   },
   [CHANNEL_REGION_DETAILS]: (state, action) => {
+    const details = action.data;
+    return { ...state, details };
+  },
+  [CHANNEL_REGION_ADD]: (state, action) => {
     const details = action.data;
     return { ...state, details };
   }

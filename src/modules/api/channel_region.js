@@ -32,21 +32,28 @@ export default class ChannelRegionApi {
     return json;
   }
 
-  async update(patch, config = {}) {
+  async create(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    const { id } = resolvedConfig;
+    const { channel_region } = resolvedConfig;
+    const body = { channel_region };
 
-    const body = {
-      data: {
-        id: id,
-        ...patch,
-      },
-    };
+    const create = this.resource.create(resolvedConfig);
+    const response = await fetchResource(create, { body: JSON.stringify(body) });
+    const json = await response.json()
+
+    return json;
+  }
+
+  async update(config = {}) {
+    const resolvedConfig = { ...this.config, ...config };
+    const { channel_region } = resolvedConfig;
+    const { id } = channel_region;
+    const body = { channel_region };
 
     const update = this.resource.update({ id });
     const response = await fetchResource(update, { body: JSON.stringify(body) });
     const json = await response.json()
 
-    return json.data;
+    return json;
   }
 }

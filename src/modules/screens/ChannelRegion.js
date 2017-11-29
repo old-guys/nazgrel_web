@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Progress,
+import {
+  Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Progress,
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert, Card, CardBody
 } from 'reactstrap';
 
@@ -8,20 +9,24 @@ import { connect } from 'react-redux';
 
 import './style.scss'
 import Page from './../../components/Page/'
-import { fetchChannelRegionAll } from '../reducers/channel_region';
+import {
+  fetchChannelRegionAll,
+  createChannelRegion,
+  updateChannelRegion
+} from '../reducers/channel_region';
 
 @connect(state => ({
   channel_region: state.channel_region
-}), { fetchChannelRegionAll })
+}), { fetchChannelRegionAll, createChannelRegion, updateChannelRegion })
 class ChannelRegion extends Component {
   constructor (props) {
     super(props);
 
     this.state = {
-      addManageModal: false,
       deleteManageModal: false,
       addChannelModal: false,
       isAddCR: false,
+      isLockedCR: false,
       channel_region: {}
     };
   }
@@ -108,7 +113,7 @@ class ChannelRegion extends Component {
   addChannel() {
     const { isAddCR, channel_region } = this.state;
 
-    console.log('addChannel')
+
   }
 
   renderAddChannel() {
@@ -158,6 +163,23 @@ class ChannelRegion extends Component {
     );
   }
 
+  setChannelRegion(element) {
+    const { channel_region } = this.state;
+    const names = element.target.name.split('.');
+    const count = names.length;
+
+    let str = 'channel_region'
+    _.each(names, (name, i) => {
+      str = `${str}['${name}']`;
+      if (i === count - 1) {
+        eval(`${str} = element.target.value`);
+      } else {
+        let value = eval(str);
+        if (_.isUndefined(value)) eval(`${str} = {}`);
+      }
+    });
+  }
+
   showEditChannelRegionModal(channel_region) {
     this.setState({
       isAddCR: true,
@@ -179,45 +201,85 @@ class ChannelRegion extends Component {
     });
   }
 
-  addChannelRegion() {
-    const { isAddCR, channel_region } = this.state;
+  async addChannelRegion() {
+    const { channel_region } = this.state;
 
-    console.log(channel_region)
+    try {
+      const response = await this.props.createChannelRegion({ channel_region });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          isAddCR: false,
+          channel_region: {}
+        });
+      } else {
+        console.log('保存失败');
+      }
+    } catch(e) {
+      this.setState({ networkError: true });
+    }
   }
 
   renderAddChannelRegion() {
     const { isAddCR, channel_region } = this.state;
+    const channel_user = channel_region.channel_user || {};
+    const isNew = _.isUndefined(channel_region.id);
 
     return (
       <Modal isOpen={isAddCR} className='modal-input'>
         <ModalHeader>
-          { _.isUndefined(channel_region.id) ? '新增渠道管理员' : '编辑渠道管理员' }
+          { isNew ? '新增区域' : '编辑区域' }
         </ModalHeader>
         <ModalBody>
           <Container>
             <Row>
-              <Col xs='3'>渠道管理员</Col>
+              <Col xs='3'>区域名称</Col>
               <Col xs='9'>
                 <InputGroup>
                   <Input
-                    placeholder="输入渠道管理员名称"
+                    name = "name"
+                    placeholder="输入区域名称"
                     value={channel_region.name}
-                    onChange={(e) => {
-                      channel_region.name = e.target.value
-                    }} />
+                    onChange={(e) => this.setChannelRegion(e) }
+                  />
                 </InputGroup>
               </Col>
             </Row>
-            <Row>
+            <Row className={ isNew ? '' : 'd-lg-none'}>
+              <Col xs='3'>主管名称</Col>
+              <Col xs='9'>
+                <InputGroup>
+                  <Input
+                    name = "channel_user.name"
+                    placeholder="输入主管名称"
+                    value={channel_user.name}
+                    onChange={(e) => this.setChannelRegion(e) }
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+            <Row className={ isNew ? '' : 'd-lg-none'}>
               <Col xs='3'>主管手机号</Col>
               <Col xs='9'>
                 <InputGroup>
                   <Input
+                    name = "channel_user.phone"
                     placeholder="输入主管手机号，将作为登录账号"
-                    value={channel_region.phone}
-                    onChange={(e) => {
-                      channel_region.phone = e.target.value
-                    }}
+                    value={channel_user.phone}
+                    onChange={(e) => this.setChannelRegion(e) }
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+            <Row className={ isNew ? '' : 'd-lg-none'}>
+              <Col xs='3'>主管密码</Col>
+              <Col xs='9'>
+                <InputGroup>
+                  <Input
+                    name = "channel_user.password"
+                    placeholder="输入主管密码，将作为登录账号的密码"
+                    value={channel_user.password}
+                    onChange={(e) => this.setChannelRegion(e) }
                   />
                 </InputGroup>
               </Col>
@@ -232,12 +294,94 @@ class ChannelRegion extends Component {
     );
   }
 
+  showLockedChannelRegionModal(channel_region) {
+    this.setState({
+      isLockedCR: true,
+      channel_region: channel_region
+    });
+  }
+
+  cancelLockedChannelRegion() {
+    this.setState({
+      isLockedCR: false,
+      channel_region: {}
+    });
+  }
+
+  lockedChannelRegion() {
+    const { channel_region } = this.state;
+
+    channel_region.status = 'locked';
+
+    this.updateChannelRegion((res) => {
+      if (Number(res.code) === 0) {
+        this.setState({
+          isLockedCR: false,
+          channel_region: {}
+        });
+      } else {
+        console.log('冻结失败');
+      }
+    });
+  }
+
+  async updateChannelRegion(callback) {
+    const { channel_region } = this.state;
+
+    try {
+      const res = await this.props.updateChannelRegion({ channel_region });
+      if (_.isFunction(callback)) callback(res);
+    } catch(e) {
+      this.setState({ networkError: true });
+    }
+  }
+
+  renderLockedChannel() {
+    const { isLockedCR } = this.state
+
+    return (
+      <Modal isOpen={isLockedCR} className='modal-input'>
+        <ModalHeader>冻结区域</ModalHeader>
+        <ModalBody>
+          确定冻结此区域
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => this.cancelLockedChannelRegion() }>取消</Button>
+          <Button color="primary" onClick={() => this.lockedChannelRegion() }>冻结</Button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
+
+  showActiveChannelRegionModal(channel_region) {
+
+  }
+
   renderChannelRegion(channel_region) {
+    const isLocked = channel_region.status === 'locked';
+    const btnText = isLocked ? '激活' : '冻结';
+    const onClickFun = () => {
+      isLocked ? this.showActiveChannelRegionModal(channel_region) : this.showLockedChannelRegionModal(channel_region)
+    }
+
     return (
       <tr>
         <th>{ channel_region.id }</th>
-        <th>王康</th>
-        <th>13000000000</th>
+        <th>{ channel_region.name }</th>
+        <th>
+          {
+            _.map(channel_region.channel_users, (channel_user) => {
+              return (
+                <p>
+                  上海 {channel_user.name} {channel_user.phone}
+                  <Button size="sm" className='btn-delete' onClick={() => this.showDeleteChannelModal(channel_user) } color="primary">
+                    删除
+                  </Button>
+                </p>
+              )
+            })
+          }
+        </th>
         <th>
           {
             _.map(channel_region.channel_users, (channel_user) => {
@@ -248,9 +392,8 @@ class ChannelRegion extends Component {
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         <th>
-          <Button size="sm" className='btn-edit' color="primary">冻结</Button>
+          <Button size="sm" className='btn-edit' color="primary" onClick={ onClickFun }>{ btnText }</Button>
           <Button size="sm" className='btn-edit' color="primary" onClick={() => this.showEditChannelRegionModal(channel_region) }>编辑</Button>
-          <Button size="sm" className='btn-edit' color="primary" onClick={() => this.showAddChannelModal() }>添加渠道</Button>
         </th>
       </tr>
     );
@@ -264,9 +407,9 @@ class ChannelRegion extends Component {
         <thead>
           <tr>
             <th>序号</th>
+            <th>区域名称</th>
             <th>渠道管理员</th>
-            <th>管理员手机号</th>
-            <th>渠道人员</th>
+            <th>渠道</th>
             <th>修改时间</th>
             <th>创建时间</th>
             <th>操作</th>
@@ -288,11 +431,12 @@ class ChannelRegion extends Component {
       <div className='manage-setting'>
         <Card>
           <CardBody>
-            <Button color="primary" className='btn-add' onClick={() => this.showAddChannelRegionModal() }>新增管理员</Button>
+            <Button color="primary" className='btn-add' onClick={() => this.showAddChannelRegionModal() }>新增区域</Button>
             { this.renderChannelRegions() }
             { this.renderAddChannelRegion() }
             { this.renderAddChannel() }
             { this.renderDeleteChannel() }
+            { this.renderLockedChannel() }
             <Page key='pagination' pageIndexChange={this.pageChangeHandle} {...this.state} />
           </CardBody>
         </Card>
