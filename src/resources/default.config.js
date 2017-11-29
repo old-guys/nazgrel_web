@@ -12,7 +12,17 @@ export const defaultResource = {
 				method: 'POST',
 			},
 		},
+		post: {
+			request: {
+				method: 'POST',
+			},
+		},
 		update: {
+			request: {
+				method: 'PATCH',
+			},
+		},
+		patch: {
 			request: {
 				method: 'PATCH',
 			},
@@ -22,6 +32,16 @@ export const defaultResource = {
 				method: 'DELETE',
 			},
 		},
+		destroy: {
+			request: {
+				method: 'DELETE',
+			},
+		},
+		delete: {
+			request: {
+				method: 'DELETE',
+			},
+		}
 	},
 }
 
@@ -32,11 +52,28 @@ export const jsonApiResource = _.merge({}, defaultResource, {
 		},
 	},
 	actions: {
+		get: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'GET',
+			},
+		},
 		create: {
 			request: {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				method: 'POST',
+			},
+		},
+		post: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'POST',
 			},
 		},
 		update: {
@@ -44,7 +81,40 @@ export const jsonApiResource = _.merge({}, defaultResource, {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				method: 'PATCH',
 			},
 		},
+		patch: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'PATCH',
+			},
+		},
+		remove: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'DELETE',
+			},
+		},
+		destroy: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'DELETE',
+			},
+		},
+		delete: {
+			request: {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'DELETE',
+			},
+		}
 	},
 })
