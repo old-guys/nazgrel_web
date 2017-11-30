@@ -64,6 +64,15 @@ export function updateChannelRegion(params) {
   };
 }
 
+export function deleteChannelRegionChannel(params) {
+  return dispatch => {
+    return ChannelRegionApi.instance().deleteChannel(params)
+      .then((res) => {
+        return res;
+      });
+  };
+}
+
 export const initialState = {
   channel_regions: {
     isFetching: true,

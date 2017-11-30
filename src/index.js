@@ -33,10 +33,10 @@ const enhancers = compose(applyMiddleware(...middleware));
 const store = createStore(reducers, enhancers)
 let auth = new Auth();
 
-require.ensure([], () => {
-  require('./modules/screens/login')
-  require('./modules/services/auth')
-}, 'chunk2')
+// require.ensure([], () => {
+//   require('./modules/screens/login')
+//   require('./modules/services/auth')
+// }, 'chunk2')
 
 class App extends Component{
   constructor(props, context){

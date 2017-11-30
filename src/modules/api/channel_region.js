@@ -13,11 +13,13 @@ export default class ChannelRegionApi {
     return ChannelRegionApi._apiInstance;
   }
 
-  constructor(config) {
+  constructor(config = {}) {
     this.config = config;
 
     this.get = this.get.bind(this);
     this.update = this.update.bind(this);
+    this.create = this.create.bind(this);
+    this.deleteChannel = this.deleteChannel.bind(this);
 
     this.resource = channelRegionResource(config);
   }
@@ -50,8 +52,30 @@ export default class ChannelRegionApi {
     const { id } = channel_region;
     const body = { channel_region };
 
+    this.resource = channelRegionResource({ path: `/${id}` });
+
     const update = this.resource.update({ id });
     const response = await fetchResource(update, { body: JSON.stringify(body) });
+    const json = await response.json()
+
+    return json;
+  }
+
+  async deleteChannel(config = {}) {
+    const resolvedConfig = { ...this.config, ...config };
+    const { channel_region_map } = resolvedConfig;
+    const { channel_region_id, channel_id } = channel_region_map;
+
+    this.resource = channelRegionResource({
+      path: '/destroy_channel',
+      params: {
+        id: channel_region_id,
+        channel_id
+      }
+    });
+
+    const destroy = this.resource.destroy({ channel_region_id });
+    const response = await fetchResource(destroy);
     const json = await response.json()
 
     return json;

@@ -29,8 +29,7 @@ export default class ChannelApi {
 
   async index(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    console.log(this.resource)
-
+    
     const index = this.resource.get(resolvedConfig);
     const response = await fetchResource(index);
     const json = await response.json()
