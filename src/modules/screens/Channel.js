@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
   FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
+import { Notification } from 'react-pnotify';
 
 import { connect } from 'react-redux';
 import { fetchChannelAll, createChannel } from '../reducers/channel';
@@ -29,7 +30,6 @@ class Channel extends Component {
       channelModal: false,
       addChannelModal: false,
       queryShopkeeperDisabled: false,
-      showNoShopkeeperModal: false,
       createDisabled: true,
       addChannel: {
         channelCategory: null,
@@ -37,13 +37,25 @@ class Channel extends Component {
         name: '',
         shopkeeperPhone: '',
         shopkeeperName: '',
-        password: Math.random().toString(36).substring(7),
+        password: Math.random().toString(36).substring(6),
         shopkeeperUserId: null
       },
       enumField: {
         channelCategory: {},
         channelSource: {},
         channelUserRoleType: {}
+      },
+      notification: {
+        display: false,
+
+        type: "notice",
+        title: "",
+        text: "",
+        delay: 500,
+        shadow: false,
+        hide: true,
+        nonblock: true,
+        desktop: true
       }
     }
   }
@@ -80,8 +92,18 @@ class Channel extends Component {
             shopkeeperUserId: null
           }
         });
+
+        this.fetchChannel();
         this.channelToggle();
       } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `创建渠道失败:${response.message}`
+          }
+        });
         console.log('创建渠道失败:', response);
       }
       this.setState({createDisabled: false})
@@ -115,7 +137,13 @@ class Channel extends Component {
       } else {
         console.log('查询店主失败');
         this.setState({
-          showNoShopkeeperModal: true, createDisabled: true
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: "查询店主失败！"
+          },
+          createDisabled: true
         });
       }
       this.setState({queryShopkeeperDisabled: false})
@@ -232,22 +260,6 @@ class Channel extends Component {
     );
   }
 
-  renderNoShopkeeper () {
-    const { showNoShopkeeperModal } = this.state;
-
-    return (
-      <Modal isOpen={showNoShopkeeperModal} className='modal-no-shoppkeeper modal-danger'>
-        <ModalHeader>提示</ModalHeader>
-        <ModalBody>
-          查询店主失败
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.setState({showNoShopkeeperModal: false})}>确定</Button>
-        </ModalFooter>
-      </Modal>
-    )
-  }
-
   renderAddChannel() {
     const { addChannelModal, queryShopkeeperDisabled, addChannel, createDisabled, enumField} = this.state;
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
@@ -317,6 +329,8 @@ class Channel extends Component {
                 <Col xs={9}>
                   <Input
                     type="select"
+                    required
+
                     value={addChannel.channelCategory}
                     onChange={(e) => {
                       this.setState({ addChannel: {...this.state.addChannel, channelCategory: e.target.value}})
@@ -337,7 +351,8 @@ class Channel extends Component {
                 <Col xs={9}>
                   <Input
                     type="select"
-                    name="select"
+                    required
+
                     value={addChannel.source}
                     onChange={(e) => {
                       this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
@@ -364,6 +379,30 @@ class Channel extends Component {
     );
   }
 
+  renderNotification () {
+    const { display } = this.state.notification;
+    const options = {...this.state.notification};
+
+    if (!display) {
+      return null;
+    }
+
+    setTimeout(() => {
+      this.setState({
+        notification: {...this.state.notification,
+          display: false,
+          type: "",
+          title: "",
+          text: ""
+        }
+      });
+    }, options.delay || 1000)
+
+    return (
+      <Notification {...options} />
+    )
+  }
+
   render() {
     return (
       <div className='channel-setting'>
@@ -373,7 +412,7 @@ class Channel extends Component {
             { this.renderChannelList() }
 
             { this.renderAddChannel() }
-            { this.renderNoShopkeeper() }
+            { this.renderNotification() }
           </CardBody>
         </Card>
       </div>
