@@ -97,6 +97,47 @@ class Channel extends Component {
     });
   }
 
+  async handleEditChannelStatus (id) {
+    const { channels: { list } } = this.props.channels;
+    const channel = _.find(list, (item) => id === item.id);
+    const status = (channel.status === "normal") ? "locked" : "normal"
+
+    try {
+      const response = await this.props.updateChannel({
+        id: channel.id,
+        status: status,
+      });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "success",
+            title: "提示",
+            text: `更新渠道成功`
+          }
+        });
+
+        this.fetchChannel();
+      } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `更新渠道失败:${response.message}`
+          }
+        });
+        console.log('更新渠道失败:', response);
+      }
+    } catch(e) {
+      console.log(e)
+      this.setState({
+        networkError: true,
+      });
+    }
+  }
+
   async createChannel () {
     const { addChannel } = this.state
 
@@ -155,65 +196,65 @@ class Channel extends Component {
     }
   }
 
-async updateChannel () {
-  const { editChannel } = this.state
+  async updateChannel () {
+    const { editChannel } = this.state
 
-  try {
-    this.setState({editDisabled: true})
-    const response = await this.props.updateChannel({
-      id: editChannel.id,
-      name: editChannel.name,
-      category: editChannel.channelCategory,
-      city: editChannel.city,
-      channel_user: {
-        password: editChannel.password
+    try {
+      this.setState({editDisabled: true})
+      const response = await this.props.updateChannel({
+        id: editChannel.id,
+        name: editChannel.name,
+        category: editChannel.channelCategory,
+        city: editChannel.city,
+        channel_user: {
+          password: editChannel.password
+        }
+      });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          editChannel: {
+            id: null,
+            channelCategory: null,
+            source: null,
+            name: "",
+            city: "",
+            shopkeeperPhone: "",
+            shopkeeperName: "",
+            password: Math.random().toString(36).substring(6),
+            shopkeeperUserId: null
+          },
+          editChannelModal: false,
+          editDisabled: false,
+          notification: {...this.state.notification,
+            display: true,
+            type: "success",
+            title: "提示",
+            text: `更新渠道成功`
+          }
+        });
+
+        this.fetchChannel();
+      } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `更新渠道失败:${response.message}`
+          }
+        });
+        console.log('更新渠道失败:', response);
       }
-    });
-
-    if (Number(response.code) === 0) {
+      this.setState({editDisabled: false})
+    } catch(e) {
+      console.log(e)
       this.setState({
-        editChannel: {
-          id: null,
-          channelCategory: null,
-          source: null,
-          name: "",
-          city: "",
-          shopkeeperPhone: "",
-          shopkeeperName: "",
-          password: Math.random().toString(36).substring(6),
-          shopkeeperUserId: null
-        },
-        editChannelModal: false,
-        editDisabled: false,
-        notification: {...this.state.notification,
-          display: true,
-          type: "success",
-          title: "提示",
-          text: `更新渠道成功`
-        }
+        networkError: true,
+        editDisabled: false
       });
-
-      this.fetchChannel();
-    } else {
-      this.setState({
-        notification: {...this.state.notification,
-          display: true,
-          type: "notice",
-          title: "提示",
-          text: `更新渠道失败:${response.message}`
-        }
-      });
-      console.log('更新渠道失败:', response);
     }
-    this.setState({editDisabled: false})
-  } catch(e) {
-    console.log(e)
-    this.setState({
-      networkError: true,
-      editDisabled: false
-    });
   }
-}
 
   async queryShopkeeper () {
     try {
@@ -324,8 +365,8 @@ async updateChannel () {
                 <th>{ fecha.format(new Date(item.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>{ fecha.format(new Date(item.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>
-                  <Button size="sm" cssModule={{ margin: 10}} color="primary">冻结</Button>
-                  <Button size="sm" color="primary" onClick={() => {this.handleEditChannel(item.id)}}>编辑</Button>
+                  <Button size="sm" onClick={() => this.handleEditChannelStatus(item.id)} cssModule={{ margin: 10}} color="primary">{item.status === "normal" ? "冻结" : "激活"}</Button>
+                  <Button size="sm" color="primary" onClick={() => this.handleEditChannel(item.id)}>编辑</Button>
                 </th>
               </tr>
             )
