@@ -26,7 +26,8 @@ import FontAwesome from '../../views/Icons/FontAwesome/';
 import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
 
 //manage
-import Channel from '../../modules/screens/Channel'
+import { Channel, ChannelRegion } from '../../modules/screens'
+
 class Full extends Component {
   render() {
     return (
@@ -52,6 +53,7 @@ class Full extends Component {
                 <Route path="/widgets" name="Widgets" component={Widgets}/>
                 <Route path="/charts" name="Charts" component={Charts}/>
                 <Route path="/channel" name="Channel" component={Channel}/>
+                <Route path="/channel_region" name="ChannelRegion" component={ChannelRegion}/>
                 <Redirect from="/" to="/dashboard"/>
               </Switch>
             </Container>

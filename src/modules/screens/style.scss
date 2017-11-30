@@ -1,0 +1,35 @@
+
+.btn-add {
+  margin-bottom: 20px;
+}
+.btn-edit {
+  margin-right: 5px;
+}
+.btn-delete {
+  margin-left: 10px;
+}
+.modal-input {
+  .container {
+    .row {
+      margin-bottom: 20px;
+    }
+    .col-3 {
+      line-height: 35px;
+    }
+  }
+}
+
+// 渠道设置
+
+// 管理员
+.manage-setting {
+  .table {
+    th {
+      vertical-align:middle;
+      p:last-child{
+        margin: 0;
+      }
+    }
+  }
+}
+
