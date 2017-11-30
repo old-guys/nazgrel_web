@@ -2,7 +2,8 @@ import _ from 'lodash';
 import { fetchResource } from '../../resources';
 import {
   channelConfig as channelResource,
-  create as createChannelResource
+  create as createChannelResource,
+  update as updateChannelResource
 } from '../resources/channel';
 
 export default class ChannelApi {
@@ -29,7 +30,7 @@ export default class ChannelApi {
 
   async index(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    
+
     const index = this.resource.get(resolvedConfig);
     const response = await fetchResource(index);
     const json = await response.json()
@@ -70,11 +71,14 @@ export default class ChannelApi {
     const resolvedConfig = { ...this.config, ...config };
     const { id } = resolvedConfig;
 
+    this.resource = updateChannelResource(config);
+
+
+
     const body = {
-      data: {
-        id: id,
+      channel: {
         ...patch,
-      },
+      }
     };
 
     const update = this.resource.update({ id });

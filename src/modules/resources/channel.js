@@ -2,6 +2,7 @@ import { JsonApiResource } from '../../resources';
 
 export const CHANNEL = 'application.core.channel';
 export const CHANNEL_CREATE = 'application.core.channel.create';
+export const CHANNEL_UPDATE = 'application.core.channel.update';
 
 export const channelConfig = (config) => {
 
@@ -21,6 +22,19 @@ export const create = (config) => {
 
   const resource = {
     schema: CHANNEL_CREATE,
+    request: {
+      endpoint,
+    },
+  };
+
+  return new JsonApiResource(resource);
+}
+
+export const update = (config) => {
+  const endpoint = `api/web/channels/{id}`;
+
+  const resource = {
+    schema: CHANNEL_UPDATE,
     request: {
       endpoint,
     },
