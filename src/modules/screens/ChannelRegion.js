@@ -9,7 +9,7 @@ import fecha from 'fecha';
 import { connect } from 'react-redux';
 
 import './style.scss'
-import Page from './../../components/Page/'
+import Paginator from './../../components/Paginator/'
 import {
   fetchChannelRegionAll,
   createChannelRegion,
@@ -59,8 +59,8 @@ class ChannelRegion extends Component {
 
   async fetch(params = {}) {
     const page = params.page || 1;
-    const filters = params.filters !== undefined ? params.filters : this.state.filters;
-    const json_key = params.json_key !== undefined ? params.json_key : this.state.json_key;
+    const filters = params.filters || this.state.filters;
+    const json_key = params.json_key || this.state.json_key;
     let optimizes = {
       page,
       filters,
@@ -88,10 +88,6 @@ class ChannelRegion extends Component {
     } catch(e) {
       this.setState({ networkError: true });
     }
-  }
-
-  pageChangeHandle() {
-
   }
 
   showDeleteCRMModal(channel_region, channel_region_map) {
@@ -552,7 +548,13 @@ class ChannelRegion extends Component {
     );
   }
 
+  handlePageChange(page) {
+    this.fetch({ page });
+  }
+
   render() {
+    const { channel_regions } = this.props.channel_region;
+
     return (
       <div className='manage-setting'>
         <Card>
@@ -563,7 +565,7 @@ class ChannelRegion extends Component {
             { this.renderDeleteCRMModal() }
             { this.renderCRStatusModal() }
             { this.renderCRChannelUserModal() }
-            <Page key='pagination' pageIndexChange={this.pageChangeHandle} {...this.state} />
+            <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channel_regions } />
           </CardBody>
         </Card>
       </div>

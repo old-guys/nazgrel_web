@@ -86,7 +86,7 @@ const actionHandler = {
 
     const res = action.data;
     let list = res.models;
-    if (Number(res.current_page) > 1) list = [...state.channel_regions.list, ...res.models];
+    // if (Number(res.current_page) > 1) list = [...state.channel_regions.list, ...res.models];
 
     const channel_regions = {
       list,
