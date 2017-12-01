@@ -27,6 +27,7 @@ export default class ChannelRegionApi {
   async get(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
 
+    this.resource = channelRegionResource({ params: resolvedConfig });
     const get = this.resource.get(resolvedConfig);
     const response = await fetchResource(get);
     const json = await response.json()
