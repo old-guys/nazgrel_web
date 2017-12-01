@@ -4,6 +4,8 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
   FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
+import { Confirm } from '../../components/Confirm/';
+
 import { Notification } from 'react-pnotify';
 
 import { connect } from 'react-redux';
@@ -333,9 +335,36 @@ class Channel extends Component {
   renderNav() {
     return (
       <div class="pull-right">
-        <Button color="primary" onClick={() => {this.handleNewChannelClick()}}>新增渠道</Button>
+        <Button color="primary" onClick={() => this.handleNewChannelClick()}>新增渠道</Button>
       </div>
     )
+  }
+
+  renderListOperate(item) {
+    if (!item) {
+      return null
+    }
+
+    if (item.status === "normal") {
+      return (
+        <Confirm
+            buttonText="冻结"
+            buttonBSStyle="danger"
+            buttonSize="sm"
+            onConfirm={(e) => this.handleEditChannelStatus(item.id)}
+            body="你确定要冻结渠道吗?"
+            confirmText="确定"
+            title="提示">
+        </Confirm>
+      )
+    } else {
+      return (
+        <Button size="sm"
+          onClick={() => this.handleEditChannelStatus(item.id)}
+          cssModule={{ margin: 10}} color="warning">激活
+        </Button>
+      )
+    }
   }
 
   renderList() {
@@ -365,7 +394,7 @@ class Channel extends Component {
                 <th>{ fecha.format(new Date(item.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>{ fecha.format(new Date(item.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>
-                  <Button size="sm" onClick={() => this.handleEditChannelStatus(item.id)} cssModule={{ margin: 10}} color="primary">{item.status === "normal" ? "冻结" : "激活"}</Button>
+                  { this.renderListOperate(item) }
                   <Button size="sm" color="primary" onClick={() => this.handleEditChannel(item.id)}>编辑</Button>
                 </th>
               </tr>
