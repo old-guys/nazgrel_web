@@ -4,6 +4,7 @@ import { ChannelApi } from '../api';
 const CHANNEL_ALL = '@CHANNEL_ALL';
 const CHANNEL_SHOW = '@CHANNEL_SHOW';
 const CHANNEL_CREATE = '@CHANNEL_CREATE';
+const CHANNEL_UPDATE = '@CHANNEL_UPDATE';
 
 function response(res) {
   if (res.code === 0 || res.code === '0') return true;
@@ -55,6 +56,21 @@ export function createChannel(params) {
   };
 }
 
+export function updateChannel(params) {
+  return dispatch => {
+    return ChannelApi.instance().update(params, {id: params.id})
+      .then((res) => {
+        if (response(res)) {
+          dispatch({
+            type: CHANNEL_UPDATE,
+            data: res.data,
+          });
+        }
+        return res;
+      });
+  };
+}
+
 export const initialState = {
   channels: {
     isFetching: true,
@@ -79,6 +95,10 @@ const actionHandler = {
     return { ...state.channels, channels };
   },
   [CHANNEL_CREATE]: (state, action) => {
+    const record = action.data;
+    return { ...state, record };
+  },
+  [CHANNEL_UPDATE]: (state, action) => {
     const record = action.data;
     return { ...state, record };
   },

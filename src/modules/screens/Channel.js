@@ -4,9 +4,10 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
   FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
+import { Notification } from 'react-pnotify';
 
 import { connect } from 'react-redux';
-import { fetchChannelAll, createChannel } from '../reducers/channel';
+import { fetchChannelAll, createChannel, updateChannel } from '../reducers/channel';
 import { fetchShopkeeperCheck } from '../reducers/shopkeeper';
 import { fetchConstantSettingEnumField } from '../reducers/constant_setting';
 import _ from 'lodash';
@@ -18,7 +19,7 @@ import fecha from 'fecha';
     shopkeeper: state.shopkeeper,
     constant_setting: state.constant_setting
   }), {
-    fetchChannelAll, createChannel,
+    fetchChannelAll, createChannel, updateChannel,
     fetchShopkeeperCheck, fetchConstantSettingEnumField
 })
 class Channel extends Component {
@@ -26,30 +27,115 @@ class Channel extends Component {
     super(props)
 
     this.state = {
-      channelModal: false,
-      addChannelModal: false,
       queryShopkeeperDisabled: false,
-      showNoShopkeeperModal: false,
+
       createDisabled: true,
+      addChannelModal: false,
       addChannel: {
         channelCategory: null,
         source: null,
-        name: '',
-        shopkeeperPhone: '',
-        shopkeeperName: '',
-        password: Math.random().toString(36).substring(7),
+        name: "",
+        city: "",
+        shopkeeperPhone: "",
+        shopkeeperName: "",
+        password: Math.random().toString(36).substring(6),
+        shopkeeperUserId: null
+      },
+
+      editChannelModal: false,
+      editDisabled: false,
+      editChannel: {
+        id: null,
+        channelCategory: null,
+        source: null,
+        name: "",
+        city: "",
+        shopkeeperPhone: "",
+        shopkeeperName: "",
+        password: Math.random().toString(36).substring(6),
         shopkeeperUserId: null
       },
       enumField: {
         channelCategory: {},
         channelSource: {},
         channelUserRoleType: {}
+      },
+      notification: {
+        display: false,
+
+        type: "notice",
+        title: "",
+        text: "",
+        delay: 500,
+        shadow: false,
+        hide: true,
+        nonblock: true,
+        desktop: true
       }
     }
   }
 
-  channelToggle () {
-    this.setState({ addChannelModal: !this.state.addChannelModal })
+  handleNewChannelClick() {
+    this.setState({addChannelModal: true});
+  }
+
+  async handleEditChannel(id) {
+    const { channels: { list } } = this.props.channels;
+    const channel = _.find(list, (item) => id === item.id);
+
+    this.setState({
+      editChannel: {...this.state.editChannel,
+        id: channel.id,
+        channelCategory: channel.category,
+        source: channel.source,
+        name: channel.name,
+        city: channel.city,
+        password: null,
+      },
+      editChannelModal: true,
+      editDisabled: false,
+    });
+  }
+
+  async handleEditChannelStatus (id) {
+    const { channels: { list } } = this.props.channels;
+    const channel = _.find(list, (item) => id === item.id);
+    const status = (channel.status === "normal") ? "locked" : "normal"
+
+    try {
+      const response = await this.props.updateChannel({
+        id: channel.id,
+        status: status,
+      });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "success",
+            title: "提示",
+            text: `更新渠道成功`
+          }
+        });
+
+        this.fetchChannel();
+      } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `更新渠道失败:${response.message}`
+          }
+        });
+        console.log('更新渠道失败:', response);
+      }
+    } catch(e) {
+      console.log(e)
+      this.setState({
+        networkError: true,
+      });
+    }
   }
 
   async createChannel () {
@@ -78,10 +164,26 @@ class Channel extends Component {
             shopkeeperName: '',
             password: Math.random().toString(36).substring(7),
             shopkeeperUserId: null
+          },
+          addChannelModal: false,
+        notification: {...this.state.notification,
+          display: true,
+          type: "success",
+          title: "提示",
+          text: `创建渠道成功`
+        }
+        });
+
+        this.fetchChannel();
+      } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `创建渠道失败:${response.message}`
           }
         });
-        this.channelToggle();
-      } else {
         console.log('创建渠道失败:', response);
       }
       this.setState({createDisabled: false})
@@ -90,6 +192,66 @@ class Channel extends Component {
       this.setState({
         networkError: true,
         createDisabled: false
+      });
+    }
+  }
+
+  async updateChannel () {
+    const { editChannel } = this.state
+
+    try {
+      this.setState({editDisabled: true})
+      const response = await this.props.updateChannel({
+        id: editChannel.id,
+        name: editChannel.name,
+        category: editChannel.channelCategory,
+        city: editChannel.city,
+        channel_user: {
+          password: editChannel.password
+        }
+      });
+
+      if (Number(response.code) === 0) {
+        this.setState({
+          editChannel: {
+            id: null,
+            channelCategory: null,
+            source: null,
+            name: "",
+            city: "",
+            shopkeeperPhone: "",
+            shopkeeperName: "",
+            password: Math.random().toString(36).substring(6),
+            shopkeeperUserId: null
+          },
+          editChannelModal: false,
+          editDisabled: false,
+          notification: {...this.state.notification,
+            display: true,
+            type: "success",
+            title: "提示",
+            text: `更新渠道成功`
+          }
+        });
+
+        this.fetchChannel();
+      } else {
+        this.setState({
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: `更新渠道失败:${response.message}`
+          }
+        });
+        console.log('更新渠道失败:', response);
+      }
+      this.setState({editDisabled: false})
+    } catch(e) {
+      console.log(e)
+      this.setState({
+        networkError: true,
+        editDisabled: false
       });
     }
   }
@@ -108,14 +270,21 @@ class Channel extends Component {
           addChannel: {...this.state.addChannel,
             shopkeeperPhone: response.data.user_phone,
             shopkeeperName: response.data.user_name,
-            shopkeeperUserId: response.data.user_id
+            shopkeeperUserId: response.data.user_id,
+            city: response.data.city,
           },
           createDisabled: false
         });
       } else {
         console.log('查询店主失败');
         this.setState({
-          showNoShopkeeperModal: true, createDisabled: true
+          notification: {...this.state.notification,
+            display: true,
+            type: "notice",
+            title: "提示",
+            text: "查询店主失败！"
+          },
+          createDisabled: true
         });
       }
       this.setState({queryShopkeeperDisabled: false})
@@ -161,10 +330,6 @@ class Channel extends Component {
     }
   }
 
-  handleNewChannelClick() {
-    this.setState({addChannelModal: true});
-  }
-
   renderNav() {
     return (
       <div class="pull-right">
@@ -200,8 +365,8 @@ class Channel extends Component {
                 <th>{ fecha.format(new Date(item.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>{ fecha.format(new Date(item.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>
-                  <Button size="sm" cssModule={{ margin: 10}} color="primary">冻结</Button>
-                  <Button size="sm" color="primary" onClick={() => {this.channelToggle()}}>编辑</Button>
+                  <Button size="sm" onClick={() => this.handleEditChannelStatus(item.id)} cssModule={{ margin: 10}} color="primary">{item.status === "normal" ? "冻结" : "激活"}</Button>
+                  <Button size="sm" color="primary" onClick={() => this.handleEditChannel(item.id)}>编辑</Button>
                 </th>
               </tr>
             )
@@ -232,22 +397,6 @@ class Channel extends Component {
     );
   }
 
-  renderNoShopkeeper () {
-    const { showNoShopkeeperModal } = this.state;
-
-    return (
-      <Modal isOpen={showNoShopkeeperModal} className='modal-no-shoppkeeper modal-danger'>
-        <ModalHeader>提示</ModalHeader>
-        <ModalBody>
-          查询店主失败
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.setState({showNoShopkeeperModal: false})}>确定</Button>
-        </ModalFooter>
-      </Modal>
-    )
-  }
-
   renderAddChannel() {
     const { addChannelModal, queryShopkeeperDisabled, addChannel, createDisabled, enumField} = this.state;
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
@@ -255,7 +404,7 @@ class Channel extends Component {
     return (
       <div>
       <Modal isOpen={addChannelModal} className='channel-modal'>
-        <ModalHeader>新增渠道人员</ModalHeader>
+        <ModalHeader>新增渠道</ModalHeader>
         <ModalBody>
           <Container>
             <Form>
@@ -292,7 +441,7 @@ class Channel extends Component {
                   <InputGroup>
                     <Input
                       value={addChannel.password}
-                      placeholder="输入店主姓名"
+                      placeholder="输入渠道管理员密码"
                       onChange={(e) => {
                         this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
                       }}/>
@@ -313,10 +462,25 @@ class Channel extends Component {
                 </Col>
               </FormGroup>
               <FormGroup row>
+                <Label sm={3}>城市</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={addChannel.city}
+                      placeholder="输入城市"
+                      onChange={(e) => {
+                        this.setState({ addChannel: {...this.state.city, name: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
                 <Label sm={3}>渠道类型</Label>
                 <Col xs={9}>
                   <Input
                     type="select"
+                    required
+
                     value={addChannel.channelCategory}
                     onChange={(e) => {
                       this.setState({ addChannel: {...this.state.addChannel, channelCategory: e.target.value}})
@@ -337,7 +501,8 @@ class Channel extends Component {
                 <Col xs={9}>
                   <Input
                     type="select"
-                    name="select"
+                    required
+
                     value={addChannel.source}
                     onChange={(e) => {
                       this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
@@ -356,12 +521,141 @@ class Channel extends Component {
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={() => {this.channelToggle()}}>取消</Button>
+          <Button color="secondary" onClick={() => this.setState({ addChannelModal: false })}>取消</Button>
           <Button color="primary" disabled={createDisabled} onClick={() => {this.createChannel()}}>保存</Button>
         </ModalFooter>
       </Modal>
       </div>
     );
+  }
+
+  renderEditChannel() {
+    const { editChannel, editChannelModal, editDisabled, enumField} = this.state;
+    const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
+
+    return (
+      <div>
+      <Modal isOpen={editChannelModal} className='channel-modal'>
+        <ModalHeader>编辑渠道</ModalHeader>
+        <ModalBody>
+          <Container>
+            <Form>
+              <FormGroup row>
+                <Label sm={3}>渠道名称</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={editChannel.name}
+                      placeholder="输入渠道名称"
+                      onChange={(e) => {
+                        this.setState({ editChannel: {...this.state.editChannel, name: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>密码</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={editChannel.password}
+                      placeholder="输入渠道管理员密码"
+                      onChange={(e) => {
+                        this.setState({ editChannel: {...this.state.editChannel, password: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>城市</Label>
+                <Col sm={9}>
+                  <InputGroup>
+                    <Input
+                      value={editChannel.city}
+                      placeholder="输入城市"
+                      onChange={(e) => {
+                        this.setState({ editChannel: {...this.state.city, name: e.target.value}})
+                      }}/>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>渠道类型</Label>
+                <Col xs={9}>
+                  <Input
+                    type="select"
+                    required
+
+                    value={editChannel.channelCategory}
+                    onChange={(e) => {
+                      this.setState({ editChannel: {...this.state.editChannel, channelCategory: e.target.value}})
+                    }}>
+
+                    {
+                      _.map(channelCategory, (value, key) => {
+                        return (
+                          <option value={key}>{value}</option>
+                        )
+                      })
+                    }
+                  </Input>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={3}>渠道分类</Label>
+                <Col xs={9}>
+                  <Input
+                    type="select"
+                    required
+
+                    value={editChannel.source}
+                    onChange={(e) => {
+                      this.setState({ editChannel: {...this.state.editChannel, source: e.target.value}})
+                    }}>
+                    {
+                      _.map(channelSource, (value, key) => {
+                        return (
+                          <option value={key}>{value}</option>
+                        )
+                      })
+                    }
+                  </Input>
+                </Col>
+              </FormGroup>
+            </Form>
+          </Container>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => this.setState({ editChannelModal: false })}>取消</Button>
+          <Button color="primary" disabled={editDisabled} onClick={() => {this.updateChannel()}}>保存</Button>
+        </ModalFooter>
+      </Modal>
+      </div>
+    );
+  }
+
+  renderNotification () {
+    const { display } = this.state.notification;
+    const options = {...this.state.notification};
+
+    if (!display) {
+      return null;
+    }
+
+    setTimeout(() => {
+      this.setState({
+        notification: {...this.state.notification,
+          display: false,
+          type: "",
+          title: "",
+          text: ""
+        }
+      });
+    }, options.delay || 1000)
+
+    return (
+      <Notification {...options} />
+    )
   }
 
   render() {
@@ -373,7 +667,9 @@ class Channel extends Component {
             { this.renderChannelList() }
 
             { this.renderAddChannel() }
-            { this.renderNoShopkeeper() }
+            { this.renderEditChannel() }
+
+            { this.renderNotification() }
           </CardBody>
         </Card>
       </div>
