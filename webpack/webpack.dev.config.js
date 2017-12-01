@@ -106,7 +106,8 @@ module.exports = (env = {}) => {
       }),
       new CopyWebpackPlugin(
         [
-          { from: './assets/images', to: './images/' }
+          { from: './assets/images', to: './images/' },
+          { from: "./vendor/javascripts", to: "./vendor/" }
         ],
         { copyUnmodified: false }
       )
