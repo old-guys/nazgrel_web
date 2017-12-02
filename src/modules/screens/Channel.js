@@ -4,7 +4,9 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
   FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
+
 import { Confirm } from '../../components/Confirm/';
+import Paginator from './../../components/Paginator/';
 
 import { Notification } from 'react-pnotify';
 
@@ -258,6 +260,11 @@ class Channel extends Component {
     }
   }
 
+  handlePageChange(page) {
+    this.fetchChannel({ page });
+  }
+
+
   async queryShopkeeper () {
     try {
       this.setState({queryShopkeeperDisabled: true})
@@ -304,9 +311,9 @@ class Channel extends Component {
     this.fetchConstantSettingEnumField()
   }
 
-  async fetchChannel() {
+  async fetchChannel(params) {
     try {
-      const response = await this.props.fetchChannelAll({});
+      const response = await this.props.fetchChannelAll(params);
       this.setState({
         isLoading: false,
       });
@@ -688,6 +695,8 @@ class Channel extends Component {
   }
 
   render() {
+    const { channels } = this.props.channels;
+
     return (
       <div className='channel-setting'>
         <Card>
@@ -699,6 +708,7 @@ class Channel extends Component {
             { this.renderEditChannel() }
 
             { this.renderNotification() }
+            <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channels } />
           </CardBody>
         </Card>
       </div>

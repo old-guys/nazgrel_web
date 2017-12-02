@@ -81,10 +81,8 @@ export const initialState = {
 
 const actionHandler = {
   [CHANNEL_ALL]: (state, action) => {
-
     const res = action.data;
     let list = res.models;
-    if (Number(res.current_page) > 1) list = [...state.channels.list, ...list];
 
     const channels = {
       list,
