@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form,
   FormGroup, Label, InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert
 } from 'reactstrap';
+import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import { Confirm } from '../../components/Confirm/';
 import Paginator from './../../components/Paginator/';
@@ -33,7 +34,7 @@ class Channel extends Component {
     this.state = {
       queryShopkeeperDisabled: false,
 
-      createDisabled: true,
+      createDisabled: false,
       addChannelModal: false,
       addChannel: {
         channelCategory: null,
@@ -81,6 +82,14 @@ class Channel extends Component {
 
   handleNewChannelClick() {
     this.setState({addChannelModal: true});
+  }
+
+  handleCreateChannelSubmit(event, errors, values) {
+    if (_.isEmpty(errors)) this.createChannel();
+  }
+
+  handleUpdateChannelSubmit(event, errors, values) {
+    if (_.isEmpty(errors)) this.updateChannel();
   }
 
   async handleEditChannel(id) {
@@ -438,29 +447,35 @@ class Channel extends Component {
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
 
     return (
-      <div>
       <Modal isOpen={addChannelModal} className='channel-modal'>
-        <ModalHeader>新增渠道</ModalHeader>
-        <ModalBody>
-          <Container>
-            <Form>
-              <FormGroup row>
-                <Label sm={3}>店主手机号</Label>
-                <Col sm={9}>
+        <AvForm onSubmit={::this.handleCreateChannelSubmit} >
+          <ModalHeader>新增渠道</ModalHeader>
+          <ModalBody>
+            <Container>
+              <AvGroup row>
+                <Label md={3}>店主手机号</Label>
+                <Col xs={12} md={9}>
                   <InputGroup>
-                    <Input required
+                    <AvInput name="shopkeeperPhone"
+                      value={addChannel.shopkeeperPhone}
+                      className="form-control"
                       placeholder="输入店主手机号"
                       value={addChannel.shopkeeperPhone}
                       onChange={(e) => {
                         this.setState({ addChannel: {...this.state.addChannel, shopkeeperPhone: e.target.value}})
-                      }} />
+                      }}
+                      required
+                      validate={{pattern: { value: /^([0-9])*$/ }}}
+                      errorMessage={{required: '输入店主手机号', pattern: '手机号只支持数字'}}
+                     />
                     <Button disabled={queryShopkeeperDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
                   </InputGroup>
+                  <AvFeedback>输入店主手机号,只支持数字!</AvFeedback>
                 </Col>
-              </FormGroup>
+              </AvGroup>
               <FormGroup row>
-                <Label sm={3}>店主姓名</Label>
-                <Col sm={9}>
+                <Label md={3}>店主姓名</Label>
+                <Col xs={12} md={9}>
                   <InputGroup>
                     <Input readOnly required
                       value={addChannel.shopkeeperName}
@@ -471,35 +486,32 @@ class Channel extends Component {
                   </InputGroup>
                 </Col>
               </FormGroup>
+              <AvField name="password"
+                value={addChannel.password}
+                label="密码" type="text"
+                placeholder="输入渠道管理员密码"
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
+                }}
+                required
+                errorMessage={{required: '输入渠道管理员密码'}}
+                />
+              <AvField name="name"
+                value={addChannel.name}
+                label="渠道名称" type="text"
+                placeholder="输入渠道名称"
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.addChannel, name: e.target.value}})
+                }}
+                required
+                validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
+                errorMessage={{required: '输入渠道名称', pattern: '渠道名称只支持中文、英文、数字'}}
+                />
               <FormGroup row>
-                <Label sm={3}>密码</Label>
-                <Col sm={9}>
-                  <InputGroup>
-                    <Input
-                      value={addChannel.password}
-                      placeholder="输入渠道管理员密码"
-                      onChange={(e) => {
-                        this.setState({ addChannel: {...this.state.addChannel, password: e.target.value}})
-                      }}/>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>渠道名称</Label>
-                <Col sm={9}>
-                  <InputGroup>
-                    <Input
-                      value={addChannel.name}
-                      placeholder="输入渠道名称"
-                      onChange={(e) => {
-                        this.setState({ addChannel: {...this.state.addChannel, name: e.target.value}})
-                      }}/>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>城市</Label>
-                <Col sm={9}>
+                <Label md={3}>城市</Label>
+                <Col xs={12} md={9}>
                   <InputGroup>
                     <Input
                       value={addChannel.city}
@@ -510,58 +522,50 @@ class Channel extends Component {
                   </InputGroup>
                 </Col>
               </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>渠道类型</Label>
-                <Col xs={9}>
-                  <Input
-                    type="select"
-                    required
-
-                    value={addChannel.channelCategory}
-                    onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, channelCategory: e.target.value}})
-                    }}>
-
-                    {
-                      _.map(channelCategory, (value, key) => {
-                        return (
-                          <option value={key}>{value}</option>
-                        )
-                      })
-                    }
-                  </Input>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>渠道分类</Label>
-                <Col xs={9}>
-                  <Input
-                    type="select"
-                    required
-
-                    value={addChannel.source}
-                    onChange={(e) => {
-                      this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
-                    }}>
-                    {
-                      _.map(channelSource, (value, key) => {
-                        return (
-                          <option value={key}>{value}</option>
-                        )
-                      })
-                    }
-                  </Input>
-                </Col>
-              </FormGroup>
-            </Form>
-          </Container>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.setState({ addChannelModal: false })}>取消</Button>
-          <Button color="primary" disabled={createDisabled} onClick={() => {this.createChannel()}}>保存</Button>
-        </ModalFooter>
+              <AvField name="name"
+                value={addChannel.channelCategory}
+                label="渠道类型" type="select"
+                required
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.addChannel, channelCategory: e.target.value}})
+                }}
+                errorMessage={{required: '请选择渠道类型'}}
+                >
+                  {
+                    _.map(channelCategory, (value, key) => {
+                      return (
+                        <option value={key}>{value}</option>
+                      )
+                    })
+                  }
+              </AvField>
+              <AvField name="name"
+                value={addChannel.source}
+                label="渠道类型" type="select"
+                required
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.addChannel, source: e.target.value}})
+                }}
+                errorMessage={{required: '请选择渠道类型'}}
+                >
+                  {
+                    _.map(channelSource, (value, key) => {
+                      return (
+                        <option value={key}>{value}</option>
+                      )
+                    })
+                  }
+              </AvField>
+            </Container>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => this.setState({ addChannelModal: false })}>取消</Button>
+            <Button color="primary" disabled={createDisabled}>保存</Button>
+          </ModalFooter>
+        </AvForm>
       </Modal>
-      </div>
     );
   }
 
@@ -570,28 +574,26 @@ class Channel extends Component {
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
 
     return (
-      <div>
       <Modal isOpen={editChannelModal} className='channel-modal'>
-        <ModalHeader>编辑渠道</ModalHeader>
-        <ModalBody>
-          <Container>
-            <Form>
+        <AvForm onSubmit={::this.handleUpdateChannelSubmit} >
+          <ModalHeader>编辑渠道</ModalHeader>
+          <ModalBody>
+            <Container>
+              <AvField name="name"
+                value={editChannel.name}
+                label="渠道名称" type="text"
+                placeholder="输入渠道名称"
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.editChannel, name: e.target.value}})
+                }}
+                required
+                validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
+                errorMessage={{required: '输入渠道名称', pattern: '渠道名称只支持中文、英文、数字'}}
+                />
               <FormGroup row>
-                <Label sm={3}>渠道名称</Label>
-                <Col sm={9}>
-                  <InputGroup>
-                    <Input
-                      value={editChannel.name}
-                      placeholder="输入渠道名称"
-                      onChange={(e) => {
-                        this.setState({ editChannel: {...this.state.editChannel, name: e.target.value}})
-                      }}/>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>密码</Label>
-                <Col sm={9}>
+                <Label md={3}>密码</Label>
+                <Col xs={12} md={9}>
                   <InputGroup>
                     <Input
                       value={editChannel.password}
@@ -603,8 +605,8 @@ class Channel extends Component {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <Label sm={3}>城市</Label>
-                <Col sm={9}>
+                <Label md={3}>城市</Label>
+                <Col xs={12} md={9}>
                   <InputGroup>
                     <Input
                       value={editChannel.city}
@@ -615,58 +617,50 @@ class Channel extends Component {
                   </InputGroup>
                 </Col>
               </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>渠道类型</Label>
-                <Col xs={9}>
-                  <Input
-                    type="select"
-                    required
-
-                    value={editChannel.channelCategory}
-                    onChange={(e) => {
-                      this.setState({ editChannel: {...this.state.editChannel, channelCategory: e.target.value}})
-                    }}>
-
-                    {
-                      _.map(channelCategory, (value, key) => {
-                        return (
-                          <option value={key}>{value}</option>
-                        )
-                      })
-                    }
-                  </Input>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3}>渠道分类</Label>
-                <Col xs={9}>
-                  <Input
-                    type="select"
-                    required
-
-                    value={editChannel.source}
-                    onChange={(e) => {
-                      this.setState({ editChannel: {...this.state.editChannel, source: e.target.value}})
-                    }}>
-                    {
-                      _.map(channelSource, (value, key) => {
-                        return (
-                          <option value={key}>{value}</option>
-                        )
-                      })
-                    }
-                  </Input>
-                </Col>
-              </FormGroup>
-            </Form>
-          </Container>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.setState({ editChannelModal: false })}>取消</Button>
-          <Button color="primary" disabled={editDisabled} onClick={() => {this.updateChannel()}}>保存</Button>
-        </ModalFooter>
+              <AvField name="name"
+                value={editChannel.channelCategory}
+                label="渠道类型" type="select"
+                required
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ editChannel: {...this.state.editChannel, channelCategory: e.target.value}})
+                }}
+                errorMessage={{required: '请选择渠道类型'}}
+                >
+                  {
+                    _.map(channelCategory, (value, key) => {
+                      return (
+                        <option value={key}>{value}</option>
+                      )
+                    })
+                  }
+              </AvField>
+              <AvField name="name"
+                value={editChannel.source}
+                label="渠道类型" type="select"
+                required
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ addChannel: {...this.state.editChannel, source: e.target.value}})
+                }}
+                errorMessage={{required: '请选择渠道类型'}}
+                >
+                  {
+                    _.map(channelSource, (value, key) => {
+                      return (
+                        <option value={key}>{value}</option>
+                      )
+                    })
+                  }
+              </AvField>
+            </Container>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => this.setState({ editChannelModal: false })}>取消</Button>
+            <Button color="primary" disabled={editDisabled} >保存</Button>
+          </ModalFooter>
+        </AvForm>
       </Modal>
-      </div>
     );
   }
 
