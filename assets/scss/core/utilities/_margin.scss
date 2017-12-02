@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+/// Provides a quick method for targeting `margin` on specific sides of a box. Use a `null` value to “skip” a side.
+///
+/// @param {Arglist} $vals
+///   List of arguments
+///
+/// @example scss - Usage
+///   .element {
+///     @include margin(null 10px 3em 20vh);
+///   }
+///
+/// @example css - CSS Output
+///   .element {
+///     margin-bottom: 3em;
+///     margin-left: 20vh;
+///     margin-right: 10px;
+///   }
+///
+/// @require {mixin} directional-property
+///
+/// @output `margin`
+
+@mixin margin($vals...) {
+  @include directional-property(margin, false, $vals...);
+}
+
+// type: pad (padding) or mar (margin)
+// location: a (all), t (top), r (right), b (bottom), l (left), m (horizontal), v (vertical)
+// size: 0 1 2 3 4 5 6 7 8 9 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80
+@mixin make-space() {
+  @each $value in (0 1 2 3 4 5 6 7 8 9 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80) {
+    // <type>: margin
+    // <location>: top, right , bottom , left
+    // -----------------------------------------
+    .mart#{$value} { margin-top: #{$value}px; }
+    .marr#{$value} { margin-right: #{$value}px; }
+    .marb#{$value} { margin-bottom: #{$value}px; }
+    .marbm#{$value} { margin-bottom: -#{$value}px; }
+    .marl#{$value} { margin-left: #{$value}px; }
+
+    // <type>: padding
+    // <location>: top, right , bottom , left
+    // -----------------------------------------
+    .padt#{$value} { padding-top: #{$value}px; }
+    .padr#{$value} { padding-right: #{$value}px; }
+    .padb#{$value} { padding-bottom: #{$value}px; }
+    .padl#{$value} { padding-left: #{$value}px; }
+  }
+}
+
+@include make-space();
