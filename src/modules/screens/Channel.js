@@ -10,6 +10,7 @@ import { Confirm } from '../../components/Confirm/';
 import Paginator from './../../components/Paginator/';
 
 import { Notification } from 'react-pnotify';
+import Notificator from './../../components/Notificator/';
 
 import { connect } from 'react-redux';
 import { fetchChannelAll, createChannel, updateChannel } from '../reducers/channel';
@@ -64,18 +65,6 @@ class Channel extends Component {
         channelCategory: {},
         channelSource: {},
         channelUserRoleType: {}
-      },
-      notification: {
-        display: false,
-
-        type: "notice",
-        title: "",
-        text: "",
-        delay: 500,
-        shadow: false,
-        hide: true,
-        nonblock: true,
-        desktop: true
       }
     }
   }
@@ -122,25 +111,11 @@ class Channel extends Component {
       });
 
       if (Number(response.code) === 0) {
-        this.setState({
-          notification: {...this.state.notification,
-            display: true,
-            type: "success",
-            title: "提示",
-            text: `更新渠道成功`
-          }
-        });
+        this.notificator.success({ text: '更新渠道成功' });
 
         this.fetchChannel();
       } else {
-        this.setState({
-          notification: {...this.state.notification,
-            display: true,
-            type: "notice",
-            title: "提示",
-            text: `更新渠道失败:${response.message}`
-          }
-        });
+        this.notificator.error({ text: `更新渠道失败:${response.message}` });
         console.log('更新渠道失败:', response);
       }
     } catch(e) {
@@ -178,25 +153,13 @@ class Channel extends Component {
             password: Math.random().toString(36).substring(7),
             shopkeeperUserId: null
           },
-          addChannelModal: false,
-        notification: {...this.state.notification,
-          display: true,
-          type: "success",
-          title: "提示",
-          text: `创建渠道成功`
-        }
+          addChannelModal: false
         });
+        this.notificator.success({ text: '创建渠道成功' });
 
         this.fetchChannel();
       } else {
-        this.setState({
-          notification: {...this.state.notification,
-            display: true,
-            type: "notice",
-            title: "提示",
-            text: `创建渠道失败:${response.message}`
-          }
-        });
+        this.notificator.error({ text: `创建渠道失败:${response.message}` });
         console.log('创建渠道失败:', response);
       }
       this.setState({createDisabled: false})
@@ -239,24 +202,12 @@ class Channel extends Component {
           },
           editChannelModal: false,
           editDisabled: false,
-          notification: {...this.state.notification,
-            display: true,
-            type: "success",
-            title: "提示",
-            text: `更新渠道成功`
-          }
         });
+        this.notificator.success({ text: `更新渠道成功` });
 
         this.fetchChannel();
       } else {
-        this.setState({
-          notification: {...this.state.notification,
-            display: true,
-            type: "notice",
-            title: "提示",
-            text: `更新渠道失败:${response.message}`
-          }
-        });
+        this.notificator.error({ text: `更新渠道失败:${response.message}` });
         console.log('更新渠道失败:', response);
       }
       this.setState({editDisabled: false})
@@ -295,13 +246,8 @@ class Channel extends Component {
         });
       } else {
         console.log('查询店主失败');
+        this.notificator.info({ text: "查询店主失败！" });
         this.setState({
-          notification: {...this.state.notification,
-            display: true,
-            type: "notice",
-            title: "提示",
-            text: "查询店主失败！"
-          },
           createDisabled: true
         });
       }
@@ -316,6 +262,8 @@ class Channel extends Component {
   }
 
   componentDidMount () {
+    this.notificator = this.refs.notificator;
+
     this.fetchChannel();
     this.fetchConstantSettingEnumField()
   }
@@ -664,30 +612,6 @@ class Channel extends Component {
     );
   }
 
-  renderNotification () {
-    const { display } = this.state.notification;
-    const options = {...this.state.notification};
-
-    if (!display) {
-      return null;
-    }
-
-    setTimeout(() => {
-      this.setState({
-        notification: {...this.state.notification,
-          display: false,
-          type: "",
-          title: "",
-          text: ""
-        }
-      });
-    }, options.delay || 1000)
-
-    return (
-      <Notification {...options} />
-    )
-  }
-
   render() {
     const { channels } = this.props.channels;
 
@@ -701,7 +625,7 @@ class Channel extends Component {
             { this.renderAddChannel() }
             { this.renderEditChannel() }
 
-            { this.renderNotification() }
+            <Notificator ref="notificator" />
             <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channels } />
           </CardBody>
         </Card>
