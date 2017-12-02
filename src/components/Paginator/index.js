@@ -6,8 +6,6 @@ export default class Paginator extends React.Component{
   constructor(props) {
     super(props);
 
-    console.log(props)
-
     this.state = {
       linkNum: 5,
       left: 2,

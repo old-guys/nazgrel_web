@@ -36,9 +36,11 @@
 		"webpack-dev-server": "^2.9.2"
 	},
 	"dependencies": {
+		"availity-reactstrap-validation": "^1.4.3",
 		"bootstrap": "4.0.0-beta.2",
 		"chart.js": "2.7.0",
 		"dependencies": "0.0.1",
+		"es6-promise": "^4.1.1",
 		"fecha": "^2.3.1",
 		"font-awesome": "^4.7.0",
 		"history": "4.7.2",
@@ -60,7 +62,7 @@
 	},
 	"scripts": {
 		"local": "WEBPACK_ENV=local webpack-dev-server --progress",
-		"start": "WEBPACK_ENV=dev webpack-dev-server --progress --colors --inline --env.dev",
+		"start": "WEBPACK_ENV=local webpack-dev-server --progress --colors --inline --env.dev",
 		"www": "rm -rf www && WEBPACK_ENV=prod webpack --progress && webpack-dev-server --content-base www/",
 		"deploy-dev": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/dev.sh",
 		"deploy-test": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/test.sh",
