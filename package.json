@@ -62,7 +62,7 @@
 	},
 	"scripts": {
 		"local": "WEBPACK_ENV=local webpack-dev-server --progress",
-		"start": "WEBPACK_ENV=local webpack-dev-server --progress --colors --inline --env.dev",
+		"start": "WEBPACK_ENV=dev webpack-dev-server --progress --colors --inline --env.dev",
 		"www": "rm -rf www && WEBPACK_ENV=prod webpack --progress && webpack-dev-server --content-base www/",
 		"deploy-dev": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/dev.sh",
 		"deploy-test": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/test.sh",
