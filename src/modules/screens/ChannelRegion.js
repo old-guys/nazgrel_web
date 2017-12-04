@@ -160,9 +160,10 @@ class ChannelRegion extends Component {
 
   async saveChannelRegion() {
     let { channel_region } = this.state;
-    const isNew = _.isUndefined(channel_region.id);
+    const isNew = !_.isNumber(channel_region.id);
     const fun = isNew ? this.props.createChannelRegion : this.props.updateChannelRegion
     const opts = isNew ? channel_region : _.pick(channel_region, ['id', 'name', 'channel_ids']);
+    console.log(channel_region)
 
     try {
       const res = await fun({ channel_region: opts });
@@ -216,7 +217,7 @@ class ChannelRegion extends Component {
           />
         <AvField name="channel_user[phone]"
           value={channel_user.phone}
-          label="主管手机号" type="tel"
+          label="主管手机号" type="phone"
           placeholder="输入主管手机号，将作为登录账号"
           grid={{md: 9}}
           onChange={(e) => {
@@ -227,12 +228,11 @@ class ChannelRegion extends Component {
             })
           }}
           required
-          validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
-          errorMessage={{required: '输入主管手机号', tel: '手机号格式不正确'}}
+          errorMessage={{required: '输入主管手机号', phone: '手机号格式不正确'}}
           />
         <AvField name="channel_user[password]"
           value={channel_user.password}
-          label="主管手机号" type="password"
+          label="主管密码" type="password"
           placeholder="输入主管密码，将作为登录账号的密码"
           grid={{md: 9}}
           onChange={(e) => {
@@ -457,7 +457,7 @@ class ChannelRegion extends Component {
           title="提示" />
     } else {
       statusTh = <Confirm
-          buttonText="冻结"
+          buttonText="激活"
           buttonBSStyle="warning"
           buttonSize="sm"
           onConfirm={(e) => this.handleEditChannelRegionStatus(item)}
