@@ -4,14 +4,14 @@ import {
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert, Card, CardBody,
   FormGroup, Label, CardHeader, CardFooter
 } from 'reactstrap';
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
 
+import { Confirm } from '../../components/Confirm/';
 import Paginator from './../../components/Paginator/'
 import Notificator from './../../components/Notificator/'
 
-import './style.scss'
 import {
   fetchChannelRegionAll,
   createChannelRegion,
@@ -40,21 +40,36 @@ class ChannelRegion extends Component {
     this.state = {
       deleteManageModal: false,
 
-      isShowCR: false,
-      channel_region: {},
-      copy_channel_region: {},
-      isCRSattusChange: false,
+      isShowChannelRegion: false,
+      channel_region: {
+        id: null,
+        name: "",
+        channel_ids: [],
+        channel_user: {
+          name: "",
+          phone: "",
+          password: "",
+          confirm_password: ""
+        }
+      },
+      copy_channel_region: {
+        id: null,
+        name: "",
+        channel_ids: [],
+        channel_user: {
+          name: "",
+          phone: "",
+          password: "",
+          confirm_password: ""
+        }
+      },
 
-      isShowCRChannelUser: false,
-      cr_channel_user: {},
-
-      isShowDeleteCRMModal: false,
-      channel_region_map: {}
-
+      isShowChannelRegionChannelUser: false,
+      channel_region_channel_user: {}
     };
 
-    this.handleSaveCRSubmit = this.handleSaveCRSubmit.bind(this);
-    this.handleChangeCRChannelUserSubmit = this.handleChangeCRChannelUserSubmit.bind(this);
+    this.handleSaveChannelRegionSubmit = this.handleSaveChannelRegionSubmit.bind(this);
+    this.handleChannelRegionChannelUserSubmit = this.handleChannelRegionChannelUserSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -96,39 +111,13 @@ class ChannelRegion extends Component {
     }
   }
 
-  showDeleteCRMModal(channel_region, channel_region_map) {
-    this.setState({
-      isShowDeleteCRMModal: true,
-      channel_region_map,
-      channel_region
-    });
-  }
-
-  hideDeleteCRMModal() {
-    this.setState({
-      isShowDeleteCRMModal: false,
-      channel_region_map: {},
-      channel_region: {}
-    });
-  }
-
-  async deleteCRMModal() {
-    const { channel_region, channel_region_map } = this.state;
-
+  async handleDeleteChannelRegionMap(channel_region, channel_region_map) {
     try {
       const res = await this.props.deleteChannelRegionChannel({ channel_region_map });
 
       if (Number(res.code) === 0) {
-        _.remove(channel_region.channel_region_maps, (crm) => {
-          return crm.id === channel_region_map.id
-        });
-
         this.notificator.success({ text: '删除渠道成功' });
-        this.setState({
-          isShowDeleteCRMModal: false,
-          channel_region_map: {},
-          channel_region: {}
-        });
+        this.fetch();
       } else {
         this.notificator.error({ text: '删除渠道失败' });
       }
@@ -137,97 +126,54 @@ class ChannelRegion extends Component {
     }
   }
 
-  renderDeleteCRMModal() {
-    const { isShowDeleteCRMModal } = this.state
-
-    return (
-      <Modal isOpen={isShowDeleteCRMModal} className='modal-input'>
-        <ModalHeader>删除渠道</ModalHeader>
-        <ModalBody>
-          确定删除此渠道
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.hideDeleteCRMModal() }>取消</Button>
-          <Button color="primary" onClick={() => this.deleteCRMModal() }>删除</Button>
-        </ModalFooter>
-      </Modal>
-    );
+  handleAddChannelRegionClick(channel_region = {}) {
+    this.setState({
+      isShowChannelRegion: true,
+      channel_region: { ...this.state.copy_channel_region }
+    });
   }
 
-  setEntityProperty(klass, event) {
-    const entity = this.state[klass];
-    const names = event.target.name.split('.');
-    const count = names.length;
-    const value = this.getElementValue(event);
+  handleEditChannelRegionClick(channel_region = {}) {
+    this.setState({
+      isShowChannelRegion: true,
+      channel_region: channel_region
+    });
+  }
 
-    let str = 'entity'
-    _.each(names, (name, i) => {
-      str = `${str}['${name}']`;
-      if (i === count - 1) {
-        eval(`${str} = value`);
-      } else {
-        let value = eval(str);
-        if (_.isUndefined(value)) eval(`${str} = {}`);
+  hideChannelRegionModal() {
+    this.setState({
+      isShowChannelRegion: false,
+      channel_region: {...this.state.channel_region},
+      copy_channel_region: {
+        id: null,
+        name: "",
+        channel_ids: [],
+        channel_user: {
+          name: "",
+          phone: "",
+          password: "",
+          confirm_password: ""
+        }
       }
     });
-
-    this.setState({ klass });
   }
 
-  getElementValue(event) {
-    const target = event.target;
-    const type = target.type;
-
-    switch (type) {
-      case 'select-multiple':
-        const options = _.filter(target.options, { selected: true });
-        const ids = _.map(options, (option) => {
-          return Number(option.value);
-        });
-
-        return ids;
-      default:
-        return target.value;
-    }
-  }
-
-  showCRModal(channel_region = {}) {
-    this.setState({
-      isShowCR: true,
-      channel_region: channel_region,
-      copy_channel_region: { ...channel_region }
-    });
-  }
-
-  hideCRModal() {
-    this.setState({
-      isShowCR: false,
-      channel_region: {},
-      copy_channel_region: {}
-    });
-  }
-
-  async saveCR() {
-    let { channel_region, copy_channel_region } = this.state;
+  async saveChannelRegion() {
+    let { channel_region } = this.state;
     const isNew = _.isUndefined(channel_region.id);
     const fun = isNew ? this.props.createChannelRegion : this.props.updateChannelRegion
-    const opts = isNew ? copy_channel_region : _.pick(copy_channel_region, ['id', 'name', 'channel_ids']);
+    const opts = isNew ? channel_region : _.pick(channel_region, ['id', 'name', 'channel_ids']);
 
     try {
       const res = await fun({ channel_region: opts });
 
       if (Number(res.code) === 0) {
-        if (isNew) {
-          this.fetch();
-        } else {
-          _.merge(channel_region, res.data);
-        }
+        this.fetch();
 
         this.notificator.success({ text: '保存区域成功' });
         this.setState({
-          isShowCR: false,
-          channel_region: {},
-          copy_channel_region: {}
+          isShowChannelRegion: false,
+          channel_region: {...this.state.copy_channel_region}
         });
       } else {
         this.notificator.error({ text: '保存区域失败' });
@@ -237,102 +183,130 @@ class ChannelRegion extends Component {
     }
   }
 
-  handleSaveCRSubmit(event, errors, values) {
-    if (_.isEmpty(errors)) this.saveCR();
+  handleSaveChannelRegionSubmit(event, errors, values) {
+    if (_.isEmpty(errors)) this.saveChannelRegion();
   }
 
-  renderCRModal() {
-    const { isShowCR, copy_channel_region } = this.state;
-    const isNew = _.isUndefined(copy_channel_region.id);
-    const channel_user = copy_channel_region.channel_user || {};
+  renderChannelRegionUserField() {
+    const { isShowChannelRegion, channel_region, channel_region: { channel_user } } = this.state;
+    const isNew = ! _.isNumber(channel_region.id);
+    const { channels: { isFetching, list, current_page } } = this.props.channel;
+
+    if (! isNew) {
+      return null;
+    }
+
+    return (
+      <fieldset>
+        <AvField name="channel_user[name]"
+          value={channel_user.name}
+          label="主管名称" type="text"
+          placeholder="输入主管名称"
+          grid={{md: 9}}
+          onChange={(e) => {
+            channel_region.channel_user.name = e.target.value;
+
+            this.setState({
+              channel_region: channel_region
+            })
+          }}
+          required
+          validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
+          errorMessage={{required: '输入主管名称', pattern: '区域名称只支持中文、英文、数字'}}
+          />
+        <AvField name="channel_user[phone]"
+          value={channel_user.phone}
+          label="主管手机号" type="tel"
+          placeholder="输入主管手机号，将作为登录账号"
+          grid={{md: 9}}
+          onChange={(e) => {
+            channel_region.channel_user.phone = e.target.value;
+
+            this.setState({
+              channel_region: channel_region
+            })
+          }}
+          required
+          validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
+          errorMessage={{required: '输入主管手机号', tel: '手机号格式不正确'}}
+          />
+        <AvField name="channel_user[password]"
+          value={channel_user.password}
+          label="主管手机号" type="password"
+          placeholder="输入主管密码，将作为登录账号的密码"
+          grid={{md: 9}}
+          onChange={(e) => {
+            channel_region.channel_user.password = e.target.value;
+
+            this.setState({
+              channel_region: channel_region
+            })
+          }}
+          required
+          minLength="6"
+          errorMessage={{required: '输入主管密码', minLength: '密码不能少于6位'}}
+          />
+      </fieldset>
+    )
+  }
+
+  renderChannelRegionModal() {
+    const { isShowChannelRegion, channel_region } = this.state;
+    const isNew = ! _.isNumber(channel_region.id);
+    const channel_user = channel_region.channel_user || {};
     const { channels: { isFetching, list, current_page } } = this.props.channel;
 
     return (
-      <Modal isOpen={isShowCR} className='modal-input'>
-        <AvForm onSubmit={::this.handleSaveCRSubmit} >
+      <Modal isOpen={isShowChannelRegion} className='modal-input'>
+        <AvForm onSubmit={::this.handleSaveChannelRegionSubmit} >
           <ModalHeader>
             { isNew ? '新增区域' : '编辑区域' }
           </ModalHeader>
           <ModalBody>
             <Container>
-              <Row>
-                <Col xs='3'>区域名称</Col>
-                <Col xs='9' className='marbm20'>
-                  <AvField name="name"
-                    placeholder="输入区域名称"
-                    value={copy_channel_region.name}
-                    onChange={(e) => this.setEntityProperty('copy_channel_region', e) }
-                    required
-                    validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
-                    errorMessage={{required: '输入区域名称', pattern: '区域名称只支持中文、英文、数字'}}
-                  />
-                </Col>
-              </Row>
-              <Row className={ isNew ? '' : 'd-lg-none'}>
-                <Col xs='3'>主管名称</Col>
-                <Col xs='9' className='marbm20'>
-                  <AvField
-                    name="channel_user.name"
-                    placeholder="输入主管名称"
-                    groupAttrs={{className: 'xxxx'}}
-                    value={channel_user.name}
-                    onChange={(e) => this.setEntityProperty('copy_channel_region', e) }
-                    required={isNew}
-                    validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
-                    errorMessage={{required: '输入主管名称', pattern: '主管名称只支持中文、英文、数字'}}
-                  />
-                </Col>
-              </Row>
-              <Row className={ isNew ? '' : 'd-lg-none'}>
-                <Col xs='3'>主管手机号</Col>
-                <Col xs='9' className='marbm20'>
-                  <AvField
-                    name = "channel_user.phone"
-                    type="tel"
-                    placeholder="输入主管手机号，将作为登录账号"
-                    value={channel_user.phone}
-                    onChange={(e) => this.setEntityProperty('copy_channel_region', e) }
-                    required={isNew}
-                    errorMessage={{required: '输入主管手机号', tel: '手机号格式不正确'}}
-                  />
-                </Col>
-              </Row>
-              <Row className={ isNew ? '' : 'd-lg-none'}>
-                <Col xs='3'>主管密码</Col>
-                <Col xs='9' className='marbm20'>
-                  <AvField
-                    type="password"
-                    name="channel_user.password"
-                    placeholder="输入主管密码，将作为登录账号的密码"
-                    value={channel_user.password}
-                    onChange={(e) => this.setEntityProperty('copy_channel_region', e) }
-                    required={isNew}
-                    minLength="6"
-                    errorMessage={{required: '输入主管密码', minLength: '密码不能少于6位'}}
-                  />
-                </Col>
-              </Row>
+              <AvField name="name"
+                value={channel_region.name}
+                label="区域名称" type="text"
+                placeholder="输入区域名称"
+                grid={{md: 9}}
+                onChange={(e) => {
+                  this.setState({ channel_region: {...this.state.channel_region, name: e.target.value}})
+                }}
+                required
+                validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
+                errorMessage={{required: '输入区域名称', pattern: '区域名称只支持中文、英文、数字'}}
+                />
+              { this.renderChannelRegionUserField() }
               <FormGroup row>
-                <Col xs='3'>
-                  渠道
-                </Col>
-                <Col xs="12" md="9" size="lg">
-                  <Input type="select" name="channel_ids" multiple value={copy_channel_region.channel_ids } onChange={(e) => this.setEntityProperty('copy_channel_region', e) }>
-                    <option value="">选择渠道</option>
-                    {
-                      _.map(list, (channel) => {
-                        return (
-                          <option value={ channel.id }>{ channel.name }</option>
-                        )
-                      })
-                    }
-                  </Input>
+                <Label md={3}>选择渠道</Label>
+                <Col xs={12} md={9}>
+                  <InputGroup>
+                    <Input
+                      type="select"
+                      value={channel_region.channel_ids}
+                      placeholder="选择渠道"
+                      multiple
+                      onChange={(e) => {
+                        const channel_ids = Array.prototype.slice.call(e.target.selectedOptions).map(o => o.value);
+                        this.setState({ channel_region: {...this.state.channel_region, channel_ids: channel_ids}})
+                      }}
+                      >
+                      <option value="">选择渠道</option>
+                      {
+                        _.map(list, (channel) => {
+                          return (
+                            <option value={ channel.id }>{ channel.name }</option>
+                          )
+                        })
+                      }
+                    </Input>
+                  </InputGroup>
                 </Col>
               </FormGroup>
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideCRModal() }>取消</Button>
+            <Button color="secondary" onClick={() => this.hideChannelRegionModal() }>取消</Button>
             <Button color="primary">保存</Button>
           </ModalFooter>
         </AvForm>
@@ -340,22 +314,7 @@ class ChannelRegion extends Component {
     );
   }
 
-  showCRStatusModal(channel_region) {
-    this.setState({
-      isCRSattusChange: true,
-      channel_region: channel_region
-    });
-  }
-
-  cancelChangeCRStatus() {
-    this.setState({
-      isCRSattusChange: false,
-      channel_region: {}
-    });
-  }
-
-  changeCRStatus() {
-    const { channel_region } = this.state;
+  handleEditChannelRegionStatus (channel_region) {
     const isLocked = channel_region.status === 'locked';
     const text = isLocked ? '激活' : '冻结'
     const status = isLocked ? 'normal' : 'locked';
@@ -370,8 +329,11 @@ class ChannelRegion extends Component {
 
         this.notificator.success({ text: `${text}区域成功` });
         this.setState({
-          isCRSattusChange: false,
-          channel_region: {}
+          channel_region: {
+            ...this.state.channel_region,
+            status: res.data.status,
+            status_text: res.data.status_text
+          }
         });
       } else {
         this.notificator.error({ text: `${text}区域失败` });
@@ -390,50 +352,31 @@ class ChannelRegion extends Component {
     }
   }
 
-  renderCRStatusModal() {
-    const { isCRSattusChange, channel_region } = this.state;
-    const isLocked = channel_region.status === 'locked';
-    const text = isLocked ? '激活' : '冻结'
-
-    return (
-      <Modal isOpen={isCRSattusChange} className='modal-input'>
-        <ModalHeader>{ text }区域</ModalHeader>
-        <ModalBody>
-          确定{ text }此区域
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={() => this.cancelChangeCRStatus() }>取消</Button>
-          <Button color="primary" onClick={() => this.changeCRStatus() }>{ text }</Button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
-
-  showCRChannelUserModal(channel_user) {
+  showChannelRegionChannelUserModal(channel_user) {
     this.setState({
-      isShowCRChannelUser: true,
-      cr_channel_user: channel_user
+      isShowChannelRegionChannelUser: true,
+      channel_region_channel_user: channel_user
     });
   }
 
-  cancelChangeCRChannelUser() {
+  cancelChangeChannelRegionChannelUser() {
     this.setState({
-      isShowCRChannelUser: false,
-      cr_channel_user: {}
+      isShowChannelRegionChannelUser: false,
+      channel_region_channel_user: {}
     });
   }
 
-  async changeCRChannelUser() {
-    const { cr_channel_user } = this.state;
-    const opts = _.pick(cr_channel_user, ['id', 'password']);
+  async updatechannelRegionChannelUser() {
+    const { channel_region_channel_user } = this.state;
+    const opts = _.pick(channel_region_channel_user, ['id', 'password']);
 
     try {
       const res = await this.props.updateChannelUser({ channel_user: opts });
       if (Number(res.code) === 0) {
         this.notificator.success({ text: '修改密码成功' });
         this.setState({
-          isShowCRChannelUser: false,
-          cr_channel_user: {}
+          isShowChannelRegionChannelUser: false,
+          channel_region_channel_user: {}
         });
       } else {
         this.notificator.error({ text: '修改密码失败' });
@@ -443,58 +386,53 @@ class ChannelRegion extends Component {
     }
   }
 
-  validCRChannelUserConfirmPassword() {
-    const { cr_channel_user } = this.state;
-    const isEmpty = _.isEmpty(cr_channel_user.password);
-    const isEqual = _.isEqual(cr_channel_user.password, cr_channel_user.confirm_password);
+  validChannelRegionChannelUserConfirmPassword() {
+    const { channel_region_channel_user } = this.state;
+    const isEmpty = _.isEmpty(channel_region_channel_user.password);
+    const isEqual = _.isEqual(channel_region_channel_user.password, channel_region_channel_user.confirm_password);
 
     return !isEmpty && isEqual;
   }
 
-  handleChangeCRChannelUserSubmit(event, errors, values) {
-    if (_.isEmpty(errors)) this.changeCRChannelUser();
+  handleChannelRegionChannelUserSubmit(event, errors, values) {
+    if (_.isEmpty(errors)) this.updatechannelRegionChannelUser();
   }
 
-  renderCRChannelUserModal() {
-    const { isShowCRChannelUser, cr_channel_user } = this.state;
+  renderChannelRegionChannelUserModal() {
+    const { isShowChannelRegionChannelUser, channel_region_channel_user } = this.state;
 
     return (
-      <Modal isOpen={isShowCRChannelUser} className='modal-input'>
-      <AvForm onSubmit={this.handleChangeCRChannelUserSubmit}>
+      <Modal isOpen={isShowChannelRegionChannelUser} className='modal-input'>
+      <AvForm onSubmit={this.handleChannelRegionChannelUserSubmit}>
         <ModalHeader>修改密码</ModalHeader>
         <ModalBody>
           <Container>
-            <Row>
-              <Col xs='3'>密码</Col>
-              <Col xs='9' className='marbm20'>
-                <AvField
-                  type="password"
-                  name="password"
-                  placeholder="输入密码"
-                  onChange={(e) => this.setEntityProperty('cr_channel_user', e) }
-                  required
-                  minLength="6"
-                  errorMessage={{required: '密码不能为空', minLength: '密码不能少于6位'}}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs='3'>确认密码</Col>
-              <Col xs='9' className='marbm20'>
-                <AvField
-                  type="password"
-                  name="confirm_password"
-                  placeholder="输入确认密码"
-                  onChange={(e) => this.setEntityProperty('cr_channel_user', e) }
-                  validate={{custom: ::this.validCRChannelUserConfirmPassword }}
-                  errorMessage={{custom: '密码不一致' }}
-                />
-              </Col>
-            </Row>
+            <AvField name="password"
+              label="密码" type="password"
+              placeholder="输入密码"
+              grid={{md: 9}}
+              onChange={(e) => {
+                this.setState({ channel_region_channel_user: {...this.state.channel_region_channel_user, password: e.target.value}})
+              }}
+              required
+              minLength="6"
+              errorMessage={{required: '密码不能为空', minLength: '密码不能少于6位'}}
+              />
+            <AvField name="confirm_password"
+              label="密码" type="password"
+              placeholder="输入密码"
+              grid={{md: 9}}
+              onChange={(e) => {
+                this.setState({ channel_region_channel_user: {...this.state.channel_region_channel_user, confirm_password: e.target.value}})
+              }}
+              required
+              validate={{custom: ::this.validChannelRegionChannelUserConfirmPassword }}
+              errorMessage={{custom: '密码不一致' }}
+              />
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={() => this.cancelChangeCRChannelUser() }>取消</Button>
+          <Button color="secondary" onClick={() => this.cancelChangeChannelRegionChannelUser() }>取消</Button>
           <Button color="primary">保存</Button>
         </ModalFooter>
         </AvForm>
@@ -502,10 +440,41 @@ class ChannelRegion extends Component {
     );
   }
 
-  renderCRTr(channel_region) {
-    const isLocked = channel_region.status === 'locked';
-    const btnText = isLocked ? '激活' : '冻结';
+  renderListOperate(item) {
+    if (!item) {
+      return null
+    }
+    let statusTh = null;
 
+    if (item.status === "normal") {
+      statusTh = <Confirm
+          buttonText="冻结"
+          buttonBSStyle="danger"
+          buttonSize="sm"
+          onConfirm={(e) => this.handleEditChannelRegionStatus(item)}
+          body="你确定要冻结大区吗?"
+          confirmText="确定"
+          title="提示" />
+    } else {
+      statusTh = <Confirm
+          buttonText="冻结"
+          buttonBSStyle="warning"
+          buttonSize="sm"
+          onConfirm={(e) => this.handleEditChannelRegionStatus(item)}
+          body="你确定要激活大区吗?"
+          confirmText="确定"
+          title="提示" />
+    }
+
+    return (
+      <th>
+        {statusTh}
+        <Button size="sm" className='btn-edit' color="primary" onClick={() => this.handleEditChannelRegionClick(item) }>编辑</Button>
+      </th>
+    )
+  }
+
+  renderChannelRegionTr(channel_region) {
     channel_region.channel_ids = _.map(channel_region.channel_region_maps, 'channel_id');
 
     return (
@@ -518,7 +487,7 @@ class ChannelRegion extends Component {
               return (
                 <p>
                   {channel_user.name} {channel_user.phone}
-                  <Button size="sm" className='btn-delete' onClick={() => this.showCRChannelUserModal(channel_user) } color="primary">
+                  <Button size="sm" className='btn-delete' onClick={() => this.showChannelRegionChannelUserModal(channel_user) } color="primary">
                     修改密码
                   </Button>
                 </p>
@@ -528,36 +497,40 @@ class ChannelRegion extends Component {
         </th>
         <th>
           {
-            _.map(channel_region.channel_region_maps, (crm) => {
-              const channel_users = crm.channel_users
+            _.map(channel_region.channel_region_maps, (channel_region_map) => {
+              const channel_users = channel_region_map.channel_users
               return (
-                <pre>
+                <p>
                   {
-                    _.map(channel_users, (cu) => {
+                    _.map(channel_users, (channel_user) => {
                       return (
-                        <p>{cu.name} {cu.phone}</p>
+                        <span>{channel_user.name} {channel_user.phone}</span>
                       )
                     })
                   }
-                  <Button size="sm" className='btn-delete' onClick={() => this.showDeleteCRMModal(channel_region, crm) } color="primary">
-                    删除
-                  </Button>
-                </pre>
+                  <span class="pull-right">
+                  <Confirm
+                      buttonText="删除"
+                      buttonBSStyle="warning"
+                      buttonSize="sm"
+                      onConfirm={(e) => this.handleDeleteChannelRegionMap(channel_region, channel_region_map)}
+                      body="你确定要删除渠道吗?"
+                      confirmText="确定"
+                      title="提示" />
+                  </span>
+                </p>
               )
             })
           }
         </th>
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
-        <th>
-          <Button size="sm" className='btn-edit' color="primary" onClick={() => this.showCRStatusModal(channel_region) }>{ btnText }</Button>
-          <Button size="sm" className='btn-edit' color="primary" onClick={() => this.showCRModal(channel_region) }>编辑</Button>
-        </th>
+        { this.renderListOperate(channel_region) }
       </tr>
     );
   }
 
-  renderCRTable() {
+  renderChannelRegionTable() {
     const { channel_regions: { isFetching, list, current_page } } = this.props.channel_region;
 
     return (
@@ -576,7 +549,7 @@ class ChannelRegion extends Component {
         <tbody>
           {
             _.map(list, (channel_region) => {
-              return this.renderCRTr(channel_region)
+              return this.renderChannelRegionTr(channel_region)
             })
           }
         </tbody>
@@ -595,12 +568,10 @@ class ChannelRegion extends Component {
       <div className='manage-setting'>
         <Card>
           <CardBody>
-            <Button color="primary" className='btn-add' onClick={() => this.showCRModal() }>新增区域</Button>
-            { this.renderCRTable() }
-            { this.renderCRModal() }
-            { this.renderDeleteCRMModal() }
-            { this.renderCRStatusModal() }
-            { this.renderCRChannelUserModal() }
+            <Button color="primary" className='btn-add' onClick={() => this.handleAddChannelRegionClick() }>新增区域</Button>
+            { this.renderChannelRegionTable() }
+            { this.renderChannelRegionModal() }
+            { this.renderChannelRegionChannelUserModal() }
             <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channel_regions } />
             <Notificator ref="notificator" />
           </CardBody>

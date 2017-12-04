@@ -308,27 +308,30 @@ class Channel extends Component {
     if (!item) {
       return null
     }
+    let statusTh = null;
 
     if (item.status === "normal") {
-      return (
-        <Confirm
-            buttonText="冻结"
-            buttonBSStyle="danger"
-            buttonSize="sm"
-            onConfirm={(e) => this.handleEditChannelStatus(item.id)}
-            body="你确定要冻结渠道吗?"
-            confirmText="确定"
-            title="提示">
-        </Confirm>
-      )
+      statusTh = <Confirm
+          buttonText="冻结"
+          buttonBSStyle="danger"
+          buttonSize="sm"
+          onConfirm={(e) => this.handleEditChannelStatus(item.id)}
+          body="你确定要冻结渠道吗?"
+          confirmText="确定"
+          title="提示" />
     } else {
-      return (
-        <Button size="sm"
-          onClick={() => this.handleEditChannelStatus(item.id)}
-          cssModule={{ margin: 10}} color="warning">激活
-        </Button>
-      )
+      statusTh = <Button size="sm"
+        onClick={() => this.handleEditChannelStatus(item.id)}
+        cssModule={{ margin: 10}} color="warning">激活
+      </Button>
     }
+
+    return (
+      <th>
+        {statusTh}
+        <Button size="sm" color="primary" onClick={() => this.handleEditChannel(item.id)}>编辑</Button>
+      </th>
+    )
   }
 
   renderList() {
@@ -357,10 +360,7 @@ class Channel extends Component {
                 <th>{ item.source_text }</th>
                 <th>{ fecha.format(new Date(item.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
                 <th>{ fecha.format(new Date(item.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
-                <th>
-                  { this.renderListOperate(item) }
-                  <Button size="sm" color="primary" onClick={() => this.handleEditChannel(item.id)}>编辑</Button>
-                </th>
+                { this.renderListOperate(item) }
               </tr>
             )
           })
@@ -470,7 +470,7 @@ class Channel extends Component {
                   </InputGroup>
                 </Col>
               </FormGroup>
-              <AvField name="name"
+              <AvField name="channelCategory"
                 value={addChannel.channelCategory}
                 label="渠道类型" type="select"
                 required
@@ -488,7 +488,7 @@ class Channel extends Component {
                     })
                   }
               </AvField>
-              <AvField name="name"
+              <AvField name="source"
                 value={addChannel.source}
                 label="渠道类型" type="select"
                 required
