@@ -119,6 +119,10 @@ export default class Paginator extends React.Component{
   }
 
   render() {
+    const { total_pages } = this.props.collection;
+
+    if (!total_pages) return null;
+
     return (
       <Pagination>
         { this.renderFirst() }

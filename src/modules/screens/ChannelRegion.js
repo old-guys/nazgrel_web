@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import { Confirm } from '../../components/Confirm/';
 import Paginator from './../../components/Paginator/'
 import Notificator from './../../components/Notificator/'
+import Loading from './../../components/Loading/'
+import Nodata from './../../components/Nodata/'
 
 import {
   fetchChannelRegionAll,
@@ -38,7 +40,8 @@ class ChannelRegion extends Component {
     super(props);
 
     this.state = {
-      deleteManageModal: false,
+      networkError: false,
+      isLoading: true,
 
       isShowChannelRegion: false,
       channel_region: {
@@ -79,6 +82,8 @@ class ChannelRegion extends Component {
   }
 
   async fetch(params = {}) {
+    this.setState({ isLoading: true });
+
     const page = params.page || 1;
     const filters = params.filters || this.state.filters;
     const json_key = params.json_key || this.state.json_key;
@@ -530,8 +535,27 @@ class ChannelRegion extends Component {
     );
   }
 
+  renderChannelRegionTableTbody() {
+    const { channel_regions: { isFetching, list, current_page } } = this.props.channel_region;
+    const { isLoading, networkError }  = this.state;
+
+    if (isLoading) {
+      return <Loading isLoading={isLoading} type='tr' th={{colspan: 7}} />
+    } else if (networkError) {
+      return <Nodata isNodata={networkError} info="网络错误..." type='tr' th={{colspan: 7}}  />
+    } else if (!list.length) {
+      return <Nodata isNodata={!list.length} type='tr' th={{colspan: 7}}  />
+    }
+
+    return _.map(list, (channel_region) => {
+      return this.renderChannelRegionTr(channel_region)
+    })
+  }
+
+
   renderChannelRegionTable() {
     const { channel_regions: { isFetching, list, current_page } } = this.props.channel_region;
+    const { isLoading, isNodata, networkError }  = this.state;
 
     return (
       <Table bordered size="sm">
@@ -548,9 +572,7 @@ class ChannelRegion extends Component {
         </thead>
         <tbody>
           {
-            _.map(list, (channel_region) => {
-              return this.renderChannelRegionTr(channel_region)
-            })
+            this.renderChannelRegionTableTbody()
           }
         </tbody>
       </Table>
