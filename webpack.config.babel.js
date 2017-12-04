@@ -10,7 +10,7 @@ environment.setAll({
     } else if (ENV === 'local') {
       return 'dev';
     } else if (ENV.indexOf('test') > -1) {
-      return 'test';
+      return 'prod';
     }
 
     return 'prod';

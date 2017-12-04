@@ -7,7 +7,6 @@ import {
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
-import { Notification } from 'react-pnotify';
 
 import Paginator from './../../components/Paginator/'
 import Notificator from './../../components/Notificator/'

@@ -3,6 +3,7 @@ import {Container, Row, Col, CardGroup, Card, CardBody, Button, Input, InputGrou
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import { fetchAuthLogin } from '../reducers/auth';
+import Notificator from './../../components/Notificator/'
 
 @connect(state => ({
   loginUser: state.auth
@@ -18,6 +19,10 @@ export default class Login extends Component {
     }
   }
 
+  componentDidMount() {
+    this.notificator = this.refs.notificator;
+  }
+
   async handleUserLogin() {
     const { phoneNumber, password } = this.state;
 
@@ -29,7 +34,7 @@ export default class Login extends Component {
         this.props.auth.login(userToken);
         this.setState({ redirect: true });
       } else {
-        console.log('登陆失败');
+        this.notificator.error({ text: '账号或密码错误' });
       }
     } catch(e) {
       this.setState({ networkError: true });
@@ -78,9 +83,6 @@ export default class Login extends Component {
                           onClick={() => this.handleUserLogin()}
                         >登录</Button>
                       </Col>
-                      <Col xs="6" className="text-right">
-                        <Button color="link" className="px-0">忘记密码?</Button>
-                      </Col>
                     </Row>
                   </CardBody>
                 </Card>
@@ -88,6 +90,7 @@ export default class Login extends Component {
             </Col>
           </Row>
         </Container>
+        <Notificator ref="notificator" />
       </div>
     );
 
