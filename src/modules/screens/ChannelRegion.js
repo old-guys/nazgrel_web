@@ -503,9 +503,12 @@ class ChannelRegion extends Component {
         <th>
           {
             _.map(channel_region.channel_region_maps, (channel_region_map) => {
-              const channel_users = channel_region_map.channel_users
+              const channel_users = channel_region_map.channel_users;
+              const {channel} = channel_region_map;
+
               return (
                 <p key={channel_region_map.id}>
+                  <span key={channel_region_map.channel_id} className="text-info font-weight-bold pull-left">{channel.name}</span>
                   {
                     _.map(channel_users, (channel_user) => {
                       return (
