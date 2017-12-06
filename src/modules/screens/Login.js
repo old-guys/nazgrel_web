@@ -44,7 +44,7 @@ export default class Login extends Component {
   render() {
 
     if (this.state.redirect) {
-      return <Redirect push to="/channel"/>;
+      return <Redirect push to="/"/>;
     }
 
     return (
