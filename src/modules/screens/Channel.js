@@ -354,6 +354,7 @@ class Channel extends Component {
               <tr key={ item.id }>
                 <th>{ item.id }</th>
                 <th>{ item.name }</th>
+                <th>{ item.city }</th>
                 <th>{ item.shopkeeper_name }</th>
                 <th>{ item.shopkeeper_phone }</th>
                 <th>{ item.category_text }</th>
@@ -376,6 +377,7 @@ class Channel extends Component {
           <tr>
             <th>序号</th>
             <th>渠道名称</th>
+            <th>城市</th>
             <th>店主姓名</th>
             <th>店主手机号</th>
             <th>渠道类型</th>
@@ -465,7 +467,7 @@ class Channel extends Component {
                       value={addChannel.city}
                       placeholder="输入城市"
                       onChange={(e) => {
-                        this.setState({ addChannel: {...this.state.city, name: e.target.value}})
+                        this.setState({ addChannel: {...this.state.addChannel, city: e.target.value}})
                       }}/>
                   </InputGroup>
                 </Col>
@@ -560,7 +562,7 @@ class Channel extends Component {
                       value={editChannel.city}
                       placeholder="输入城市"
                       onChange={(e) => {
-                        this.setState({ editChannel: {...this.state.city, name: e.target.value}})
+                        this.setState({ editChannel: {...this.state.editChannel, city: e.target.value}})
                       }}/>
                   </InputGroup>
                 </Col>
