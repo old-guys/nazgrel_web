@@ -16,8 +16,8 @@ export default class Loading extends React.Component{
     return (
       <tr {...tr}>
         <th {...th}>
-          <div class='loading-spinner text-center padt60 padb60'>
-            <i class='fa fa-spinner fa-spin fz14'></i>正在加载
+          <div className='loading-spinner text-center padt60 padb60'>
+            <i className='fa fa-spinner fa-spin fz14'></i>正在加载
           </div>
         </th>
       </tr>
@@ -26,8 +26,8 @@ export default class Loading extends React.Component{
 
   renderDefault() {
     return (
-      <div class='loading-spinner text-center padt60 padb60'>
-        <i class='fa fa-spinner fa-spin fz14'></i>正在加载
+      <div className='loading-spinner text-center padt60 padb60'>
+        <i className='fa fa-spinner fa-spin fz14'></i>正在加载
       </div>
     );
   }

@@ -40,7 +40,7 @@ class Confirm extends React.Component {
 
   render() {
     let cancelButton = this.props.showCancelButton ? (
-      <Button bsStyle={this.props.cancelBSStyle} color={this.props.cancelBSStyle} size={this.props.cancelSize} onClick={this.onClose}>
+      <Button bsstyle={this.props.cancelBSStyle} color={this.props.cancelBSStyle} size={this.props.cancelSize} onClick={this.onClose}>
         {this.props.cancelText}
       </Button>
     ) : null;
@@ -51,7 +51,7 @@ class Confirm extends React.Component {
         <ModalBody>{this.props.body}</ModalBody>
         <ModalFooter>
           {cancelButton}
-          <Button bsStyle={this.props.confirmBSStyle} size={this.props.confirmSize} onClick={this.onConfirm}>
+          <Button bsstyle={this.props.confirmBSStyle} size={this.props.confirmSize} onClick={this.onConfirm}>
             {this.props.confirmText}
           </Button>
         </ModalFooter>
@@ -59,7 +59,7 @@ class Confirm extends React.Component {
     );
 
     return (
-      <Button bsStyle={this.props.buttonBSStyle} color={this.props.buttonBSStyle} size={this.props.buttonSize} onClick={this.onButtonClick} style={this.props.style}>
+      <Button bsstyle={this.props.buttonBSStyle} color={this.props.buttonBSStyle} size={this.props.buttonSize} onClick={this.onButtonClick} style={this.props.style}>
         {this.props.buttonText}
         {modal}
       </Button>

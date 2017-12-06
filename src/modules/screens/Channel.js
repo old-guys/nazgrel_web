@@ -298,7 +298,7 @@ class Channel extends Component {
 
   renderNav() {
     return (
-      <div class="pull-right">
+      <div className="pull-right">
         <Button color="primary" onClick={() => this.handleNewChannelClick()}>新增渠道</Button>
       </div>
     )
@@ -481,9 +481,9 @@ class Channel extends Component {
                 errorMessage={{required: '请选择渠道类型'}}
                 >
                   {
-                    _.map(channelCategory, (value, key) => {
+                    _.map(channelCategory, (text, value) => {
                       return (
-                        <option value={key}>{value}</option>
+                        <option value={value} key={value}>{text}</option>
                       )
                     })
                   }
@@ -499,9 +499,9 @@ class Channel extends Component {
                 errorMessage={{required: '请选择渠道类型'}}
                 >
                   {
-                    _.map(channelSource, (value, key) => {
+                    _.map(channelSource, (text, value) => {
                       return (
-                        <option value={key}>{value}</option>
+                        <option value={value} key={value}>{value}</option>
                       )
                     })
                   }
@@ -576,9 +576,9 @@ class Channel extends Component {
                 errorMessage={{required: '请选择渠道类型'}}
                 >
                   {
-                    _.map(channelCategory, (value, key) => {
+                    _.map(channelCategory, (text, value) => {
                       return (
-                        <option value={key}>{value}</option>
+                        <option value={value} key={value}>{text}</option>
                       )
                     })
                   }
@@ -594,9 +594,9 @@ class Channel extends Component {
                 errorMessage={{required: '请选择渠道类型'}}
                 >
                   {
-                    _.map(channelSource, (value, key) => {
+                    _.map(channelSource, (text, value) => {
                       return (
-                        <option value={key}>{value}</option>
+                        <option value={value} key={value}>{text}</option>
                       )
                     })
                   }

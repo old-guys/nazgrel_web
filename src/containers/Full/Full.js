@@ -1,35 +1,67 @@
 import React, {Component} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import {Container} from 'reactstrap';
+
 import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/';
 import Breadcrumb from '../../components/Breadcrumb/';
 import Aside from '../../components/Aside/';
 import Footer from '../../components/Footer/';
 import Dashboard from '../../views/Dashboard/';
-import Charts from '../../views/Charts/';
-import Widgets from '../../views/Widgets/';
 
+class DefaultComponent extends Component {
+  render() {
+    return null;
+  }
+}
+
+let Charts = DefaultComponent;
+let Widgets = DefaultComponent;
 
 // Components
-import Buttons from '../../views/Components/Buttons/';
-import Cards from '../../views/Components/Cards/';
-import Forms from '../../views/Components/Forms/';
-import Modals from '../../views/Components/Modals/';
-import SocialButtons from '../../views/Components/SocialButtons/';
-import Switches from '../../views/Components/Switches/';
-import Tables from '../../views/Components/Tables/';
-import Tabs from '../../views/Components/Tabs/';
+let Buttons = DefaultComponent;
+let Cards = DefaultComponent;
+let Forms = DefaultComponent;
+let Modals = DefaultComponent;
+let SocialButtons = DefaultComponent;
+let Switches = DefaultComponent;
+let Tables = DefaultComponent;
+let Tabs = DefaultComponent;
 
 // Icons
-import FontAwesome from '../../views/Icons/FontAwesome/';
-import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
+let FontAwesome = DefaultComponent;
+let SimpleLineIcons = DefaultComponent;
+
+const isDeveloment = process.env.NODE_ENV === 'development';
+
+console.log(process.env.NODE_ENV);
+
+if (isDeveloment) {
+  Charts = require('../../views/Charts/').default;
+  Widgets = require('../../views/Widgets/').default;
+
+  // Components
+  Buttons = require('../../views/Components/Buttons/').default;
+  Cards = require('../../views/Components/Cards/').default;
+  Forms = require('../../views/Components/Forms/').default;
+  Modals = require('../../views/Components/Modals/').default;
+  SocialButtons = require('../../views/Components/SocialButtons/').default;
+  Switches = require('../../views/Components/Switches/').default;
+  Tables = require('../../views/Components/Tables/').default;
+  Tabs = require('../../views/Components/Tabs/').default;
+
+  // Icons
+  FontAwesome = require('../../views/Icons/FontAwesome/').default;
+  SimpleLineIcons = require('../../views/Icons/SimpleLineIcons/').default;
+}
 
 //manage
 import { Channel, ChannelRegion } from '../../modules/screens'
 
 class Full extends Component {
+
   render() {
+
     return (
       <div className="app">
         <Header />
@@ -40,6 +72,8 @@ class Full extends Component {
             <Container fluid>
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard}/>
+                <Route path="/channel" name="Channel" component={Channel}/>
+                <Route path="/channel_region" name="Channel" component={ChannelRegion}/>
                 <Route path="/components/buttons" name="Buttons" component={Buttons}/>
                 <Route path="/components/cards" name="Cards" component={Cards}/>
                 <Route path="/components/forms" name="Forms" component={Forms}/>
@@ -52,8 +86,6 @@ class Full extends Component {
                 <Route path="/icons/simple-line-icons" name="Simple Line Icons" component={SimpleLineIcons}/>
                 <Route path="/widgets" name="Widgets" component={Widgets}/>
                 <Route path="/charts" name="Charts" component={Charts}/>
-                <Route path="/channel" name="Channel" component={Channel}/>
-                <Route path="/channel_region" name="ChannelRegion" component={ChannelRegion}/>
                 <Redirect from="/" to="/dashboard"/>
               </Switch>
             </Container>
