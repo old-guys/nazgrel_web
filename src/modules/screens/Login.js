@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {Container, Row, Col, CardGroup, Card, CardBody, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import {Container, Row, Col, CardGroup, Card, CardTitle, CardBody, Button, Form, FormGroup, Input, Label, InputGroup, InputGroupAddon} from 'reactstrap';
+import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import { fetchAuthLogin } from '../reducers/auth';
@@ -23,7 +25,11 @@ export default class Login extends Component {
     this.notificator = this.refs.notificator;
   }
 
-  async handleUserLogin() {
+  handleUserLogin(event, errors, values) {
+    if (_.isEmpty(errors)) this.userLogin();
+  }
+
+  async userLogin() {
     const { phoneNumber, password } = this.state;
 
     try {
@@ -51,42 +57,64 @@ export default class Login extends Component {
       <div className="app flex-row align-items-center">
         <Container>
           <Row className="justify-content-center">
-            <Col md="6">
-              <CardGroup>
-                <Card className="p-4">
-                  <CardBody>
-                    <p className="text-muted">登录你的账号</p>
-                    <InputGroup className="mb-3">
-                      <InputGroupAddon><i className="icon-user"></i></InputGroupAddon>
-                      <Input
-                        type="text"
-                        placeholder="用户名"
-                        onChange={ e => {
-                          this.setState({ phoneNumber: e.currentTarget.value })
-                          }
-                        }
-                      />
-                    </InputGroup>
-                    <InputGroup className="mb-4">
-                      <InputGroupAddon><i className="icon-lock"></i></InputGroupAddon>
-                      <Input
-                        type="password"
-                        placeholder="密码"
-                         onChange={ e => this.setState({ password: e.currentTarget.value })}
-                      />
-                    </InputGroup>
-                    <Row>
-                      <Col xs="6">
-                        <Button
-                          color="primary"
-                          className="px-4"
-                          onClick={() => this.handleUserLogin()}
-                        >登录</Button>
+            <Col xs={6} md={8}>
+              <Card className="p-4">
+                <CardTitle>登录你的账号</CardTitle>
+                <CardBody >
+                  <AvForm onSubmit={::this.handleUserLogin} >
+                    <AvGroup row>
+                      <Col xs={8} md={10}>
+                        <InputGroup size="lg">
+                          <InputGroupAddon><i className="icon-user"></i></InputGroupAddon>
+                          <AvInput name="phoneNumber"
+                            type="text"
+                            placeholder="输入手机号"
+                            className="form-control"
+                            size="lg"
+                            block
+                            required
+                            onChange={ e => {
+                              this.setState({ phoneNumber: e.currentTarget.value })
+                              }
+                            }
+                            errorMessage={{required: '输入手机号'}}
+                          />
+                        </InputGroup>
+                        <AvFeedback>输入手机号!</AvFeedback>
                       </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </CardGroup>
+                    </AvGroup>
+                    <AvGroup row>
+                      <Col xs={8} md={10}>
+                        <InputGroup size="lg">
+                          <InputGroupAddon><i className="icon-lock"></i></InputGroupAddon>
+                          <AvInput name="password"
+                            type="password"
+                            placeholder="输入密码"
+                            className="form-control"
+                            size="lg"
+                            block
+                            required
+                            onChange={ e => {
+                              this.setState({ password: e.currentTarget.value })
+                              }
+                            }
+                            errorMessage={{required: '输入密码'}}
+                          />
+                        </InputGroup>
+                        <AvFeedback>输入密码!</AvFeedback>
+                      </Col>
+                    </AvGroup>
+                    <FormGroup>
+                      <Col smOffset={2} sm={10}>
+                        <Button type="submit"
+                          color="primary" size="lg" >
+                          登录
+                        </Button>
+                      </Col>
+                    </FormGroup>
+                  </AvForm>
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Container>
