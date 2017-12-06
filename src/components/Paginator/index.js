@@ -28,7 +28,7 @@ export default class Paginator extends React.Component{
     return (
       <PaginationItem disabled={ isFirst }>
         <PaginationLink href="javascript:;" data-page="1" onClick={ this.handlePageChange.bind(this) }>
-          <i class="fa fa-angle-double-left"></i>
+          <i className="fa fa-angle-double-left"></i>
         </PaginationLink>
       </PaginationItem>
     );
@@ -41,7 +41,7 @@ export default class Paginator extends React.Component{
     return (
       <PaginationItem disabled={ isFirst }>
         <PaginationLink href="javascript:;" data-page={ current_page - 1 } onClick={ this.handlePageChange.bind(this) }>
-          <i class="fa fa-angle-left"></i>
+          <i className="fa fa-angle-left"></i>
         </PaginationLink>
       </PaginationItem>
     );
@@ -54,7 +54,7 @@ export default class Paginator extends React.Component{
     return (
       <PaginationItem disabled={ isLast }>
         <PaginationLink href="javascript:;" data-page={ current_page + 1 } onClick={ this.handlePageChange.bind(this) }>
-          <i class="fa fa-angle-right"></i>
+          <i className="fa fa-angle-right"></i>
         </PaginationLink>
       </PaginationItem>
     );
@@ -67,7 +67,7 @@ export default class Paginator extends React.Component{
     return (
       <PaginationItem disabled={ isLast }>
         <PaginationLink href="javascript:;" data-page={ total_pages } onClick={ this.handlePageChange.bind(this) }>
-          <i class="fa fa-angle-double-right"></i>
+          <i className="fa fa-angle-double-right"></i>
         </PaginationLink>
       </PaginationItem>
     );
@@ -88,7 +88,7 @@ export default class Paginator extends React.Component{
     for (let page = start_page; page <= end_page; page += 1) {
       const active = page === current_page;
       items.push(
-        <PaginationItem active={ active }>
+        <PaginationItem active={ active } key={page}>
           <PaginationLink href="javascript:;" data-page={page} onClick={ this.handlePageChange.bind(this) }>
             {page}
           </PaginationLink>

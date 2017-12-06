@@ -1,5 +1,25 @@
-export default {
-  items: [
+const defaultItems = [
+  {
+    name: '渠道管理',
+    url: '/channel',
+    icon: 'icon-puzzle',
+    children: [
+      {
+        name: '渠道',
+        url: '/channel',
+        icon: 'icon-star'
+      },
+      {
+        name: '渠道管理员',
+        url: '/channel_region',
+        icon: 'icon-star'
+      }
+    ]
+  }
+];
+
+const envItems = {
+  development: [
     {
       name: 'Dashboard',
       url: '/dashboard',
@@ -134,22 +154,9 @@ export default {
         }
       ]
     },
-    {
-      name: '渠道管理',
-      url: '/channel',
-      icon: 'icon-puzzle',
-      children: [
-        {
-          name: '渠道',
-          url: '/channel',
-          icon: 'icon-star'
-        },
-        {
-          name: '渠道管理员',
-          url: '/channel_region',
-          icon: 'icon-star'
-        }
-      ]
-    }
   ]
+}[process.env.NODE_ENV];
+
+export default {
+  items: _.union(defaultItems, envItems)
 };

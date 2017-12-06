@@ -96,7 +96,7 @@ module.exports = (env = {}) => {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.platformConfig': JSON.stringify(platformConfig),
-        PRODUCTION: JSON.stringify(false),
+        PRODUCTION: JSON.stringify(true),
       }),
       new webpack.optimize.UglifyJsPlugin({
         comments: false

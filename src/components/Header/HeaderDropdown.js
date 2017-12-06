@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Redirect } from 'react-router-dom'
 import {
   Badge,
   DropdownItem,
@@ -7,6 +8,10 @@ import {
   Dropdown
 } from 'reactstrap';
 
+import { Auth } from '../../modules/services';
+
+const auth = new Auth();
+
 class HeaderDropdown extends Component {
 
   constructor(props) {
@@ -14,7 +19,8 @@ class HeaderDropdown extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
+      redirect: false
     };
   }
 
@@ -24,7 +30,12 @@ class HeaderDropdown extends Component {
     });
   }
 
-  dropAccnt() {
+  logout() {
+    auth.logout();
+    this.setState({ redirect: true });
+  }
+
+  dropAccnt1() {
     return (
       <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle nav>
@@ -43,13 +54,31 @@ class HeaderDropdown extends Component {
           <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
           <DropdownItem divider/>
           <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
-          <DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>
+          <DropdownItem onClick={::this.logout}><i className="fa fa-lock"></i> Logout</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    );
+  }
+
+  dropAccnt() {
+    return (
+      <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        <DropdownToggle nav>
+          <img className="img-avatar" alt={ auth.currentUser().email } />
+        </DropdownToggle>
+        <DropdownMenu right>
+          <DropdownItem onClick={::this.logout}><i className="fa fa-lock"></i> Logout</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     );
   }
 
   render() {
+
+    if (this.state.redirect) {
+      return <Redirect push to="/login"/>;
+    }
+
     const {...attributes} = this.props;
     return (
       this.dropAccnt()

@@ -300,7 +300,7 @@ class ChannelRegion extends Component {
                       {
                         _.map(list, (channel) => {
                           return (
-                            <option value={ channel.id }>{ channel.name }</option>
+                            <option key={ channel.id } value={ channel.id }>{ channel.name }</option>
                           )
                         })
                       }
@@ -483,16 +483,16 @@ class ChannelRegion extends Component {
     channel_region.channel_ids = _.map(channel_region.channel_region_maps, 'channel_id');
 
     return (
-      <tr>
+      <tr key={ channel_region.id }>
         <th>{ channel_region.id }</th>
         <th>{ channel_region.name }</th>
         <th>
           {
             _.map(channel_region.channel_users, (channel_user) => {
               return (
-                <p>
+                <p key={channel_user.id}>
                   {channel_user.name} {channel_user.phone}
-                  <Button size="sm" className='btn-delete' onClick={() => this.showChannelRegionChannelUserModal(channel_user) } color="primary">
+                  <Button size="sm" className='btn-delete pull-right' onClick={() => this.showChannelRegionChannelUserModal(channel_user) } color="primary">
                     修改密码
                   </Button>
                 </p>
@@ -505,15 +505,15 @@ class ChannelRegion extends Component {
             _.map(channel_region.channel_region_maps, (channel_region_map) => {
               const channel_users = channel_region_map.channel_users
               return (
-                <p>
+                <p key={channel_region_map.id}>
                   {
                     _.map(channel_users, (channel_user) => {
                       return (
-                        <span>{channel_user.name} {channel_user.phone}</span>
+                        <span key={channel_user.id}>{channel_user.name} {channel_user.phone}</span>
                       )
                     })
                   }
-                  <span class="pull-right">
+                  <span className="pull-right">
                   <Confirm
                       buttonText="删除"
                       buttonBSStyle="warning"
@@ -540,11 +540,11 @@ class ChannelRegion extends Component {
     const { isLoading, networkError }  = this.state;
 
     if (isLoading) {
-      return <Loading isLoading={isLoading} type='tr' th={{colspan: 7}} />
+      return <Loading isLoading={isLoading} type='tr' th={{colSpan: 7}} />
     } else if (networkError) {
-      return <Nodata isNodata={networkError} info="网络错误..." type='tr' th={{colspan: 7}}  />
+      return <Nodata isNodata={networkError} info="网络错误..." type='tr' th={{colSpan: 7}}  />
     } else if (!list.length) {
-      return <Nodata isNodata={!list.length} type='tr' th={{colspan: 7}}  />
+      return <Nodata isNodata={!list.length} type='tr' th={{colSpan: 7}}  />
     }
 
     return _.map(list, (channel_region) => {
@@ -590,7 +590,9 @@ class ChannelRegion extends Component {
       <div className='manage-setting'>
         <Card>
           <CardBody>
-            <Button color="primary" className='btn-add' onClick={() => this.handleAddChannelRegionClick() }>新增区域</Button>
+            <div className="pull-right">
+              <Button color="primary" className='btn-add' onClick={() => this.handleAddChannelRegionClick() }>新增区域</Button>
+            </div>
             { this.renderChannelRegionTable() }
             { this.renderChannelRegionModal() }
             { this.renderChannelRegionChannelUserModal() }

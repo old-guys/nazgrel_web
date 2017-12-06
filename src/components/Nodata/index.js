@@ -17,8 +17,8 @@ export default class Nodata extends React.Component{
     return (
       <tr {...tr}>
         <th {...th}>
-          <div class='no-info text-center padt60 padb60'>
-            <i class='fa fa-smile-o text-muted'></i>
+          <div className='no-info text-center padt60 padb60'>
+            <i className='fa fa-smile-o text-muted'></i>
             { info || '暂无相关数据...' }
           </div>
         </th>
@@ -30,8 +30,8 @@ export default class Nodata extends React.Component{
     const { info }  = this.props;
 
     return (
-      <div class='no-info text-center padt60 padb60'>
-        <i class='fa fa-smile-o text-muted'></i>
+      <div className='no-info text-center padt60 padb60'>
+        <i className='fa fa-smile-o text-muted'></i>
         { info || '暂无相关数据...' }
       </div>
     );

@@ -100,7 +100,7 @@ module.exports = (env = {}) => {
         template: path.resolve('./src/index.html')
       }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production'),
+        'process.env.NODE_ENV': JSON.stringify('development'),
         'process.platformConfig': JSON.stringify(platformConfig),
         PRODUCTION: JSON.stringify(false),
       }),

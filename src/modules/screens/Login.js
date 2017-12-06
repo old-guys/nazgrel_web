@@ -27,11 +27,11 @@ export default class Login extends Component {
     const { phoneNumber, password } = this.state;
 
     try {
-      const response = await this.props.fetchAuthLogin({ login: phoneNumber, password });
+      const res = await this.props.fetchAuthLogin({ login: phoneNumber, password });
       const { userToken } = this.props.loginUser;
 
-      if (Number(response.code) === 0 && userToken) {
-        this.props.auth.login(userToken);
+      if (Number(res.code) === 0 && userToken) {
+        this.props.auth.login(res.data);
         this.setState({ redirect: true });
       } else {
         this.notificator.error({ text: '账号或密码错误' });
