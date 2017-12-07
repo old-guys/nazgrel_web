@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {
   Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Progress,
   InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert, Card, CardBody,
@@ -7,6 +8,10 @@ import {
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+
+import { ChannelApi } from '../api';
 
 import { Confirm } from '../../components/Confirm/';
 import Paginator from './../../components/Paginator/'
@@ -39,40 +44,66 @@ class ChannelRegion extends Component {
   constructor (props) {
     super(props);
 
+    this.channel_region_attrs = {
+      id: null,
+      name: "",
+      channel_ids: [],
+      channel_user: {
+        name: "",
+        phone: "",
+        password: "",
+        confirm_password: ""
+      }
+    }
+
+    this.copy_channel_region_attrs = {
+      id: null,
+      name: "",
+      channel_ids: [],
+      channel_user: {
+        name: "",
+        phone: "",
+        password: "",
+        confirm_password: ""
+      }
+    }
+
+    this.select_attrs = {
+      options: [],
+      selectedOptions: [],
+      more: true,
+      page: 1,
+      query: null,
+    }
+
     this.state = {
       networkError: false,
       isLoading: true,
 
       isShowChannelRegion: false,
-      channel_region: {
-        id: null,
-        name: "",
-        channel_ids: [],
-        channel_user: {
-          name: "",
-          phone: "",
-          password: "",
-          confirm_password: ""
-        }
-      },
-      copy_channel_region: {
-        id: null,
-        name: "",
-        channel_ids: [],
-        channel_user: {
-          name: "",
-          phone: "",
-          password: "",
-          confirm_password: ""
-        }
-      },
+      channel_region: this.channel_region_attrs,
+      copy_channel_region: this.copy_channel_region_attrs,
 
       isShowChannelRegionChannelUser: false,
-      channel_region_channel_user: {}
-    };
+      channel_region_channel_user: {},
+
+      select: this.select_attrs
+    }
 
     this.handleSaveChannelRegionSubmit = this.handleSaveChannelRegionSubmit.bind(this);
     this.handleChannelRegionChannelUserSubmit = this.handleChannelRegionChannelUserSubmit.bind(this);
+  }
+
+  handleSelectAttrsReset() {
+    this.setState({ select: this.select_attrs })
+  }
+
+  handleChannelRegionAttrsReset() {
+    this.setState({ channel_region: this.channel_region_attrs })
+  }
+
+  handleCopyChannelRegionAttrsReset() {
+    this.setState({ copy_channel_region: this.copy_channel_region_attrs })
   }
 
   componentDidMount() {
@@ -121,8 +152,8 @@ class ChannelRegion extends Component {
       const res = await this.props.deleteChannelRegionChannel({ channel_region_map });
 
       if (Number(res.code) === 0) {
+        _.assign(channel_region, res.data);
         this.notificator.success({ text: '删除渠道成功' });
-        this.fetch();
       } else {
         this.notificator.error({ text: '删除渠道失败' });
       }
@@ -139,48 +170,49 @@ class ChannelRegion extends Component {
   }
 
   handleEditChannelRegionClick(channel_region = {}) {
+    const { select } = this.state;
+    const options = _.map(channel_region.channel_region_maps, (map) => {
+      return { id: map.channel_id, name: map.channel_name };
+    });
+
+    select.selectedOptions = options;
     this.setState({
       isShowChannelRegion: true,
-      channel_region: channel_region
+      channel_region: channel_region,
+      copy_channel_region: { ...channel_region },
+      select
     });
   }
 
   hideChannelRegionModal() {
-    this.setState({
-      isShowChannelRegion: false,
-      channel_region: {...this.state.channel_region},
-      copy_channel_region: {
-        id: null,
-        name: "",
-        channel_ids: [],
-        channel_user: {
-          name: "",
-          phone: "",
-          password: "",
-          confirm_password: ""
-        }
-      }
-    });
+    this.setState({ isShowChannelRegion: false });
+    this.handleChannelRegionAttrsReset();
+    this.handleCopyChannelRegionAttrsReset();
+    this.handleSelectAttrsReset();
   }
 
   async saveChannelRegion() {
-    let { channel_region } = this.state;
-    const isNew = !_.isNumber(channel_region.id);
+    let { channel_region, copy_channel_region } = this.state;
+    const isNew = !_.isNumber(copy_channel_region.id);
     const fun = isNew ? this.props.createChannelRegion : this.props.updateChannelRegion
-    const opts = isNew ? channel_region : _.pick(channel_region, ['id', 'name', 'channel_ids']);
-    console.log(channel_region)
+    const opts = isNew ? copy_channel_region : _.pick(copy_channel_region, ['id', 'name', 'channel_ids']);
 
     try {
       const res = await fun({ channel_region: opts });
 
       if (Number(res.code) === 0) {
-        this.fetch();
+
+        if (isNew) {
+          this.fetch();
+        } else {
+          _.assign(channel_region, res.data);
+        }
 
         this.notificator.success({ text: '保存区域成功' });
-        this.setState({
-          isShowChannelRegion: false,
-          channel_region: {...this.state.copy_channel_region}
-        });
+        this.handleChannelRegionAttrsReset();
+        this.handleCopyChannelRegionAttrsReset();
+        this.handleSelectAttrsReset();
+        this.setState({ isShowChannelRegion: false });
       } else {
         this.notificator.error({ text: '保存区域失败' });
       }
@@ -194,8 +226,8 @@ class ChannelRegion extends Component {
   }
 
   renderChannelRegionUserField() {
-    const { isShowChannelRegion, channel_region, channel_region: { channel_user } } = this.state;
-    const isNew = ! _.isNumber(channel_region.id);
+    const { isShowChannelRegion, copy_channel_region, copy_channel_region: { channel_user } } = this.state;
+    const isNew = ! _.isNumber(copy_channel_region.id);
     const { channels: { isFetching, list, current_page } } = this.props.channel;
 
     if (! isNew) {
@@ -210,10 +242,10 @@ class ChannelRegion extends Component {
           placeholder="输入主管名称"
           grid={{md: 9}}
           onChange={(e) => {
-            channel_region.channel_user.name = e.target.value;
+            copy_channel_region.channel_user.name = e.target.value;
 
             this.setState({
-              channel_region: channel_region
+              copy_channel_region
             })
           }}
           required
@@ -226,11 +258,8 @@ class ChannelRegion extends Component {
           placeholder="输入主管手机号，将作为登录账号"
           grid={{md: 9}}
           onChange={(e) => {
-            channel_region.channel_user.phone = e.target.value;
-
-            this.setState({
-              channel_region: channel_region
-            })
+            copy_channel_region.channel_user.phone = e.target.value;
+            this.setState({ copy_channel_region });
           }}
           required
           errorMessage={{required: '输入主管手机号', phone: '手机号格式不正确'}}
@@ -241,11 +270,8 @@ class ChannelRegion extends Component {
           placeholder="输入主管密码，将作为登录账号的密码"
           grid={{md: 9}}
           onChange={(e) => {
-            channel_region.channel_user.password = e.target.value;
-
-            this.setState({
-              channel_region: channel_region
-            })
+            copy_channel_region.channel_user.password = e.target.value;
+            this.setState({ copy_channel_region });
           }}
           required
           minLength="6"
@@ -256,9 +282,9 @@ class ChannelRegion extends Component {
   }
 
   renderChannelRegionModal() {
-    const { isShowChannelRegion, channel_region } = this.state;
-    const isNew = ! _.isNumber(channel_region.id);
-    const channel_user = channel_region.channel_user || {};
+    const { isShowChannelRegion, copy_channel_region } = this.state;
+    const isNew = ! _.isNumber(copy_channel_region.id);
+    const channel_user = copy_channel_region.channel_user || {};
     const { channels: { isFetching, list, current_page } } = this.props.channel;
 
     return (
@@ -270,44 +296,62 @@ class ChannelRegion extends Component {
           <ModalBody>
             <Container>
               <AvField name="name"
-                value={channel_region.name}
+                value={copy_channel_region.name}
                 label="区域名称" type="text"
                 placeholder="输入区域名称"
                 grid={{md: 9}}
                 onChange={(e) => {
-                  this.setState({ channel_region: {...this.state.channel_region, name: e.target.value}})
+                  copy_channel_region.name = e.target.value;
+                  this.setState({ copy_channel_region });
                 }}
                 required
                 validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
                 errorMessage={{required: '输入区域名称', pattern: '区域名称只支持中文、英文、数字'}}
                 />
               { this.renderChannelRegionUserField() }
-              <FormGroup row>
-                <Label md={3}>选择渠道</Label>
-                <Col xs={12} md={9}>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      value={channel_region.channel_ids}
-                      placeholder="选择渠道"
-                      multiple
-                      onChange={(e) => {
-                        const channel_ids = Array.prototype.slice.call(e.target.selectedOptions).map(o => o.value);
-                        this.setState({ channel_region: {...this.state.channel_region, channel_ids: channel_ids}})
-                      }}
-                      >
-                      <option value="">选择渠道</option>
-                      {
-                        _.map(list, (channel) => {
-                          return (
-                            <option key={ channel.id } value={ channel.id }>{ channel.name }</option>
-                          )
-                        })
-                      }
-                    </Input>
-                  </InputGroup>
+              <Row>
+                <Col xs='3'>选择渠道</Col>
+                <Col xs='9'>
+                  <Select
+                    ref="channelSelect"
+                    multi={true}
+                    name="channel_ids"
+                    value={this.state.select.selectedOptions}
+                    options={this.state.select.options}
+                    valueKey="id"
+                    labelKey="name"
+                    onChange={(e) => {
+                      console.log('onChange')
+                      this.handleSelectOnChange(e)
+                    }}
+                    onFocus={(e) => {
+                      console.log('onFocus')
+                    }}
+                    onOpen={(e) => {
+                      console.log('onOpen')
+                      this.handleSelectOnOpen(e)
+                    }}
+                    onMenuScrollToBottom={(e) => {
+                      console.log('onMenuScrollToBottom')
+                      this.handleSelectOnMenuScrollToBottom(e)
+                    }}
+                    onInputChange={(val) => {
+                      console.log('onInputChange:' + val)
+                      this.handleSelectOnInputChange(val)
+                    }}
+                    onBlur={(e) => {
+                      console.log('onBlur')
+                    }}
+                    onClose={(e) => {
+                      console.log('onClose')
+                      this.handleSelectOnClose(e)
+                    }}
+                    clearable={false}
+                    searchable={false}
+                    scrollMenuIntoView={false}
+                  />
                 </Col>
-              </FormGroup>
+              </Row>
             </Container>
           </ModalBody>
           <ModalFooter>
@@ -319,7 +363,115 @@ class ChannelRegion extends Component {
     );
   }
 
-  handleEditChannelRegionStatus (channel_region) {
+  handleSelectOnChange(values) {
+    const { select, copy_channel_region } = this.state;
+    copy_channel_region.channel_ids = _.map(values, 'id');
+
+    this.setState({
+      select: _.assign(select, {
+        selectedOptions: values
+      }),
+      copy_channel_region
+    });
+  }
+
+  handleSelectOnOpen(event) {
+    const { select } = this.state;
+
+    this.setState({
+      select: _.assign(select, {
+        page: 1,
+        more: true,
+        options: []
+      })
+    });
+    this.fetchSelectOptions();
+  }
+
+  autoloadSelectNextPageOptions() {
+    const { select } = this.state;
+
+    const unselectedOptions = _.filter(select.options, (n) => {
+      return !_.some(select.selectedOptions, { id: n.id });
+    });
+
+    if (unselectedOptions.length < 5 && select.more) {
+      this.setState({
+        select: _.assign(select, {
+          page: select.page + 1
+        })
+      });
+      this.fetchSelectOptions();
+    }
+  }
+
+  handleSelectOnMenuScrollToBottom(event) {
+    const { select } = this.state;
+
+    this.setState({
+      select: _.assign(select, {
+        page: select.page + 1
+      })
+    });
+    this.fetchSelectOptions();
+  }
+
+  handleSelectOnInputChange(value) {
+    setTimeout(() => {
+      const { select } = this.state;
+      const selectDom = this.refs['channelSelect']
+
+      this.setState({
+        select: _.assign(select, {
+          query: value,
+          more: true,
+          page: 1,
+          options: []
+        })
+      });
+
+      if (selectDom.state.isOpen) {
+        this.fetchSelectOptions();
+      }
+    }, 0)
+  }
+
+  handleSelectOnClose(event) {
+    const { select } = this.state;
+
+    this.setState({
+      select: _.assign(select, {
+        query: null,
+        more: true,
+        page: 1,
+        options: []
+      })
+    });
+  }
+
+  fetchSelectOptions(params = {}) {
+    const { select } = this.state;
+
+    if (!select.more) return null;
+
+    let optimizes = {
+      page: select.page,
+    };
+
+    ChannelApi.instance().index(optimizes).then((res) => {
+      if (res.code === 0 || res.code === '0') {
+        this.setState({
+          select: _.assign(select, {
+            more: !!res.data.next_page,
+            options: [...select.options, ...res.data.models]
+          })
+        });
+        this.autoloadSelectNextPageOptions();
+      }
+    });
+  }
+
+  handleEditChannelRegionStatus(channel_region) {
     const isLocked = channel_region.status === 'locked';
     const text = isLocked ? '激活' : '冻结'
     const status = isLocked ? 'normal' : 'locked';
@@ -508,11 +660,10 @@ class ChannelRegion extends Component {
 
               return (
                 <p key={channel_region_map.id}>
-                  <span key={channel_region_map.channel_id} className="text-info font-weight-bold pull-left">{channel.name}</span>
                   {
                     _.map(channel_users, (channel_user) => {
                       return (
-                        <span key={channel_user.id}>{channel_user.name} {channel_user.phone}</span>
+                        <span key={channel_user.id}>{channel_region_map.channel_name} {channel_user.name} {channel_user.phone}<br/></span>
                       )
                     })
                   }
@@ -521,7 +672,7 @@ class ChannelRegion extends Component {
                       buttonText="删除"
                       buttonBSStyle="warning"
                       buttonSize="sm"
-                      onConfirm={(e) => this.handleDeleteChannelRegionMap(channel_region, channel_region_map)}
+                      onConfirm={(e) => ::this.handleDeleteChannelRegionMap(channel_region, channel_region_map)}
                       body="你确定要删除渠道吗?"
                       confirmText="确定"
                       title="提示" />
