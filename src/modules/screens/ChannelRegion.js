@@ -316,6 +316,7 @@ class ChannelRegion extends Component {
                     ref="channelSelect"
                     multi={true}
                     name="channel_ids"
+                    placeholder="选择渠道"
                     value={this.state.select.selectedOptions}
                     options={this.state.select.options}
                     valueKey="id"
