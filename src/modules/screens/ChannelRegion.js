@@ -115,7 +115,7 @@ class ChannelRegion extends Component {
   async fetch(params = {}) {
     this.setState({ isLoading: true });
 
-    const page = params.page || 1;
+    const page = params.page || this.state.page || 1;
     const filters = params.filters || this.state.filters;
     const json_key = params.json_key || this.state.json_key;
     let optimizes = {
@@ -125,6 +125,7 @@ class ChannelRegion extends Component {
     };
 
     this.setState({
+      page: optimizes.page,
       query: params.query,
       filters: optimizes.filters,
       json_key: optimizes.json_key,
@@ -153,6 +154,7 @@ class ChannelRegion extends Component {
 
       if (Number(res.code) === 0) {
         _.assign(channel_region, res.data);
+        this.fetch();
         this.notificator.success({ text: '删除渠道成功' });
       } else {
         this.notificator.error({ text: '删除渠道失败' });
