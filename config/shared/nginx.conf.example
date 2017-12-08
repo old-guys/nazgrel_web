@@ -6,10 +6,20 @@ server {
   root  /dyne/apps/nazgrel_web_production;
   index index.html;
 
-  gzip_static on;
-  expires max;
-  add_header Cache-Control public;
-  autoindex on;
+  location ~.*\.html$ {
+    add_header Cache-Control no-cache;
+  }
+
+  location ~.*(?<!\.html/)$ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  # gzip_static on;
+  # expires max;
+  # add_header Cache-Control public;
+  # autoindex on;
 
   access_log /var/log/nginx/nazgrel_web_production_access.log;
   error_log /var/log/nginx/nazgrel_web_production_error.log;
