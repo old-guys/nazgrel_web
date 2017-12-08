@@ -81,13 +81,13 @@ class ChannelRegion extends Component {
       isLoading: true,
 
       isShowChannelRegion: false,
-      channel_region: this.channel_region_attrs,
-      copy_channel_region: this.copy_channel_region_attrs,
+      channel_region: {...this.channel_region_attrs},
+      copy_channel_region: {...this.copy_channel_region_attrs},
 
       isShowChannelRegionChannelUser: false,
       channel_region_channel_user: {},
 
-      select: this.select_attrs
+      select: {...this.select_attrs}
     }
 
     this.handleSaveChannelRegionSubmit = this.handleSaveChannelRegionSubmit.bind(this);
@@ -95,15 +95,15 @@ class ChannelRegion extends Component {
   }
 
   handleSelectAttrsReset() {
-    this.setState({ select: this.select_attrs })
+    this.setState({ select: {...this.select_attrs} })
   }
 
   handleChannelRegionAttrsReset() {
-    this.setState({ channel_region: this.channel_region_attrs })
+    this.setState({ channel_region: {...this.channel_region_attrs} })
   }
 
   handleCopyChannelRegionAttrsReset() {
-    this.setState({ copy_channel_region: this.copy_channel_region_attrs })
+    this.setState({ copy_channel_region: {...this.copy_channel_region_attrs} })
   }
 
   componentDidMount() {
