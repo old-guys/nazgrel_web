@@ -68,7 +68,7 @@ export default class Login extends Component {
                           <InputGroupAddon><i className="icon-user"></i></InputGroupAddon>
                           <AvInput name="phoneNumber"
                             type="text"
-                            placeholder="输入手机号"
+                            placeholder="输入账号"
                             className="form-control"
                             size="lg"
                             block
@@ -77,10 +77,10 @@ export default class Login extends Component {
                               this.setState({ phoneNumber: e.currentTarget.value })
                               }
                             }
-                            errorMessage={{required: '输入手机号'}}
+                            errorMessage={{required: '输入账号'}}
                           />
                         </InputGroup>
-                        <AvFeedback>输入手机号!</AvFeedback>
+                        <AvFeedback>输入账号</AvFeedback>
                       </Col>
                     </AvGroup>
                     <AvGroup row>
@@ -101,7 +101,7 @@ export default class Login extends Component {
                             errorMessage={{required: '输入密码'}}
                           />
                         </InputGroup>
-                        <AvFeedback>输入密码!</AvFeedback>
+                        <AvFeedback>输入密码</AvFeedback>
                       </Col>
                     </AvGroup>
                     <FormGroup>
