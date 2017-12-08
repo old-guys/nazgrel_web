@@ -5,8 +5,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-const extractCSS = new ExtractTextPlugin('[name].fonts.css');
-const extractSCSS = new ExtractTextPlugin('[name].styles.css');
+const extractCSS = new ExtractTextPlugin('[name].[hash].fonts.css');
+const extractSCSS = new ExtractTextPlugin('[name].[hash].styles.css');
 const platformConfig = require(path.resolve(`./config/${environment.getOrDefault('platform')}.config`));
 
 module.exports = (env = {}) => {
