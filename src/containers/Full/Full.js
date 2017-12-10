@@ -34,8 +34,6 @@ let SimpleLineIcons = DefaultComponent;
 
 const isDeveloment = process.env.NODE_ENV === 'development';
 
-console.log(process.env.NODE_ENV);
-
 if (isDeveloment) {
   Charts = require('../../views/Charts/').default;
   Widgets = require('../../views/Widgets/').default;

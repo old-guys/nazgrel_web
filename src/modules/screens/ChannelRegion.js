@@ -8,8 +8,6 @@ import {
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
-import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 
 import { ChannelApi } from '../api';
 
@@ -18,6 +16,7 @@ import Paginator from './../../components/Paginator/'
 import Notificator from './../../components/Notificator/'
 import Loading from './../../components/Loading/'
 import Nodata from './../../components/Nodata/'
+import ChannelSelector from './../../components/Selector/channel'
 
 import {
   fetchChannelRegionAll,
@@ -44,66 +43,42 @@ class ChannelRegion extends Component {
   constructor (props) {
     super(props);
 
-    this.channel_region_attrs = {
-      id: null,
-      name: "",
-      channel_ids: [],
-      channel_user: {
-        name: "",
-        phone: "",
-        password: "",
-        confirm_password: ""
-      }
-    }
-
-    this.copy_channel_region_attrs = {
-      id: null,
-      name: "",
-      channel_ids: [],
-      channel_user: {
-        name: "",
-        phone: "",
-        password: "",
-        confirm_password: ""
-      }
-    }
-
-    this.select_attrs = {
-      options: [],
-      selectedOptions: [],
-      more: true,
-      page: 1,
-      query: null,
-    }
-
     this.state = {
       networkError: false,
       isLoading: true,
 
       isShowChannelRegion: false,
-      channel_region: {...this.channel_region_attrs},
-      copy_channel_region: {...this.copy_channel_region_attrs},
+      channel_region: {...this.channelRegionDefaultProperties() },
+      copy_channel_region: {...this.channelRegionDefaultProperties() },
 
       isShowChannelRegionChannelUser: false,
-      channel_region_channel_user: {},
-
-      select: {...this.select_attrs}
+      channel_region_channel_user: {}
     }
 
     this.handleSaveChannelRegionSubmit = this.handleSaveChannelRegionSubmit.bind(this);
     this.handleChannelRegionChannelUserSubmit = this.handleChannelRegionChannelUserSubmit.bind(this);
   }
 
-  handleSelectAttrsReset() {
-    this.setState({ select: {...this.select_attrs} })
+  channelRegionDefaultProperties() {
+    return {
+      id: null,
+      name: "",
+      channel_ids: [],
+      channel_user: {
+        name: "",
+        phone: "",
+        password: "",
+        confirm_password: ""
+      }
+    }
   }
 
   handleChannelRegionAttrsReset() {
-    this.setState({ channel_region: {...this.channel_region_attrs} })
+    this.setState({ channel_region: {...this.channelRegionDefaultProperties() } })
   }
 
   handleCopyChannelRegionAttrsReset() {
-    this.setState({ copy_channel_region: {...this.copy_channel_region_attrs} })
+    this.setState({ copy_channel_region: {...this.channelRegionDefaultProperties() } })
   }
 
   componentDidMount() {
@@ -172,17 +147,14 @@ class ChannelRegion extends Component {
   }
 
   handleEditChannelRegionClick(channel_region = {}) {
-    const { select } = this.state;
-    const options = _.map(channel_region.channel_region_maps, (map) => {
+    const selectedOptions = _.map(channel_region.channel_region_maps, (map) => {
       return { id: map.channel_id, name: map.channel_name };
     });
 
-    select.selectedOptions = options;
     this.setState({
       isShowChannelRegion: true,
       channel_region: channel_region,
-      copy_channel_region: { ...channel_region },
-      select
+      copy_channel_region: { ...channel_region, selectedOptions },
     });
   }
 
@@ -190,7 +162,6 @@ class ChannelRegion extends Component {
     this.setState({ isShowChannelRegion: false });
     this.handleChannelRegionAttrsReset();
     this.handleCopyChannelRegionAttrsReset();
-    this.handleSelectAttrsReset();
   }
 
   async saveChannelRegion() {
@@ -205,7 +176,7 @@ class ChannelRegion extends Component {
       if (Number(res.code) === 0) {
 
         if (isNew) {
-          this.fetch();
+          this.fetch({ page: 1 });
         } else {
           _.assign(channel_region, res.data);
         }
@@ -213,7 +184,6 @@ class ChannelRegion extends Component {
         this.notificator.success({ text: '保存区域成功' });
         this.handleChannelRegionAttrsReset();
         this.handleCopyChannelRegionAttrsReset();
-        this.handleSelectAttrsReset();
         this.setState({ isShowChannelRegion: false });
       } else {
         this.notificator.error({ text: '保存区域失败' });
@@ -314,44 +284,15 @@ class ChannelRegion extends Component {
               <Row>
                 <Col xs='3'>选择渠道</Col>
                 <Col xs='9'>
-                  <Select
-                    ref="channelSelect"
+                  <ChannelSelector
                     multi={true}
-                    name="channel_ids"
-                    placeholder="选择渠道"
-                    value={this.state.select.selectedOptions}
-                    options={this.state.select.options}
-                    valueKey="id"
-                    labelKey="name"
-                    onChange={(e) => {
-                      console.log('onChange')
-                      this.handleSelectOnChange(e)
-                    }}
-                    onFocus={(e) => {
-                      console.log('onFocus')
-                    }}
-                    onOpen={(e) => {
-                      console.log('onOpen')
-                      this.handleSelectOnOpen(e)
-                    }}
-                    onMenuScrollToBottom={(e) => {
-                      console.log('onMenuScrollToBottom')
-                      this.handleSelectOnMenuScrollToBottom(e)
-                    }}
-                    onInputChange={(val) => {
-                      console.log('onInputChange:' + val)
-                      this.handleSelectOnInputChange(val)
-                    }}
-                    onBlur={(e) => {
-                      console.log('onBlur')
-                    }}
-                    onClose={(e) => {
-                      console.log('onClose')
-                      this.handleSelectOnClose(e)
-                    }}
+                    value={copy_channel_region.selectedOptions}
                     clearable={false}
                     searchable={false}
-                    scrollMenuIntoView={false}
+                    onChange={(values) => {
+                      copy_channel_region.channel_ids = _.map(values, 'id');
+                      this.setState({ copy_channel_region });
+                    }}
                   />
                 </Col>
               </Row>
@@ -364,114 +305,6 @@ class ChannelRegion extends Component {
         </AvForm>
       </Modal>
     );
-  }
-
-  handleSelectOnChange(values) {
-    const { select, copy_channel_region } = this.state;
-    copy_channel_region.channel_ids = _.map(values, 'id');
-
-    this.setState({
-      select: _.assign(select, {
-        selectedOptions: values
-      }),
-      copy_channel_region
-    });
-  }
-
-  handleSelectOnOpen(event) {
-    const { select } = this.state;
-
-    this.setState({
-      select: _.assign(select, {
-        page: 1,
-        more: true,
-        options: []
-      })
-    });
-    this.fetchSelectOptions();
-  }
-
-  autoloadSelectNextPageOptions() {
-    const { select } = this.state;
-
-    const unselectedOptions = _.filter(select.options, (n) => {
-      return !_.some(select.selectedOptions, { id: n.id });
-    });
-
-    if (unselectedOptions.length < 5 && select.more) {
-      this.setState({
-        select: _.assign(select, {
-          page: select.page + 1
-        })
-      });
-      this.fetchSelectOptions();
-    }
-  }
-
-  handleSelectOnMenuScrollToBottom(event) {
-    const { select } = this.state;
-
-    this.setState({
-      select: _.assign(select, {
-        page: select.page + 1
-      })
-    });
-    this.fetchSelectOptions();
-  }
-
-  handleSelectOnInputChange(value) {
-    setTimeout(() => {
-      const { select } = this.state;
-      const selectDom = this.refs['channelSelect']
-
-      this.setState({
-        select: _.assign(select, {
-          query: value,
-          more: true,
-          page: 1,
-          options: []
-        })
-      });
-
-      if (selectDom.state.isOpen) {
-        this.fetchSelectOptions();
-      }
-    }, 0)
-  }
-
-  handleSelectOnClose(event) {
-    const { select } = this.state;
-
-    this.setState({
-      select: _.assign(select, {
-        query: null,
-        more: true,
-        page: 1,
-        options: []
-      })
-    });
-  }
-
-  fetchSelectOptions(params = {}) {
-    const { select } = this.state;
-
-    if (!select.more) return null;
-
-    let optimizes = {
-      page: select.page,
-    };
-
-    ChannelApi.instance().index(optimizes).then((res) => {
-      if (res.code === 0 || res.code === '0') {
-        this.setState({
-          select: _.assign(select, {
-            more: !!res.data.next_page,
-            options: [...select.options, ...res.data.models]
-          })
-        });
-        this.autoloadSelectNextPageOptions();
-      }
-    });
   }
 
   handleEditChannelRegionStatus(channel_region) {
