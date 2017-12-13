@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {
-  Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Progress,
-  InputGroup, InputGroupAddon, Input, Row, Col, Container, Alert, Card, CardBody,
-  FormGroup, Label, CardHeader, CardFooter
-} from 'reactstrap';
+import { Button, Table, Card, CardBody } from 'reactstrap';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
 
@@ -20,16 +15,13 @@ import { default as ChannelRegionToggleStatus } from './toggle_status'
 import { default as ChannelUserResetPassword } from '../channel_users/reset_password'
 
 import {
-  fetchChannelRegionAll,
-  updateChannelRegion
+  fetchChannelRegionAll
 } from '../../reducers/channel_region';
 
 @connect(state => ({
-  channel_region: state.channel_region,
-  channel: state.channel
+  channel_region: state.channel_region
 }), {
-  fetchChannelRegionAll,
-  updateChannelRegion
+  fetchChannelRegionAll
 })
 class ChannelRegion extends Component {
   constructor (props) {
@@ -135,6 +127,20 @@ class ChannelRegion extends Component {
     )
   }
 
+  renderNotificator() {
+    return (
+      <Notificator ref="notificator" />
+    );
+  }
+
+  renderPaginator() {
+    const { channel_regions } = this.props.channel_region;
+
+    return (
+      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channel_regions } />
+    );
+  }
+
   renderListOperate(item) {
     return (
       <th>
@@ -225,8 +231,8 @@ class ChannelRegion extends Component {
     }
 
     return _.map(list, (channel_region) => {
-      return this.renderChannelRegionTr(channel_region)
-    })
+      return this.renderChannelRegionTr(channel_region);
+    });
   }
 
 
@@ -248,9 +254,7 @@ class ChannelRegion extends Component {
           </tr>
         </thead>
         <tbody>
-          {
-            this.renderChannelRegionTableTbody()
-          }
+          { this.renderChannelRegionTableTbody() }
         </tbody>
       </Table>
     );
@@ -261,8 +265,6 @@ class ChannelRegion extends Component {
   }
 
   render() {
-    const { channel_regions } = this.props.channel_region;
-
     return (
       <div className='manage-setting'>
         <Card>
@@ -274,8 +276,8 @@ class ChannelRegion extends Component {
             { this.renderEditChannelRegionModal() }
             { this.renderNewChannelRegionModal() }
             { this.renderChannelUserResetPasswordModal() }
-            <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channel_regions } />
-            <Notificator ref="notificator" />
+            { this.renderPaginator() }
+            { this.renderNotificator() }
           </CardBody>
         </Card>
       </div>

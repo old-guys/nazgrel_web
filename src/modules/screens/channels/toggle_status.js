@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ChannelRegionApi } from '../../api';
+import { ChannelApi } from '../../api';
 import { Confirm } from '../../../components/Confirm/';
 
 class ToggleStatus extends Component {
@@ -11,23 +11,23 @@ class ToggleStatus extends Component {
   }
 
   async handleSave() {
-    const { channel_region } = this.props;
-    const isLocked = channel_region.status === 'locked';
+    const { channel } = this.props;
+    const isLocked = channel.status === 'locked';
     const text = isLocked ? '激活' : '冻结'
     const status = isLocked ? 'normal' : 'locked';
     const opts = {
-      id: channel_region.id,
+      id: channel.id,
       status
     }
 
     try {
-      const res = await ChannelRegionApi.instance().update({ channel_region: opts });
+      const res = await ChannelApi.instance().update(opts, { id: channel.id });
       if (Number(res.code) === 0) {
-        this.props.notificator.success({ text: `${text}区域成功` });
+        this.props.notificator.success({ text: `${text}渠道成功` });
 
         if (this.props.success) this.props.success(res.data);
       } else {
-        this.props.notificator.error({ text: `${text}区域失败` });
+        this.props.notificator.error({ text: `${text}渠道失败: ${res.message}` });
       }
     } catch(e) {
       this.setState({ networkError: true });
@@ -35,8 +35,8 @@ class ToggleStatus extends Component {
   }
 
   render() {
-    const { channel_region } = this.props;
-    const isLocked = channel_region.status === 'locked';
+    const { channel } = this.props;
+    const isLocked = channel.status === 'locked';
     const buttonText = isLocked ? '激活' : '冻结';
     const buttonBSStyle = isLocked? 'warning' : 'danger'
 
@@ -46,7 +46,7 @@ class ToggleStatus extends Component {
         buttonBSStyle={buttonBSStyle}
         buttonSize="sm"
         onConfirm={ this.handleSave }
-        body={`你确定要${buttonText}大区吗?`}
+        body={`你确定要${buttonText}渠道吗?`}
         confirmText="确定"
         title="提示"
       />
