@@ -1,0 +1,13 @@
+module.exports = {
+  prefetch_urls: [
+    'http://biqa.admin.ishanggang.com/',
+    'http://biqa.admin.ishanggang.com/index.html'
+  ],
+  refresh_urls: [
+    'http://biqa.admin.ishanggang.com/',
+    'http://biqa.admin.ishanggang.com/index.html'
+  ],
+  accessKey: 'xxxxxxxxxxxxxxxx',
+  secretKey: 'xxxxxxxxxxxx',
+  debug: true,
+};
