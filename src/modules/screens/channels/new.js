@@ -243,6 +243,7 @@ class NewChannel extends Component {
                 }}
                 errorMessage={{required: '请选择渠道类型'}}
               >
+                <option value="" key="blank">选择渠道类型</option>
                 {
                   _.map(channelCategory, (text, value) => {
                     return (
@@ -262,12 +263,13 @@ class NewChannel extends Component {
                   channel.source = e.target.value;
                   this.setState({ channel });
                 }}
-                errorMessage={{required: '请选择渠道类型'}}
+                errorMessage={{required: '请选择渠道来源'}}
               >
+                <option value="" key="blank">请选择渠道来源</option>
                 {
                   _.map(channelSource, (text, value) => {
                     return (
-                      <option value={value} key={value}>{value}</option>
+                      <option value={value} key={value}>{text}</option>
                     )
                   })
                 }
