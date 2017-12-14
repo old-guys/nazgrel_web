@@ -244,7 +244,7 @@ class ChannelRegion extends Component {
       <Table bordered size="sm">
         <thead>
           <tr>
-            <th>序号</th>
+            <th>ID</th>
             <th>区域名称</th>
             <th>渠道管理员</th>
             <th>渠道</th>

@@ -41,6 +41,8 @@ class Channel extends Component {
 
   async fetchChannel(params) {
     try {
+      this.setState({ isLoading: true });
+
       const res = await this.props.fetchChannelAll(params);
       this.setState({
         isLoading: false,
@@ -151,7 +153,7 @@ class Channel extends Component {
       <Table bordered size="sm">
         <thead>
           <tr>
-            <th>序号</th>
+            <th>ID</th>
             <th>渠道名称</th>
             <th>城市</th>
             <th>店主姓名</th>
