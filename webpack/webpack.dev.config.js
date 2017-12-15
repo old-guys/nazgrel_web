@@ -111,6 +111,8 @@ module.exports = (env = {}) => {
         [
           { from: './assets/images', to: './images/' },
           { from: "./vendor/javascripts", to: `./vendor/[name].${uuid}.[ext]` }
+          { from: "./node_modules/please-wait/build/please-wait.min.js", to: "./vendor/" },
+          { from: "./node_modules/please-wait/build/please-wait.css", to: "./vendor/" },
         ],
         { copyUnmodified: false }
       )
