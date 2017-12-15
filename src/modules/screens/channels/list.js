@@ -30,8 +30,8 @@ class Channel extends Component {
     }
   }
 
-  handlePageChange(page) {
-    this.fetchChannel({ page });
+  handlePageChange(params = {}) {
+    this.fetchChannel(params);
   }
 
   componentDidMount () {
@@ -174,7 +174,7 @@ class Channel extends Component {
 
   render() {
     return (
-      <div className='channel-setting'>
+      <div className='manage-setting'>
         <Card>
           <CardBody>
             { this.renderNav() }
