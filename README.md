@@ -1,5 +1,7 @@
-## Intro 
-It uses Sass (with .scss). The style is loaded at the component level.
+Welcome To Nazgrel Web!
+
+## Intro
+它是 Nazgrel 的 web 端项目, 基于 CoreUI + react + webpack 实现
 
 Dependencies can be handled by **npm**.
 
@@ -15,16 +17,17 @@ nazgrel_web/
     ├── img/     (images)
 ```
 
-## Usage
-**npm i** - to install dependencies
+## Setup
+- **npm i** - to install dependencies
 
-## Sctipts
-**npm start** for developing (it runs webpack-dev-server)  
-**npm run build** to run a dev build  
-**npm run clean** to clean build dir  
-**npm run dev** to run a dev build with watching filesystem for changes  
+## Scripts
+- **npm start** for developing (it runs webpack-dev-server)
+- **npm run build** to run a dev build
+- **npm run clean** to clean build dir
+- **npm run dev** to run a dev build with watching filesystem for changes
 
 ## See also
 
-[Changelog](./CHANGELOG.md)  
-[Readme](./README.md)
+- [Changelog](./CHANGELOG.md)
+- [Readme](./README.md)
+- [CoreUI-React](https://github.com/mrholek/CoreUI-React)
