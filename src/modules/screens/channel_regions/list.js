@@ -55,16 +55,19 @@ class ChannelRegion extends Component {
     this.setState({ isLoading: true });
 
     const page = params.page || this.state.page || 1;
+    const per_page = params.per_page || this.state.per_page;
     const filters = params.filters || this.state.filters;
     const json_key = params.json_key || this.state.json_key;
     let optimizes = {
       page,
+      per_page,
       filters,
       json_key,
     };
 
     this.setState({
       page: optimizes.page,
+      per_page: optimizes.per_page,
       query: params.query,
       filters: optimizes.filters,
       json_key: optimizes.json_key,
@@ -137,7 +140,7 @@ class ChannelRegion extends Component {
     const { channel_regions } = this.props.channel_region;
 
     return (
-      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channel_regions } />
+      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={channel_regions} />
     );
   }
 
@@ -188,7 +191,7 @@ class ChannelRegion extends Component {
               const {channel} = channel_region_map;
 
               return (
-                <div key={channel_region_map.id}>
+                <div className='region-item ' key={channel_region_map.id}>
                   {
                     _.map(channel_users, (channel_user) => {
                       return (
@@ -196,16 +199,14 @@ class ChannelRegion extends Component {
                       )
                     })
                   }
-                  <span className="pull-right">
-                    <DestroyChannel
-                      channel_region_map={channel_region_map}
-                      notificator={this.refs.notificator}
-                      success={(data) => {
-                        _.assign(channel_region, data);
-                        this.fetch();
-                      }}
-                    />
-                  </span>
+                  <DestroyChannel
+                    channel_region_map={channel_region_map}
+                    notificator={this.refs.notificator}
+                    success={(data) => {
+                      _.assign(channel_region, data);
+                      this.fetch();
+                    }}
+                  />
                 </div>
               )
             })
@@ -260,8 +261,8 @@ class ChannelRegion extends Component {
     );
   }
 
-  handlePageChange(page) {
-    this.fetch({ page });
+  handlePageChange(params = {}) {
+    this.fetch(params);
   }
 
   render() {

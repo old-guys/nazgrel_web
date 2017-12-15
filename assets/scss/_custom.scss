@@ -6,3 +6,29 @@
     vertical-align: middle;
   }
 }
+
+.manage-setting {
+  .region-item {
+    span {
+      display: inline-block;
+      width: 80%;
+    }
+    padding: 10px 0;
+  }
+  .row {
+    justify-content: center;
+  }
+  .page-footer {
+    padding-left: 1.25rem;
+    .col-auto {
+      align-self: center;
+      padding: 0 10px 0 0;
+    }
+    input {
+      width: 50px;
+    }
+    ul {
+      margin: 0;
+    }
+  }
+}
