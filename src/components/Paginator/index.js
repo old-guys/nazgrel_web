@@ -18,6 +18,7 @@ export default class Paginator extends React.Component{
     this.handleChangeGoToPage = this.handleChangeGoToPage.bind(this);
     this.handleClickGoToPage = this.handleClickGoToPage.bind(this);
     this.handleChangePerPage = this.handleChangePerPage.bind(this);
+    this.handleOnKeyPress = this.handleOnKeyPress.bind(this);
   }
 
   handlePageChange(event) {
@@ -50,11 +51,22 @@ export default class Paginator extends React.Component{
   handleChangePerPage(event) {
     const value = event.target.value;
 
+    event.target.blur();
     this.props.handlePageChange({ page: 1, per_page: value });
     this.setState({
       current_page: 1,
       go_to_page: 1
     });
+  }
+
+  handleOnKeyPress(event) {
+    const isEnter = event.charCode === 13;
+    const { go_to_page } = this.state;
+
+    if (!isEnter) return;
+    event.target.blur();
+    this.props.handlePageChange({ page: go_to_page });
+    this.setState({ current_page: go_to_page });
   }
 
   renderFirst() {
@@ -165,7 +177,7 @@ export default class Paginator extends React.Component{
             <Col xs="auto">共{total_pages}页,</Col>
             <Col xs="auto">到第</Col>
             <Col xs="auto">
-              <Input type='text' value={go_to_page} onChange={this.handleChangeGoToPage} />
+              <Input type='text' value={go_to_page} onChange={this.handleChangeGoToPage} onKeyPress={this.handleOnKeyPress} />
             </Col>
             <Col xs="auto">页</Col>
             <Col xs="auto">

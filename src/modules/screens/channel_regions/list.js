@@ -212,7 +212,7 @@ class ChannelRegion extends Component {
             })
           }
         </th>
-        <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
+        <th>{ fecha.format(new Date(channel_region.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         { this.renderListOperate(channel_region) }
       </tr>
