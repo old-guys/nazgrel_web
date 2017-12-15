@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {Container, Row, Col, CardGroup, Card, CardTitle, CardBody, Button, Form, FormGroup, Input, Label, InputGroup, InputGroupAddon} from 'reactstrap';
+import { Container, Row, Col, Card, CardTitle, CardBody, Button, FormGroup, InputGroup, InputGroupAddon} from 'reactstrap';
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { fetchAuthLogin } from '../reducers/auth';
-import Notificator from './../../components/Notificator/'
+import { fetchAuthLogin } from '../../reducers/auth';
+import Notificator from '../../../components/Notificator/'
 
 @connect(state => ({
   loginUser: state.auth
@@ -16,24 +16,27 @@ export default class Login extends Component {
     super(props);
 
     this.state = {
-      phoneNumber: '',
+      login: '',
       password: '',
-    }
+      redirect: false
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     this.notificator = this.refs.notificator;
   }
 
-  handleUserLogin(event, errors, values) {
+  handleSubmit(event, errors, values) {
     if (_.isEmpty(errors)) this.userLogin();
   }
 
   async userLogin() {
-    const { phoneNumber, password } = this.state;
+    const { login, password } = this.state;
 
     try {
-      const res = await this.props.fetchAuthLogin({ login: phoneNumber, password });
+      const res = await this.props.fetchAuthLogin({ login, password });
       const { userToken } = this.props.loginUser;
 
       if (Number(res.code) === 0 && userToken) {
@@ -61,22 +64,22 @@ export default class Login extends Component {
               <Card className="p-4">
                 <CardTitle>登录你的账号</CardTitle>
                 <CardBody >
-                  <AvForm onSubmit={::this.handleUserLogin} >
+                  <AvForm onSubmit={this.handleSubmit} >
                     <AvGroup row>
                       <Col xs={8} md={10}>
                         <InputGroup size="lg">
                           <InputGroupAddon><i className="icon-user"></i></InputGroupAddon>
-                          <AvInput name="phoneNumber"
+                          <AvInput
+                            name="login"
                             type="text"
                             placeholder="输入账号"
                             className="form-control"
                             size="lg"
-                            block
+                            block="true"
                             required
-                            onChange={ e => {
-                              this.setState({ phoneNumber: e.currentTarget.value })
-                              }
-                            }
+                            onChange={(e) => {
+                              this.setState({ login: e.currentTarget.value });
+                            }}
                             errorMessage={{required: '输入账号'}}
                           />
                         </InputGroup>
@@ -87,17 +90,17 @@ export default class Login extends Component {
                       <Col xs={8} md={10}>
                         <InputGroup size="lg">
                           <InputGroupAddon><i className="icon-lock"></i></InputGroupAddon>
-                          <AvInput name="password"
+                          <AvInput
+                            name="password"
                             type="password"
                             placeholder="输入密码"
                             className="form-control"
                             size="lg"
-                            block
+                            block="true"
                             required
-                            onChange={ e => {
-                              this.setState({ password: e.currentTarget.value })
-                              }
-                            }
+                            onChange={(e) => {
+                              this.setState({ password: e.currentTarget.value });
+                            }}
                             errorMessage={{required: '输入密码'}}
                           />
                         </InputGroup>
@@ -105,9 +108,8 @@ export default class Login extends Component {
                       </Col>
                     </AvGroup>
                     <FormGroup>
-                      <Col smOffset={2} sm={10}>
-                        <Button type="submit"
-                          color="primary" size="lg" >
+                      <Col smoffset={2} sm={10}>
+                        <Button type="submit" color="primary" size="lg" >
                           登录
                         </Button>
                       </Col>
