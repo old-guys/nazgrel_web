@@ -6,7 +6,7 @@ export const CHANNEL_UPDATE = 'application.core.channel.update';
 
 export const channelConfig = (config) => {
 
-  const endpoint = `api/web/channels/{id}?filters={filters}&json_key={json_key}&page={page}`;
+  const endpoint = `api/web/channels/{id}?filters={filters}&json_key={json_key}&page={page}&per_page={per_page}`;
 
   const resource = {
     request: {

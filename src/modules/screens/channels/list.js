@@ -39,11 +39,31 @@ class Channel extends Component {
     this.fetchChannel();
   }
 
-  async fetchChannel(params) {
-    try {
-      this.setState({ isLoading: true });
+  async fetchChannel(params = {}) {
+    this.setState({ isLoading: true });
 
-      const res = await this.props.fetchChannelAll(params);
+    const page = params.page || this.state.page || 1;
+    const per_page = params.per_page || this.state.per_page;
+    const filters = params.filters || this.state.filters;
+    const json_key = params.json_key || this.state.json_key;
+    let optimizes = {
+      page,
+      per_page,
+      filters,
+      json_key,
+    };
+
+    this.setState({
+      page: optimizes.page,
+      per_page: optimizes.per_page,
+      query: params.query,
+      filters: optimizes.filters,
+      json_key: optimizes.json_key,
+    });
+    delete optimizes.query;
+
+    try {
+      const res = await this.props.fetchChannelAll(optimizes);
       this.setState({
         isLoading: false,
       });
