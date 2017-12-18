@@ -4,7 +4,9 @@ import path from 'path';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import uuidv1 from 'uuid/v1';
 
+const uuid = uuidv1();
 const extractCSS = new ExtractTextPlugin('[name].fonts.css');
 const extractSCSS = new ExtractTextPlugin('[name].styles.css');
 const platformConfig = require(path.resolve(`./config/${environment.getOrDefault('platform')}.config`));
@@ -97,7 +99,8 @@ module.exports = (env = {}) => {
       new HtmlWebpackPlugin({
         ENV: platformConfig,
         inject: true,
-        template: path.resolve('./src/index.html')
+        template: path.resolve('./src/index.html'),
+        newrelicFilePath: `/vendor/newrelic.${uuid}.js`
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development'),
@@ -107,7 +110,7 @@ module.exports = (env = {}) => {
       new CopyWebpackPlugin(
         [
           { from: './assets/images', to: './images/' },
-          { from: "./vendor/javascripts", to: "./vendor/" }
+          { from: "./vendor/javascripts", to: `./vendor/[name].${uuid}.[ext]` }
         ],
         { copyUnmodified: false }
       )

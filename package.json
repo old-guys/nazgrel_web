@@ -32,6 +32,7 @@
 		"uglify-js": "^3.1.4",
 		"uglifyjs-webpack-plugin": "^1.1.1",
 		"url-loader": "^0.6.2",
+		"uuid": "^3.1.0",
 		"webpack": "^3.7.1",
 		"webpack-config": "^7.5.0",
 		"webpack-dev-server": "^2.9.2"
