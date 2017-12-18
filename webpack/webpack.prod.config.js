@@ -8,7 +8,7 @@ import uuidv1 from 'uuid/v1';
 
 var date = new Date();
 const dateStr = `${date.getFullYear()}${date.getMonth()}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`
-const uuid = `${dateStr}${uuidv1()}`;
+const uuid = `${dateStr}${uuidv1().replace(/-/g, '').slice(0, 18)}`;
 const extractCSS = new ExtractTextPlugin(`[name].${uuid}.fonts.css`);
 const extractSCSS = new ExtractTextPlugin(`[name].${uuid}.styles.css`);
 const platformConfig = require(path.resolve(`./config/${environment.getOrDefault('platform')}.config`));
