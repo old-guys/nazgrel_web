@@ -41,7 +41,7 @@ class EditChannelRegion extends Component {
 
         if (this.props.success) this.props.success(res.data);
       } else {
-        this.props.notificator.error({ text: '保存区域失败' });
+        this.props.notificator.error({ text: `保存渠道失败:${res.message}` });
 
         if (this.props.fail) this.props.fail(res);
       }

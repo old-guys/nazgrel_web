@@ -50,7 +50,7 @@ class NewChannelRegion extends Component {
 
         if (this.props.success) this.props.success(res);
       } else {
-        this.props.notificator.error({ text: '保存区域失败' });
+        this.props.notificator.error({ text: `创建渠道失败:${res.message}` });
 
         if (this.props.fail) this.props.fail(res);
       }
