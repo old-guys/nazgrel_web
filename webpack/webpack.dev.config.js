@@ -41,10 +41,13 @@ module.exports = (env = {}) => {
             }
           },
         },
-        {
+        /*
+          * conflict with HtmlWebpackPlugin
+          {
           test: /\.html$/,
           loader: 'html-loader'
         },
+        */
         {
           test: /\.(scss)$/,
           use: ['css-hot-loader'].concat(extractSCSS.extract({
@@ -98,9 +101,10 @@ module.exports = (env = {}) => {
       extractSCSS,
       new HtmlWebpackPlugin({
         ENV: platformConfig,
-        inject: true,
         template: path.resolve('./src/index.html'),
-        newrelicFilePath: `/vendor/newrelic.${uuid}.js`
+        newrelicJsPath: `/vendor/newrelic.${uuid}.js`,
+        pleaseWaitJsPath: `/vendor/please-wait.${uuid}.js`,
+        pleaseWaitCssPath: `/vendor/please-wait.${uuid}.css`
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development'),
@@ -110,9 +114,9 @@ module.exports = (env = {}) => {
       new CopyWebpackPlugin(
         [
           { from: './assets/images', to: './images/' },
-          { from: "./vendor/javascripts", to: `./vendor/[name].${uuid}.[ext]` }
-          { from: "./node_modules/please-wait/build/please-wait.min.js", to: "./vendor/" },
-          { from: "./node_modules/please-wait/build/please-wait.css", to: "./vendor/" },
+          { from: "./vendor/javascripts", to: `./vendor/[name].${uuid}.[ext]` },
+          { from: "./node_modules/please-wait/build/please-wait.js", to: `./vendor/[name].${uuid}.[ext]` },
+          { from: "./vendor/stylesheets/please-wait.css", to: `./vendor/[name].${uuid}.[ext]` },
         ],
         { copyUnmodified: false }
       )
