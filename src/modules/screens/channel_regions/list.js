@@ -187,17 +187,13 @@ class ChannelRegion extends Component {
         <th>
           {
             _.map(channel_region.channel_region_maps, (channel_region_map) => {
-              const channel_users = channel_region_map.channel_users;
+              const channel_user = channel_region_map.channel_users[0] || {};
               const {channel} = channel_region_map;
 
               return (
                 <div className='region-item ' key={channel_region_map.id}>
                   {
-                    _.map(channel_users, (channel_user) => {
-                      return (
-                        <span key={channel_user.id}>{channel_region_map.channel_name} {channel_user.name} {channel_user.phone}<br/></span>
-                      )
-                    })
+                    <span key={channel.id}>{channel.name} {channel_user.name} {channel_user.phone}<br/></span>
                   }
                   <DestroyChannel
                     channel_region_map={channel_region_map}
