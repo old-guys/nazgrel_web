@@ -4,6 +4,7 @@
 /node_modules
 /config/travis/deploy.key
 /config/*.qiniu.config.js
+/config/deploy/local.sh
 *.diff.png
 *.new.png
 www

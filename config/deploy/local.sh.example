@@ -1,7 +1,8 @@
 #!/bin/bash
+# 用户开发人员本地环境的部署, 例如把本地虚拟机当成服务器
 
 echo "##### "
-echo "##### deploy bi web dev环境"
+echo "##### deploy bi web local环境"
 echo "#####"
 
 # 同步打包好的文件到服务器相应目录
