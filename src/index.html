@@ -3,15 +3,25 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="<%= htmlWebpackPlugin.options.newrelicFilePath %>"></script>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.options.newrelicJsPath %>"></script>
+    <link href="<%= htmlWebpackPlugin.options.pleaseWaitCssPath %>" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="芝蚂城业务系统 BI">
     <meta name="author" content="ishanggang developer group">
     <meta name="keyword" content="芝蚂城业务系统">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>芝蚂城业务系统</title>
+    <title>芝蚂城营销管理系统</title>
   </head>
   <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
     <div id="root"></div>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.options.pleaseWaitJsPath %>"></script>
+    <script type="text/javascript">
+      var loadingHtml = "<p class='loading-message text-muted'>欢迎使用芝蚂城营销管理系统，请稍后...</p>" +
+        '<div class="spinner"><div class="dot1"></div><div class="dot2"></div></div>';
+      window.loading_screen = window.pleaseWait({
+        logo: "/images/favicon.png",
+        loadingHtml: loadingHtml
+      });
+    </script>
   </body>
 </html>

@@ -24,6 +24,7 @@
 		"html-loader": "^0.5.1",
 		"html-webpack-plugin": "^2.30.1",
 		"node-sass": "^4.5.3",
+		"please-wait": "0.0.5",
 		"qiniu": "^7.1.1",
 		"rimraf": "^2.6.2",
 		"sass-loader": "^6.0.6",

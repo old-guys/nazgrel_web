@@ -29,6 +29,9 @@ class App extends Component{
   constructor(props, context){
     super(props, context);
   }
+  componentDidMount() {
+    window.loading_screen.finish();
+  }
 
   render() {
     return (
