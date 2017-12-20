@@ -133,6 +133,11 @@ const envItems = {
       icon: 'icon-star',
       children: [
         {
+          name: 'List',
+          url: '/demo/list',
+          icon: 'icon-star'
+        },
+        {
           name: 'Login',
           url: '/login',
           icon: 'icon-star'
