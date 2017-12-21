@@ -13,6 +13,11 @@ const defaultItems = [
         name: '渠道管理员',
         url: '/channel_region',
         icon: 'icon-star'
+      },
+      {
+        name: '新增店主',
+        url: '/newly_shop',
+        icon: 'icon-star'
       }
     ]
   }
