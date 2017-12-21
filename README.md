@@ -19,3 +19,4 @@ Dependencies can be handled by **npm**.
 - [Changelog](./CHANGELOG.md)
 - [Application Architecture](./wiki/app_architecture.md)
 - [CoreUI-React](https://github.com/mrholek/CoreUI-React)
+- [Public Project Guideline](https://github.com/wearehive/project-guidelines)
