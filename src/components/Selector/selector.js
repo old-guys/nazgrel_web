@@ -75,9 +75,12 @@ export default class Selector extends React.Component {
     const { page } = this.state;
 
     this.setState({ page: page + 1 });
-    this.fetchOptions();
 
-    if (this.props.onMenuScrollToBottom) this.props.onMenuScrollToBottom(event);
+    setTimeout(() => {
+      this.fetchOptions();
+
+      if (this.props.onMenuScrollToBottom) this.props.onMenuScrollToBottom(event);
+    });
   }
 
   handleOnInputChange(value) {
