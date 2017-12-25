@@ -21,6 +21,7 @@ let envRotues = {
     '/icons/font-awesome': 'Font Awesome',
     '/icons/simple-line-icons': 'Simple Line Icons',
     '/widgets': 'Widgets',
+    '/demo/list': 'List',
   }
 }[process.env.NODE_ENV];
 

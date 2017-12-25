@@ -5,6 +5,7 @@ import shopkeeper from './shopkeeper';
 import auth from './auth';
 import channel_region from './channel_region';
 import channel_user from './channel_user';
+import demo from './demo';
 
 export default combineReducers({
   constant_setting,
@@ -12,5 +13,6 @@ export default combineReducers({
   shopkeeper,
   auth,
   channel_region,
-  channel_user
+  channel_user,
+  demo
 });

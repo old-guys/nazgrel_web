@@ -21,6 +21,7 @@ import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
 import Register from '../../views/Pages/Register/'
 import Page404 from '../../views/Pages/Page404/'
 import Page500 from '../../views/Pages/Page500/'
+import Demo from '../../modules/screens/demos/list'
 
 export class ViewDemo1 extends Component {
   render() {
@@ -38,6 +39,7 @@ export class ViewDemo1 extends Component {
         <Route path="/icons/simple-line-icons" name="Simple Line Icons" component={SimpleLineIcons}/>
         <Route path="/widgets" name="Widgets" component={Widgets}/>
         <Route path="/charts" name="Charts" component={Charts}/>
+        <Route path="/demo/list" name="demo" component={Demo}/>
       </div>
     );
   }
