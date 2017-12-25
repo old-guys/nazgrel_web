@@ -12,7 +12,7 @@ export default class Selector extends React.Component {
       options: [],
       value: props.value,
       more: true,
-      page: 1
+      page: 1,
     }
 
     this.multi = props.multi || false;
@@ -41,6 +41,8 @@ export default class Selector extends React.Component {
 
   handleOnFocus(event) {
     console.log('onFocus')
+
+    event.target
   }
 
   handleOnOpen(event) {

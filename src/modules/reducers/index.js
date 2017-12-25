@@ -6,6 +6,7 @@ import auth from './auth';
 import channel_region from './channel_region';
 import channel_user from './channel_user';
 import demo from './demo';
+import report_channel_shop_newer from './report/channel_shop_newer';
 
 export default combineReducers({
   constant_setting,
@@ -14,5 +15,6 @@ export default combineReducers({
   auth,
   channel_region,
   channel_user,
-  demo
+  demo,
+  report_channel_shop_newer
 });
