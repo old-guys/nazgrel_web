@@ -15,6 +15,18 @@ const defaultItems = [
         icon: 'icon-star'
       }
     ]
+  },
+  {
+    name: '报表',
+    url: '/report',
+    icon: 'icon-puzzle',
+    children: [
+      {
+        name: '渠道新增店主',
+        url: '/report/channel_shop_newer/report',
+        icon: 'icon-star'
+      }
+    ]
   }
 ];
 

@@ -8,7 +8,7 @@ import Breadcrumb from '../../components/Breadcrumb/';
 import Aside from '../../components/Aside/';
 import Footer from '../../components/Footer/';
 import Dashboard from '../../views/Dashboard/';
-import { Channel, ChannelRegion } from '../../modules/screens'
+import { Channel, ChannelRegion, ReportChannelShopNewerReport } from '../../modules/screens'
 
 let ViewDemo1 = null;
 if (process.env.NODE_ENV === 'development') {
@@ -29,7 +29,8 @@ class Full extends Component {
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard}/>
                 <Route path="/channel" name="Channel" component={Channel}/>
-                <Route path="/channel_region" name="Channel" component={ChannelRegion}/>
+                <Route path="/channel_region" name="ChannelRegion" component={ChannelRegion}/>
+                <Route path="/report/channel_shop_newer/report" name="newly_shop" component={ReportChannelShopNewerReport} />
                 { ViewDemo1 ? <ViewDemo1 /> : '' }
                 <Redirect from="/" to="/channel" />
               </Switch>

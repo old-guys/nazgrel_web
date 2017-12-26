@@ -2,6 +2,7 @@ let defaultRoutes = {
   '/': '首页',
   '/channel': '渠道设置',
   '/channel_region': '渠道管理员',
+  '/report/channel_shop_newer/report': '新增店主'
 };
 
 let envRotues = {
