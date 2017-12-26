@@ -5,23 +5,17 @@ import Charts from '../../views/Charts/';
 import Widgets from '../../views/Widgets/';
 
 // Components
-import Buttons from '../../views/Components/Buttons/';
-import Cards from '../../views/Components/Cards/';
-import Forms from '../../views/Components/Forms/';
-import Modals from '../../views/Components/Modals/';
-import SocialButtons from '../../views/Components/SocialButtons/';
-import Switches from '../../views/Components/Switches/';
-import Tables from '../../views/Components/Tables/';
-import Tabs from '../../views/Components/Tabs/';
+import {
+  Buttons, Cards, Forms, Modals, SocialButtons, Switches, Tables, Tabs
+} from '../../views/Components/';
 
 // Icons
-import FontAwesome from '../../views/Icons/FontAwesome/';
-import SimpleLineIcons from '../../views/Icons/SimpleLineIcons/';
+import { FontAwesome, SimpleLineIcons } from '../../views/Icons/';
 
 import Register from '../../views/Pages/Register/'
 import Page404 from '../../views/Pages/Page404/'
 import Page500 from '../../views/Pages/Page500/'
-import Demo from '../../modules/screens/demos/list'
+import { Demo } from '../../modules/screens'
 
 export class ViewDemo1 extends Component {
   render() {

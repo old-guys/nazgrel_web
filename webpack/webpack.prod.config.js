@@ -17,7 +17,7 @@ module.exports = (env = {}) => {
   return {
     entry: {
       index: './src/index.js',
-      // vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk']
+      vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap']
     },
     output: {
       filename: `[name].${uuid}.js`,
@@ -37,6 +37,13 @@ module.exports = (env = {}) => {
               cacheDirectory: true
             }
           },
+        },
+        {
+          test: /\.html$/,
+          loader: 'html-loader',
+          exclude: [
+            path.resolve('./src/index.html'),
+          ],
         },
         {
           test: /\.(scss)$/,

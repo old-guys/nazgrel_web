@@ -14,10 +14,12 @@ const platformConfig = require(path.resolve(`./config/${environment.getOrDefault
 module.exports = (env = {}) => {
   return {
     entry: {
-      index: './src/index.js'
+      index: './src/index.js',
+      vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap']
     },
     output: {
-      filename: '[name].bundle.js',
+      filename: `[name].${uuid}.js`,
+      chunkFilename: `[name].${uuid}.js`,
       path: path.resolve(`./www${platformConfig.buildPath}`),
       publicPath: platformConfig.publicPath
     },
@@ -41,13 +43,13 @@ module.exports = (env = {}) => {
             }
           },
         },
-        /*
-          * conflict with HtmlWebpackPlugin
-          {
+        {
           test: /\.html$/,
-          loader: 'html-loader'
+          loader: 'html-loader',
+          exclude: [
+            path.resolve('./src/index.html'),
+          ],
         },
-        */
         {
           test: /\.(scss)$/,
           use: ['css-hot-loader'].concat(extractSCSS.extract({

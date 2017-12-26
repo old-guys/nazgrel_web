@@ -33,7 +33,7 @@ class EditDemo extends Component {
     const opts = _.pick(demo, ['id', 'name']);
 
     try {
-      const res = await DemoApi.instance().update(opts.id, { demo: opts });
+      const res = await DemoApi.instance().update({ demo: opts });
 
       if (Number(res.code) === 0) {
         this.props.notificator.success({ text: '保存demo成功' });
