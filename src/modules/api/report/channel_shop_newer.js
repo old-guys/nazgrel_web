@@ -30,7 +30,7 @@ export default class ChannelShopNewerApi {
 
     const get = this.resource.get(resolvedConfig);
     const response = await fetchResource(get);
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }

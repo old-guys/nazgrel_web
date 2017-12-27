@@ -9,8 +9,8 @@ export default function channelShopNewerConfig(config) {
   const query = queryString.stringify(params);
   let endpoint = 'api/web/report/channel_shop_newers';
 
-  if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`
-  if (!_.isEmpty(query)) endpoint = `${endpoint}?${query}`
+  if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;
+  if (!_.isEmpty(query)) endpoint = `${endpoint}?${query}`;
 
   const resource = {
     request: {

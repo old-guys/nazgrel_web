@@ -1,9 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import {
-  shopkeeper as shopkeeperResource,
-  check as checkShopkeeperResource
-} from '../resources/shopkeeper';
+import shopkeeperResource from '../resources/shopkeeper';
 
 export default class ShopkeeperApi {
   static _apiInstance = null;
@@ -20,17 +17,16 @@ export default class ShopkeeperApi {
     this.config = config;
 
     this.check = this.check.bind(this);
-
     this.resource = shopkeeperResource(config);
   }
 
   async check(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    this.resource = checkShopkeeperResource(config);
 
+    this.resource = shopkeeperResource({ path: '/check', params: resolvedConfig });
     const get = this.resource.get(resolvedConfig);
     const response = await fetchResource(get);
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }
