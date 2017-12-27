@@ -13,25 +13,32 @@ class NewChannelRegion extends Component {
     super(props);
 
     this.state = {
-      channel_region: {
-        id: null,
-        name: "",
-        channel_ids: [],
-        channel_user: {
-          name: "",
-          phone: "",
-          password: "",
-          confirm_password: ""
-        }
-      },
+      channel_region: this.defaultChannelRegionOpts(),
       isOpen: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  defaultChannelRegionOpts() {
+    return {
+      id: null,
+      name: "",
+      channel_ids: [],
+      channel_user: {
+        name: "",
+        phone: "",
+        password: "",
+        confirm_password: ""
+      }
+    };
+  }
+
   showModal() {
-    this.setState({ isOpen: true });
+    this.setState({
+      isOpen: true,
+      channel_region: this.defaultChannelRegionOpts()
+    });
   }
 
   hideModal() {

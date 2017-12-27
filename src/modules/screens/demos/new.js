@@ -13,18 +13,25 @@ class NewDemo extends Component {
     super(props);
 
     this.state = {
-      demo: {
-        id: null,
-        name: ""
-      },
+      demo: this.defaultDemo(),
       isOpen: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  defaultDemo() {
+    return {
+      id: null,
+      name: ""
+    };
+  }
+
   showModal() {
-    this.setState({ isOpen: true });
+    this.setState({
+      isOpen: true,
+      demo: this.defaultDemo()
+    });
   }
 
   hideModal() {
