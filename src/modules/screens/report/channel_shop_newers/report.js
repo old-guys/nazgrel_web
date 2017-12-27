@@ -1,7 +1,10 @@
-import zhCN from 'antd/lib/locale-provider/zh_CN';
-import React, { Component } from 'react'
 import moment from 'moment';
-import { DatePicker } from 'antd';
+moment.locale('zh-cn');
+
+import 'antd/dist/antd.css';
+import React, { Component } from 'react'
+import DatePicker from 'antd/lib/date-picker';
+
 import { Button, Table, Card, CardBody, Input, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import fecha from 'fecha';
@@ -14,7 +17,6 @@ import {
   fetchReport
 } from '../../../reducers/report/channel_shop_newer';
 
-moment.locale('zh-cn');
 const { MonthPicker } = DatePicker;
 
 @connect(state => ({

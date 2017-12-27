@@ -8,9 +8,10 @@ import Paginator from '../../../components/Paginator/'
 import Notificator from '../../../components/Notificator/'
 import Loading from '../../../components/Loading/'
 import Nodata from '../../../components/Nodata/'
-import NewDemo from './new';
-import EditDemo from './edit';
-import DestroyDemo from './destroy';
+// import NewDemo from './new';
+// import EditDemo from './edit';
+// import DestroyDemo from './destroy';
+import { NewDemo, EditDemo, DestroyDemo } from './'
 
 import { fetchDemoAll } from '../../reducers/demo';
 
@@ -72,7 +73,10 @@ class Demo extends Component {
   renderNewBtn() {
     return (
       <div className="pull-right">
-        <Button color="primary" onClick={() => this.refs.NewDemo.showModal() }>新增DEMO</Button>
+        <Button color="primary" onClick={() => {
+          this.refs.NewDemo.refs.NewDemo.showModal();
+          // this.refs.NewDemo.showModal();
+        } }>新增DEMO</Button>
       </div>
     );
   }
@@ -126,7 +130,10 @@ class Demo extends Component {
             this.fetch();
           }}
         />
-        <Button size="sm" color="primary" onClick={() => this.refs.EditDemo.showModal(demo) }>编辑</Button>
+        <Button size="sm" color="primary" onClick={() => {
+          this.refs.EditDemo.refs.EditDemo.showModal(demo);
+          // this.refs.EditDemo.showModal(demo);
+        } }>编辑</Button>
       </th>
     );
   }

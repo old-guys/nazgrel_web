@@ -6,6 +6,7 @@
 		"transform-object-rest-spread",
 		"transform-class-properties",
 		"transform-decorators-legacy",
-		"babel-plugin-transform-runtime"
+		"babel-plugin-transform-runtime",
+		"syntax-dynamic-import"
 	]
 }
