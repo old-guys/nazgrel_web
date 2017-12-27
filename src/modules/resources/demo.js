@@ -9,8 +9,8 @@ export default function demoConfig(config) {
   const query = queryString.stringify(params);
   let endpoint = 'api/web/demos';
 
-  if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`
-  if (!_.isEmpty(query)) endpoint = `${endpoint}?${query}`
+  if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;
+  if (!_.isEmpty(query)) endpoint = `${endpoint}?${query}`;
 
   const resource = {
     request: {

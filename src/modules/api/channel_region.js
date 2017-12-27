@@ -30,7 +30,7 @@ export default class ChannelRegionApi {
     this.resource = channelRegionResource({ params: resolvedConfig });
     const get = this.resource.get(resolvedConfig);
     const response = await fetchResource(get);
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }
@@ -42,7 +42,7 @@ export default class ChannelRegionApi {
 
     const create = this.resource.create(resolvedConfig);
     const response = await fetchResource(create, { body: JSON.stringify(body) });
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }
@@ -57,7 +57,7 @@ export default class ChannelRegionApi {
 
     const update = this.resource.update({ id });
     const response = await fetchResource(update, { body: JSON.stringify(body) });
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }
@@ -77,7 +77,7 @@ export default class ChannelRegionApi {
 
     const destroy = this.resource.destroy({ channel_region_id });
     const response = await fetchResource(destroy);
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }

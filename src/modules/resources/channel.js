@@ -1,40 +1,18 @@
 import { JsonApiResource } from '../../resources';
+import * as queryString from 'query-string';
 
 export const CHANNEL = 'application.core.channel';
-export const CHANNEL_CREATE = 'application.core.channel.create';
-export const CHANNEL_UPDATE = 'application.core.channel.update';
 
-export const channelConfig = (config) => {
+export default function channelConfig(config = {}) {
 
-  const endpoint = `api/web/channels/{id}?filters={filters}&json_key={json_key}&page={page}&per_page={per_page}`;
+  const { path, params } = config;
+  const query = queryString.stringify(params);
+  let endpoint = 'api/web/channels';
 
-  const resource = {
-    request: {
-      endpoint,
-    },
-  };
-
-  return new JsonApiResource(resource);
-}
-
-export const create = (config) => {
-  const endpoint = `api/web/channels`;
+  if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;
+  if (!_.isEmpty(query)) endpoint = `${endpoint}?${query}`;
 
   const resource = {
-    schema: CHANNEL_CREATE,
-    request: {
-      endpoint,
-    },
-  };
-
-  return new JsonApiResource(resource);
-}
-
-export const update = (config) => {
-  const endpoint = `api/web/channels/{id}`;
-
-  const resource = {
-    schema: CHANNEL_UPDATE,
     request: {
       endpoint,
     },

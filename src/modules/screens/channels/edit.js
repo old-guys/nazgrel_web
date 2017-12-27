@@ -59,15 +59,17 @@ class EditChannel extends Component {
     try {
       this.setState({ editDisabled: true });
       const res = await ChannelApi.instance().update({
-        id: channel.id,
-        name: channel.name,
-        city: channel.city,
-        category: channel.channelCategory,
-        source: channel.channelSource,
-        channel_user: {
-          password: channel.password
+        channel: {
+          id: channel.id,
+          name: channel.name,
+          city: channel.city,
+          category: channel.channelCategory,
+          source: channel.channelSource,
+          channel_user: {
+            password: channel.password
+          }
         }
-      }, { id: channel.id });
+      });
 
       if (Number(res.code) === 0) {
         this.props.notificator.success({ text: `更新渠道成功` });
@@ -79,7 +81,7 @@ class EditChannel extends Component {
       }
       this.setState({editDisabled: false})
     } catch(e) {
-      console.log(e)
+      console.error(e);
       this.setState({
         networkError: true,
         editDisabled: false
@@ -169,13 +171,13 @@ class EditChannel extends Component {
                 }
               </AvField>
               <AvField name="name"
-                value={channel.source}
+                value={channel.channelSource}
                 label="渠道类型"
                 type="select"
                 required
                 grid={{md: 9}}
                 onChange={(e) => {
-                  channel.source = e.target.value;
+                  channel.channelSource = e.target.value;
                   this.setState({ channel });
                 }}
                 errorMessage={{required: '请选择渠道类型'}}

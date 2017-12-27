@@ -1,10 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import {
-  channelConfig as channelResource,
-  create as createChannelResource,
-  update as updateChannelResource
-} from '../resources/channel';
+import channelResource from '../resources/channel';
 
 export default class ChannelApi {
   static _apiInstance = null;
@@ -17,7 +13,7 @@ export default class ChannelApi {
     return ChannelApi._apiInstance;
   }
 
-  constructor(config) {
+  constructor(config = {}) {
     this.config = config;
 
     this.index = this.index.bind(this);
@@ -31,6 +27,7 @@ export default class ChannelApi {
   async index(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
 
+    this.resource = channelResource({ params: resolvedConfig });
     const index = this.resource.get(resolvedConfig);
     const response = await fetchResource(index);
     const json = await response.json()
@@ -48,39 +45,25 @@ export default class ChannelApi {
     return show;
   }
 
-  async create(patch, config = {}) {
+  async create(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    this.resource = createChannelResource(config);
+    const { channel } = resolvedConfig;
+    const body = { channel };
 
-    const body = {
-      channel: {
-        ...patch,
-      },
-    };
-
-    const create = this.resource.post();
-    const response = await fetchResource(create, {
-      body: JSON.stringify(body)
-    });
+    const create = this.resource.create(resolvedConfig);
+    const response = await fetchResource(create, { body: JSON.stringify(body) });
     const json = await response.json()
 
     return json;
   }
 
-  async update(patch, config = {}) {
+  async update(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    const { id } = resolvedConfig;
+    const { channel } = resolvedConfig;
+    const { id } = channel;
+    const body = { channel };
 
-    this.resource = updateChannelResource(config);
-
-
-
-    const body = {
-      channel: {
-        ...patch,
-      }
-    };
-
+    this.resource = channelResource({ path: `/${id}` });
     const update = this.resource.update({ id });
     const response = await fetchResource(update, { body: JSON.stringify(body) });
     const json = await response.json()

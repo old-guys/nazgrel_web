@@ -8,7 +8,7 @@ function response(res) {
   return false;
 }
 
-export function fetchShopkeeperCheck(params) {
+export function fetchCheck(params) {
   return dispatch => {
     return ShopkeeperApi.instance().check(params)
       .then((res) => {

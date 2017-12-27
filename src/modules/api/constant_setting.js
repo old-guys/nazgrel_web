@@ -1,9 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import {
-  constant_setting as constantSettingResource,
-  enum_field as enumFieldConstantSettingResource
-} from '../resources/constant_setting';
+import constantSettingResource from '../resources/constant_setting';
 
 export default class ConstantSettingApi {
   static _apiInstance = null;
@@ -26,11 +23,11 @@ export default class ConstantSettingApi {
 
   async enum_field(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
-    this.resource = enumFieldConstantSettingResource(config);
 
+    this.resource = constantSettingResource({ path: '/enum_field', params: resolvedConfig });
     const get = this.resource.get(resolvedConfig);
     const response = await fetchResource(get);
-    const json = await response.json()
+    const json = await response.json();
 
     return json;
   }

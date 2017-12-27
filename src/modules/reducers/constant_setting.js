@@ -8,7 +8,7 @@ function response(res) {
   return false;
 }
 
-export function fetchConstantSettingEnumField(params) {
+export function fetchEnumField(params) {
   return dispatch => {
     return ConstantSettingApi.instance().enum_field(params)
       .then((res) => {

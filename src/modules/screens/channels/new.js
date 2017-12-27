@@ -57,11 +57,7 @@ class NewChannel extends Component {
     try {
       this.setState({ queryShopkeeperDisabled: true });
 
-      const res = await ShopkeeperApi.instance().check({
-        params: {
-          phone: this.state.channel.shopkeeperPhone
-        }
-      });
+      const res = await ShopkeeperApi.instance().check({ phone: this.state.channel.shopkeeperPhone });
 
       if (Number(res.code) === 0) {
         this.setState({
@@ -80,7 +76,7 @@ class NewChannel extends Component {
       this.setState({ queryShopkeeperDisabled: false });
     } catch(e) {
 
-      console.log(e);
+      console.error(e);
       this.setState({
         networkError: true,
         queryShopkeeperDisabled: false
@@ -105,14 +101,16 @@ class NewChannel extends Component {
     try {
       this.setState({ createDisabled: true })
       const res = await ChannelApi.instance().create({
-        name: channel.name,
-        city: channel.city,
-        category: channel.channelCategory,
-        source: channel.channelSource,
-        shopkeeper_user_id: channel.shopkeeperUserId,
-        channel_user: {
-          name: channel.shopkeeperName,
-          password: channel.password
+        channel: {
+          name: channel.name,
+          city: channel.city,
+          category: channel.channelCategory,
+          source: channel.channelSource,
+          shopkeeper_user_id: channel.shopkeeperUserId,
+          channel_user: {
+            name: channel.shopkeeperName,
+            password: channel.password
+          }
         }
       });
 
@@ -126,7 +124,7 @@ class NewChannel extends Component {
       }
       this.setState({createDisabled: false})
     } catch(e) {
-      console.log(e)
+      console.error(e)
       this.setState({
         networkError: true,
         createDisabled: false
@@ -254,13 +252,13 @@ class NewChannel extends Component {
               </AvField>
               <AvField
                 name="source"
-                value={channel.source}
+                value={channel.channelSource}
                 label="渠道类型"
                 type="select"
                 required
                 grid={{md: 9}}
                 onChange={(e) => {
-                  channel.source = e.target.value;
+                  channel.channelSource = e.target.value;
                   this.setState({ channel });
                 }}
                 errorMessage={{required: '请选择渠道来源'}}

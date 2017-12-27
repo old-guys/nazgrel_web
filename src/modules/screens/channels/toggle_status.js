@@ -21,7 +21,7 @@ class ToggleStatus extends Component {
     }
 
     try {
-      const res = await ChannelApi.instance().update(opts, { id: channel.id });
+      const res = await ChannelApi.instance().update({ channel: opts });
       if (Number(res.code) === 0) {
         this.props.notificator.success({ text: `${text}渠道成功` });
 
@@ -30,6 +30,7 @@ class ToggleStatus extends Component {
         this.props.notificator.error({ text: `${text}渠道失败: ${res.message}` });
       }
     } catch(e) {
+      console.error(e);
       this.setState({ networkError: true });
     }
   }
