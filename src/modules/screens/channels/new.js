@@ -11,29 +11,44 @@ class NewChannel extends Component {
     super(props);
 
     this.state = {
-      queryShopkeeperDisabled: false,
-      channel: {
-        channelCategory: null,
-        source: null,
-        name: "",
-        city: "",
-        shopkeeperPhone: "",
-        shopkeeperName: "",
-        password: Math.random().toString(36).substring(6),
-        shopkeeperUserId: null
-      },
-      enumField: {},
+      queryShopkeeperDisabled: this.defaultQueryShopkeeperDisabled(),
+      channel: this.defaultChannel(),
+      enumField: this.defaultEnumField(),
       isOpen: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  defaultQueryShopkeeperDisabled() {
+    return false;
+  }
+
+  defaultChannel() {
+    return {
+      channelCategory: null,
+      source: null,
+      name: "",
+      city: "",
+      shopkeeperPhone: "",
+      shopkeeperName: "",
+      password: Math.random().toString(36).substring(6),
+      shopkeeperUserId: null
+    };
+  }
+
+  defaultEnumField() {
+    return {};
+  }
+
   setChannelInitialState() {
-    const { channel } = this.state;
+    const channel = this.defaultChannel();
 
     channel.password = Math.random().toString(36).substring(6);
-    this.setState({ channel });
+    this.setState({
+      channel,
+      queryShopkeeperDisabled: this.defaultQueryShopkeeperDisabled()
+    });
   }
 
   async setEnumFieldInitialState(params = {}) {
