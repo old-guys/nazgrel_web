@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { ConstantSettingApi } from '../api';
+import ConstantSettingApi from 'api/constant_setting';
 
 const CONSTANT_SETTING_ENUM_FIELD = '@CONSTANT_SETTING_ENUM_FIELD';
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import shopkeeperResource from '../resources/shopkeeper';
+import shopkeeperResource from 'resources/shopkeeper';
 
 export default class ShopkeeperApi {
   static _apiInstance = null;

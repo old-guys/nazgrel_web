@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { ChannelUserApi } from '../api';
+import ChannelUserApi from 'api/channel_user';
 
 const CHANNEL_USER_DETAILS = '@CHANNEL_USER_DETAILS';
 

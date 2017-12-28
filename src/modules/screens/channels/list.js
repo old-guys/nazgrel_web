@@ -3,16 +3,16 @@ import { Card, CardBody, Button, Table } from 'reactstrap';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
 
-import { Confirm } from '../../../components/Confirm/';
-import Paginator from '../../../components/Paginator/'
-import Notificator from '../../../components/Notificator/'
-import Loading from '../../../components/Loading/'
-import Nodata from '../../../components/Nodata/'
+import { Confirm } from 'components/Confirm/';
+import Paginator from 'components/Paginator/'
+import Notificator from 'components/Notificator/'
+import Loading from 'components/Loading/'
+import Nodata from 'components/Nodata/'
 import NewChannel from './new';
 import EditChannel from './edit';
 import { default as ChannelToggleStatus } from './toggle_status';
 
-import { fetchChannelAll } from '../../reducers/channel';
+import { fetchChannelAll } from 'reducers/channel';
 
 @connect(state => ({
   channels: state.channel,

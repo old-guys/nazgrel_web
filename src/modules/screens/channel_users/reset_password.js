@@ -3,7 +3,7 @@ import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Container
 } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { ChannelUserApi } from '../../api';
+import ChannelUserApi from 'api/channel_user';
 
 class ResetPassword extends Component {
 

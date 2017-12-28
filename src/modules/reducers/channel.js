@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { ChannelApi } from '../api';
+import ChannelApi from 'api/channel';
 
 const CHANNEL_ALL = '@CHANNEL_ALL';
 const CHANNEL_SHOW = '@CHANNEL_SHOW';

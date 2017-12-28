@@ -3,11 +3,11 @@ import { Button, Table, Card, CardBody } from 'reactstrap';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
 
-import { Confirm } from '../../../components/Confirm/';
-import Paginator from '../../../components/Paginator/'
-import Notificator from '../../../components/Notificator/'
-import Loading from '../../../components/Loading/'
-import Nodata from '../../../components/Nodata/'
+import { Confirm } from 'components/Confirm/';
+import Paginator from 'components/Paginator/'
+import Notificator from 'components/Notificator/'
+import Loading from 'components/Loading/'
+import Nodata from 'components/Nodata/'
 import NewChannelRegion from './new'
 import EditChannelRegion from './edit'
 import DestroyChannel from './destroy_channel'
@@ -16,7 +16,7 @@ import { default as ChannelUserResetPassword } from '../channel_users/reset_pass
 
 import {
   fetchChannelRegionAll
-} from '../../reducers/channel_region';
+} from 'reducers/channel_region';
 
 @connect(state => ({
   channel_region: state.channel_region

@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { AuthApi } from '../api';
+import AuthApi from 'api/auth';
 
 const UPDATE_TOKEN = '@UPDATE_TOKEN';
 

@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { ShopkeeperApi } from '../api';
+import ShopkeeperApi from 'api/shopkeeper';
 
 const SHOPKEEPER_CHECK = '@SHOPKEEPER_CHECK';
 

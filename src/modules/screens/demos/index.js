@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Loadable from 'react-loadable';
-import PageLoading from '../../../components/Loading/page';
+import PageLoading from 'components/Loading/page';
 
 export const Demo = Loadable({
   loader: () => import('./list'),

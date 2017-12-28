@@ -4,8 +4,8 @@ import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstr
 
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { fetchAuthLogin } from '../../reducers/auth';
-import Notificator from '../../../components/Notificator/'
+import { fetchAuthLogin } from 'reducers/auth';
+import Notificator from 'components/Notificator/'
 
 @connect(state => ({
   loginUser: state.auth

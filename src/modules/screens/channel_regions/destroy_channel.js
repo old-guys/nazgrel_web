@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { ChannelRegionApi } from '../../api';
-import { Confirm } from '../../../components/Confirm/';
+import ChannelRegionApi from 'api/channel_region';
+import { Confirm } from 'components/Confirm/';
 
 class DestroyChannel extends Component {
 
