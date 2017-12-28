@@ -15,10 +15,10 @@ import '../assets/scss/style.scss'
 // Temp fix for reactstrap
 import '../assets/scss/core/_dropdown-menu-right.scss'
 
-import { reducers } from './modules';
-import { Login } from './modules/screens'
-import { Auth } from './modules/services'
-import Full from './containers/Full/Full';
+import reducers from 'reducers';
+import { Login } from 'screens'
+import { Auth } from 'services'
+import Full from 'containers/Full/Full';
 
 const middleware = [ thunk ]
 const enhancers = compose(applyMiddleware(...middleware));

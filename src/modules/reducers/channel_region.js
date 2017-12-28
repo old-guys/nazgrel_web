@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import { ChannelRegionApi } from '../api';
+import ChannelRegionApi from 'api/channel_region';
 
 const CHANNEL_REGION_ADD = '@CHANNEL_REGION_ADD';
 const CHANNEL_REGION_ALL = '@CHANNEL_REGION_ALL';

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import DemoApi from '../../api/demo';
-import { Confirm } from '../../../components/Confirm/';
+import DemoApi from 'api/demo';
+import { Confirm } from 'components/Confirm/';
 
 class DestroyDemo extends Component {
 

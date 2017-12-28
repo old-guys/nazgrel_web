@@ -4,8 +4,8 @@ import {
 } from 'reactstrap';
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
-import { ChannelRegionApi } from '../../api';
-import ChannelSelector from '../../../components/Selector/channel'
+import ChannelRegionApi from 'api/channel_region';
+import ChannelSelector from 'components/Selector/channel'
 
 class NewChannelRegion extends Component {
 

@@ -4,7 +4,8 @@ import {
   Row, Col, Container, Label, InputGroup, Input, FormGroup
 } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { ChannelApi, ConstantSettingApi } from '../../api';
+import ChannelApi from 'api/channel';
+import ConstantSettingApi from 'api/constant_setting';
 
 class EditChannel extends Component {
   constructor (props) {

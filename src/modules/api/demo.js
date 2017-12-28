@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import demoConfig, { DEMO } from '../resources/demo';
+import demoConfig, { DEMO } from 'resources/demo';
 
 export default class DemoApi {
   static _apiInstance = null;

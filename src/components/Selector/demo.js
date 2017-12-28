@@ -1,6 +1,6 @@
 import Selector from './selector'
 // import { ChannelApi } from '../../modules/api';
-import DemoApi from '../../modules/api/demo';
+import DemoApi from 'api/demo';
 
 export default class DemoSelector extends Selector {
   constructor(props) {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import channelRegionResource, { CHANNEL_REGION } from '../resources/channel_region';
+import channelRegionResource, { CHANNEL_REGION } from 'resources/channel_region';
 
 export default class ChannelRegionApi {
   static _apiInstance = null;

@@ -1,5 +1,5 @@
 import createReducer from '../../../store/create-reducer';
-import { ReportChannelShopNewerApi } from '../../api';
+import ReportChannelShopNewerApi from 'api/report/channel_shop_newer';
 
 const REPORT_CHANNEL_SHOP_NEWER_REPORT = '@CHANNEL_SHOW';
 

@@ -25,6 +25,18 @@ module.exports = (env = {}) => {
       path: path.resolve(`./www${platformConfig.buildPath}`),
       publicPath: platformConfig.publicPath
     },
+    resolve: {
+      extensions: ['.js', '.jsx', '.scss', '.css'],
+      alias: {
+        components: path.resolve('./src/components/'),
+        containers: path.resolve('./src/containers/'),
+        api: path.resolve('./src/modules/api'),
+        reducers: path.resolve('./src/modules/reducers'),
+        resources: path.resolve('./src/modules/resources'),
+        screens: path.resolve('./src/modules/screens'),
+        services: path.resolve('./src/modules/services'),
+      }
+    },
     devtool: 'cheap-module-source-map',
     module: {
       rules: [

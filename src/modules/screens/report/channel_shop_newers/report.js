@@ -9,13 +9,13 @@ import { Button, Table, Card, CardBody, Input, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import fecha from 'fecha';
 
-import Paginator from '../../../../components/Paginator/';
-import Loading from '../../../../components/Loading/';
-import Nodata from '../../../../components/Nodata/';
-import ChannelSelector from '../../../../components/Selector/channel';
+import Paginator from 'components/Paginator/';
+import Loading from 'components/Loading/';
+import Nodata from 'components/Nodata/';
+import ChannelSelector from 'components/Selector/channel';
 import {
   fetchReport
-} from '../../../reducers/report/channel_shop_newer';
+} from 'reducers/report/channel_shop_newer';
 
 const { MonthPicker } = DatePicker;
 

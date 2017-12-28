@@ -4,7 +4,9 @@ import {
   Row, Col, Container, Label, InputGroup, Input, FormGroup
 } from 'reactstrap';
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { ChannelApi, ConstantSettingApi, ShopkeeperApi } from '../../api';
+import ChannelApi from 'api/channel';
+import ConstantSettingApi from 'api/constant_setting';
+import ShopkeeperApi from 'api/shopkeeper';
 
 class NewChannel extends Component {
   constructor (props) {

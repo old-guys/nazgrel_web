@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../resources';
-import constantSettingResource from '../resources/constant_setting';
+import constantSettingResource from 'resources/constant_setting';
 
 export default class ConstantSettingApi {
   static _apiInstance = null;

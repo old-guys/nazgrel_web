@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { fetchResource } from '../../resources';
 import {
   channelUserConfig as channelUserResource,
-} from '../resources/channel_user';
+} from 'resources/channel_user';
 
 export default class ChannelUserApi {
   static _apiInstance = null;

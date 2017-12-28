@@ -1,5 +1,5 @@
 import createReducer from '../../store/create-reducer';
-import DemoApi from '../api/demo';
+import DemoApi from 'api/demo';
 
 const DEMO_ALL = '@DEMO_ALL';
 const DEMO_SHOW = '@DEMO_SHOW';

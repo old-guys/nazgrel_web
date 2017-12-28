@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchResource } from '../../../resources';
-import channelShopNewerConfig, { REPORT_CHANNEL_SHOP_NEWER } from '../../resources/report/channel_shop_newer';
+import channelShopNewerConfig, { REPORT_CHANNEL_SHOP_NEWER } from 'resources/report/channel_shop_newer';
 
 export default class ChannelShopNewerApi {
   static _apiInstance = null;

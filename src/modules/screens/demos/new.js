@@ -4,8 +4,8 @@ import {
 } from 'reactstrap';
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
-import DemoApi from '../../api/demo';
-import DemoSelector from '../../../components/Selector/demo'
+import DemoApi from 'api/demo';
+import DemoSelector from 'components/Selector/demo'
 
 class NewDemo extends Component {
 

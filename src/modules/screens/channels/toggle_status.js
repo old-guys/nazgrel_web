@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { ChannelApi } from '../../api';
-import { Confirm } from '../../../components/Confirm/';
+import ChannelApi from 'api/channel';
+import { Confirm } from 'components/Confirm/';
 
 class ToggleStatus extends Component {
 
