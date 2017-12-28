@@ -18,6 +18,7 @@ export default class Selector extends React.Component {
     this.multi = props.multi || false;
     this.clearable= props.clearable || true;
     this.searchable= props.searchable || true;
+    this.filters = props.filters;
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
@@ -29,31 +30,28 @@ export default class Selector extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.selectRef)
+    console.log(this.selectRef);
   }
 
   handleOnChange(values) {
-    console.log('onChange')
+    console.log('onChange');
 
     this.setState({ value: values });
     if (this.props.onChange) this.props.onChange(values);
   }
 
   handleOnFocus(event) {
-    console.log('onFocus')
-
-    event.target
+    console.log('onFocus');
   }
 
   handleOnOpen(event) {
-    console.log('onOpen')
+    console.log('onOpen');
 
-    this.setState({
+    this.fetchOptions({
       page: 1,
       more: true,
       options: []
-    })
-    this.fetchOptions();
+    });
 
     if (this.props.onOpen) this.props.onOpen(event);
   }
@@ -66,52 +64,44 @@ export default class Selector extends React.Component {
     });
 
     if (unselectedOptions.length < 5 && more) {
-      this.setState({ page: page + 1 })
-      this.fetchOptions();
+      this.fetchOptions({ page: page + 1 });
     }
   }
 
   handleOnMenuScrollToBottom(event) {
-    console.log('onMenuScrollToBottom')
+    console.log('onMenuScrollToBottom');
 
     const { page } = this.state;
+    this.fetchOptions({ page: page + 1 });
 
-    this.setState({ page: page + 1 });
-
-    setTimeout(() => {
-      this.fetchOptions();
-
-      if (this.props.onMenuScrollToBottom) this.props.onMenuScrollToBottom(event);
-    });
+    if (this.props.onMenuScrollToBottom) this.props.onMenuScrollToBottom(event);
   }
 
   handleOnInputChange(value) {
-    console.log('onInputChange')
+    console.log('onInputChange');
 
     setTimeout(() => {
-      const dom = this.refs[this.selectRef]
-
-      this.setState({
-        query: value,
-        more: true,
-        page: 1,
-        options: []
-      });
+      const dom = this.refs[this.selectRef];
 
       if (dom.state.isOpen) {
-        this.fetchOptions();
+        this.fetchOptions({
+          query: value,
+          more: true,
+          page: 1,
+          options: []
+        });
       }
 
       if (this.props.onInputChange) this.props.onInputChange(value);
-    }, 0)
+    }, 0);
   }
 
   handleOnBlur(event) {
-    console.log('onBlur')
+    console.log('onBlur');
   }
 
   handleOnClose(event) {
-    console.log('onClose')
+    console.log('onClose');
 
     this.setState({
       query: null,
@@ -122,12 +112,25 @@ export default class Selector extends React.Component {
   }
 
   fetchOptions(params = {}) {
-    const { value, options, more, page } = this.state;
+    const options = params.options || this.state.options;
+    const more = params.more || this.state.more;
+    const page = params.page || this.state.page;
+    const query = _.hasIn(params, 'query') ? params.query : this.state.query;
+    const filters = this.filters;
+
+    this.setState({
+      page,
+      query,
+      options,
+      more
+    });
 
     if (!more) return null;
 
     let optimizes = {
-      page: page,
+      page,
+      query,
+      filters
     };
 
     this.fetchData(optimizes).then((res) => {
@@ -162,6 +165,7 @@ export default class Selector extends React.Component {
         clearable={this.clearable}
         searchable={this.searchable}
         scrollMenuIntoView={this.scrollMenuIntoView}
+        noResultsText="没有找到匹配项"
       />
     );
   }

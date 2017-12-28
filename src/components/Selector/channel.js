@@ -11,6 +11,6 @@ export default class ChannelSelector extends Selector {
   }
 
   fetchData(params = {}) {
-    return ChannelApi.instance().index(params)
+    return ChannelApi.instance().index(params);
   }
 }

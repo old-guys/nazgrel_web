@@ -1,5 +1,5 @@
 import { JsonApiResource } from '../../resources';
-import * as queryString from 'query-string';
+import qs from 'qs';
 
 export const SHOPKEEPER = 'application.core.shopkeeper';
 export const SHOPKEEPER_CHECK = 'application.core.shopkeeper.check';
@@ -7,7 +7,7 @@ export const SHOPKEEPER_CHECK = 'application.core.shopkeeper.check';
 export default function shopkeeperConfig(config = {}) {
 
   const { path, params } = config;
-  const query = queryString.stringify(params);
+  const query = qs.stringify(params, { arrayFormat: 'brackets' });
   let endpoint = 'api/web/shopkeepers';
 
   if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;

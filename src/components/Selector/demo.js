@@ -12,6 +12,6 @@ export default class DemoSelector extends Selector {
   }
 
   fetchData(params = {}) {
-    return DemoApi.instance().index(params)
+    return DemoApi.instance().index(params);
   }
 }
