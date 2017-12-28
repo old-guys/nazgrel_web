@@ -147,6 +147,11 @@ class NewChannelRegion extends Component {
                       channel_region.channel_ids = _.map(values, 'id');
                       this.setState({ channel_region });
                     }}
+                    filters={
+                      [
+                        { name: 'status', operator: 'eq', query: 0 }
+                      ]
+                    }
                   />
                 </Col>
               </Row>

@@ -60,7 +60,7 @@ class Report extends Component {
     const page = params.page || this.state.page || 1;
     const per_page = params.per_page || this.state.per_page;
     const time_type = params.time_type || this.state.time_type;
-    const channel_id = params.channel_id || this.state.channel_id;
+    const channel_id = _.hasIn(params, 'channel_id') ? params.channel_id : this.state.channel_id;
     const report_date = params.report_date || this.getReportDate(time_type);
     const day_value = params.day_value || this.state.day_value;
     const month_value = params.month_value || this.state.month_value;

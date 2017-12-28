@@ -1,12 +1,12 @@
 import { JsonApiResource } from '../../resources';
-import * as queryString from 'query-string';
+import qs from 'qs';
 
 export const CHANNEL = 'application.core.channel';
 
 export default function channelConfig(config = {}) {
 
   const { path, params } = config;
-  const query = queryString.stringify(params);
+  const query = qs.stringify(params, { arrayFormat: 'brackets' });
   let endpoint = 'api/web/channels';
 
   if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;

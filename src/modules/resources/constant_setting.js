@@ -1,5 +1,5 @@
 import { JsonApiResource } from '../../resources';
-import * as queryString from 'query-string';
+import qs from 'qs';
 
 export const CONSTANT_SETTING = 'application.core.constant_setting';
 export const CONSTANT_SETTING_ENUM_FIELD = 'application.core.constant_setting.enum_field';
@@ -7,7 +7,7 @@ export const CONSTANT_SETTING_ENUM_FIELD = 'application.core.constant_setting.en
 export default function constantSettingConfig(config = {}) {
 
   const { path, params } = config;
-  const query = queryString.stringify(params);
+  const query = qs.stringify(params, { arrayFormat: 'brackets' });
   let endpoint = 'api/web/constant_setting';
 
   if (!_.isEmpty(path)) endpoint = `${endpoint}${path}`;
