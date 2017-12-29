@@ -10,9 +10,9 @@ export default class Selector extends React.Component {
     this.state = {
       query: null,
       options: [],
-      value: props.value,
+      value: null,
       more: true,
-      page: 1,
+      page: 1
     }
 
     this.multi = props.multi || false;
@@ -31,6 +31,16 @@ export default class Selector extends React.Component {
 
   componentDidMount() {
     console.log(this.selectRef);
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      query: null,
+      options: [],
+      value: null,
+      more: true,
+      page: 1
+    });
   }
 
   handleOnChange(values) {
@@ -145,13 +155,15 @@ export default class Selector extends React.Component {
   }
 
   render() {
+    const value = this.state.value || this.props.value;
+
     return (
       <Select
         ref={this.selectRef}
         multi={this.multi}
         name={this.name}
         placeholder={this.placeholder}
-        value={this.state.value}
+        value={value}
         options={this.state.options}
         valueKey="id"
         labelKey="name"

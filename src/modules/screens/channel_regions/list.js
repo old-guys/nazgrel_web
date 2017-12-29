@@ -11,6 +11,7 @@ import Nodata from 'components/Nodata/'
 import NewChannelRegion from './new'
 import EditChannelRegion from './edit'
 import DestroyChannel from './destroy_channel'
+import Channels from './channels'
 import { default as ChannelRegionToggleStatus } from './toggle_status'
 import { default as ChannelUserResetPassword } from '../channel_users/reset_password'
 
@@ -29,19 +30,7 @@ class ChannelRegion extends Component {
 
     this.state = {
       networkError: false,
-      isLoading: true,
-
-      edit_channel_region: {
-        id: null,
-        name: "",
-        channel_ids: [],
-        channel_user: {
-          name: "",
-          phone: "",
-          password: "",
-          confirm_password: ""
-        }
-      }
+      isLoading: true
     }
 
   }
@@ -87,7 +76,6 @@ class ChannelRegion extends Component {
       return { id: map.channel_id, name: map.channel_name };
     });
 
-    this.setState({ edit_channel_region: channel_region });
     this.refs.EditChannelRegion.showModal({...channel_region});
   }
 
@@ -104,16 +92,13 @@ class ChannelRegion extends Component {
   }
 
   renderEditChannelRegionModal() {
-    let { edit_channel_region } = this.state;
-
     return (
       <EditChannelRegion
         ref="EditChannelRegion"
         notificator={this.refs.notificator}
         channel_region={{}}
         success={(data) => {
-          edit_channel_region = _.assign(edit_channel_region, data);
-          this.setState({ edit_channel_region });
+          this.fetch();
         }}
       />
     )
@@ -144,6 +129,18 @@ class ChannelRegion extends Component {
     );
   }
 
+  renderChannels() {
+    return (
+      <Channels
+        ref='Channels'
+        notificator={this.refs.notificator}
+        callback={() => {
+          this.fetch();
+        }}
+      />
+    );
+  }
+
   renderListOperate(item) {
     return (
       <th>
@@ -160,7 +157,8 @@ class ChannelRegion extends Component {
   }
 
   renderChannelRegionTr(channel_region) {
-    channel_region.channel_ids = _.map(channel_region.channel_region_maps, 'channel_id');
+    const channel_region_maps = channel_region.channel_region_maps;
+    channel_region.channel_ids = _.map(channel_region_maps, 'channel_id');
 
     return (
       <tr key={ channel_region.id }>
@@ -186,12 +184,12 @@ class ChannelRegion extends Component {
         </th>
         <th>
           {
-            _.map(channel_region.channel_region_maps, (channel_region_map) => {
+            _.map(channel_region_maps, (channel_region_map) => {
               const channel_user = channel_region_map.channel_users[0] || {};
               const {channel} = channel_region_map;
 
               return (
-                <div className='region-item ' key={channel_region_map.id}>
+                <div className='region-item' key={channel_region_map.id}>
                   {
                     <span key={channel.id}>{channel.name} {channel_user.name} {channel_user.phone}<br/></span>
                   }
@@ -199,7 +197,6 @@ class ChannelRegion extends Component {
                     channel_region_map={channel_region_map}
                     notificator={this.refs.notificator}
                     success={(data) => {
-                      _.assign(channel_region, data);
                       this.fetch();
                     }}
                   />
@@ -207,6 +204,9 @@ class ChannelRegion extends Component {
               )
             })
           }
+          <div className='region-item'>
+            { channel_region_maps.length >= 2 && <Button color="link" block active onClick={() => this.refs.Channels.showModal(channel_region) }>显示更多</Button> }
+          </div>
         </th>
         <th>{ fecha.format(new Date(channel_region.updated_at), 'YYYY-MM-DD HH:mm:ss') }</th>
         <th>{ fecha.format(new Date(channel_region.created_at), 'YYYY-MM-DD HH:mm:ss') }</th>
@@ -275,6 +275,7 @@ class ChannelRegion extends Component {
             { this.renderChannelUserResetPasswordModal() }
             { this.renderPaginator() }
             { this.renderNotificator() }
+            { this.renderChannels() }
           </CardBody>
         </Card>
       </div>
