@@ -22,12 +22,17 @@ class Channels extends Component {
   }
 
   async fetchDetail() {
+    this.setState({ isLoading: true });
+
     try {
       const { channel_region: {id} } = this.state;
       const res = await ChannelRegionApi.instance().show({ id });
 
       if (Number(res.code) === 0) {
-        this.setState({ channel_region_maps: res.data.channel_region_maps });
+        this.setState({
+          channel_region_maps: res.data.channel_region_maps,
+          isLoading: false
+        });
       } else {
         this.props.notificator.error({ text: '获取区域详情失败' });
 
@@ -115,8 +120,8 @@ class Channels extends Component {
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
-        <ModalHeader>{ channel_region.name } 的渠道列表</ModalHeader>
-        <ModalBody>
+        <ModalHeader toggle={() => this.hideModal() }>{ channel_region.name } 的渠道列表</ModalHeader>
+        <ModalBody className='modal-body-channels'>
           <Container>
             { this.renderChannelTable() }
           </Container>
