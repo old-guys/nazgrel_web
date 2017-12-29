@@ -14,14 +14,40 @@ class EditChannelRegion extends Component {
 
     this.state = {
       isOpen: false,
-      channel_region: props.channel_region
+      channel_region: {}
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  async getDetail(id) {
+
+    try {
+      const res = await ChannelRegionApi.instance().show({ id });
+
+      if (Number(res.code) === 0) {
+        let channel_region = res.data;
+
+        channel_region.channel_ids = _.map(channel_region.channel_region_maps, 'channel_id');
+        channel_region.selectedOptions = _.map(channel_region.channel_region_maps, (map) => {
+          return { id: map.channel_id, name: map.channel_name };
+        });
+
+        this.setState({ channel_region });
+      } else {
+        this.props.notificator.error({ text: '获取区域详情失败' });
+
+        if (this.props.fail) this.props.fail(res);
+      }
+    } catch(e) {
+      console.error(e);
+      this.setState({ networkError: true });
+    }
+  }
+
   showModal(channel_region = {}) {
-    this.setState({ channel_region, isOpen: true });
+    this.setState({ isOpen: true, channel_region: {} });
+    this.getDetail(channel_region.id);
   }
 
   hideModal() {

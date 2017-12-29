@@ -35,6 +35,18 @@ export default class ChannelRegionApi {
     return json;
   }
 
+  async show(config = {}) {
+    const resolvedConfig = { ...this.config, ...config };
+    const { id } = resolvedConfig;
+
+    this.resource = channelRegionResource({ path: `/${id}` });
+    const get = this.resource.get(resolvedConfig);
+    const response = await fetchResource(get);
+    const json = await response.json();
+
+    return json;
+  }
+
   async create(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
     const { channel_region } = resolvedConfig;
