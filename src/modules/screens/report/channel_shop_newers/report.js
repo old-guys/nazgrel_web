@@ -39,6 +39,7 @@ class Report extends Component {
     };
 
     this.handleTimeTypeChange = this.handleTimeTypeChange.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
     this.handleD = this.handleTimeTypeChange.bind(this);
   }
 
@@ -156,7 +157,7 @@ class Report extends Component {
               searchable={false}
               onChange={(value) => {
                 const channel = value || {};
-                this.fetch({ channel_id: channel.id || ' ' });
+                this.fetch({ channel_id: channel.id });
               }}
             />
           </Col>
@@ -281,9 +282,10 @@ class Report extends Component {
 
   renderPaginator() {
     const { report } = this.props.report_channel_shop_newer;
+    const { isLoading }  = this.state;
 
     return (
-      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={report} />
+      !isLoading && <Paginator handlePageChange={this.handlePageChange} collection={report} />
     );
   }
 

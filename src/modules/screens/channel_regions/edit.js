@@ -14,15 +14,20 @@ class EditChannelRegion extends Component {
 
     this.state = {
       isOpen: false,
-      channel_region: {}
-    }
+      channel_region: {},
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async getDetail(id) {
+  async fetchDetail() {
+    this.setState({ saveBtnDisabled: true });
 
     try {
+      const { id } = this.state;
       const res = await ChannelRegionApi.instance().show({ id });
 
       if (Number(res.code) === 0) {
@@ -43,11 +48,16 @@ class EditChannelRegion extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({ saveBtnDisabled: false });
   }
 
   showModal(channel_region = {}) {
-    this.setState({ isOpen: true, channel_region: {} });
-    this.getDetail(channel_region.id);
+    this.setState({
+      isOpen: true,
+      channel_region: {},
+      id: channel_region.id,
+    }, this.fetchDetail);
   }
 
   hideModal() {
@@ -55,10 +65,14 @@ class EditChannelRegion extends Component {
   }
 
   async handleSave() {
-    const { channel_region } = this.state;
-    const opts = _.pick(channel_region, ['id', 'name', 'channel_ids']);
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true
+    });
 
     try {
+      const { channel_region } = this.state;
+      const opts = _.pick(channel_region, ['id', 'name', 'channel_ids']);
       const res = await ChannelRegionApi.instance().update({ channel_region: opts });
 
       if (Number(res.code) === 0) {
@@ -75,6 +89,11 @@ class EditChannelRegion extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    });
   }
 
   handleSubmit(event, errors, values) {
@@ -82,18 +101,21 @@ class EditChannelRegion extends Component {
   }
 
   render() {
-    const { isOpen, channel_region } = this.state;
+    const { isOpen, channel_region, saveBtnDisabled, cancelBtnDisabled } = this.state;
     const channel_user = channel_region.channel_user || {};
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
         <AvForm onSubmit={this.handleSubmit} >
-          <ModalHeader>编辑区域</ModalHeader>
+          { cancelBtnDisabled && <ModalHeader>编辑区域</ModalHeader> }
+          { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>编辑区域</ModalHeader> }
           <ModalBody>
             <Container>
-              <AvField name="name"
+              <AvField
+                name="name"
                 value={channel_region.name}
-                label="区域名称" type="text"
+                label="区域名称"
+                type="text"
                 placeholder="输入区域名称"
                 grid={{md: 9}}
                 onChange={(e) => {
@@ -127,8 +149,8 @@ class EditChannelRegion extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-            <Button color="primary">保存</Button>
+            <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+            <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
           </ModalFooter>
         </AvForm>
       </Modal>

@@ -14,9 +14,12 @@ class NewChannelRegion extends Component {
 
     this.state = {
       channel_region: this.defaultChannelRegionOpts(),
-      isOpen: false
+      isOpen: false,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
     };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -37,7 +40,9 @@ class NewChannelRegion extends Component {
   showModal() {
     this.setState({
       isOpen: true,
-      channel_region: this.defaultChannelRegionOpts()
+      channel_region: this.defaultChannelRegionOpts(),
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
     });
   }
 
@@ -46,9 +51,13 @@ class NewChannelRegion extends Component {
   }
 
   async handleSave() {
-    const { channel_region } = this.state;
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true
+    });
 
     try {
+      const { channel_region } = this.state;
       const res = await ChannelRegionApi.instance().create({ channel_region });
 
       if (Number(res.code) === 0) {
@@ -65,6 +74,11 @@ class NewChannelRegion extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    });
   }
 
   handleSubmit(event, errors, values) {
@@ -72,18 +86,21 @@ class NewChannelRegion extends Component {
   }
 
   render() {
-    const { isOpen, channel_region } = this.state;
+    const { isOpen, channel_region, saveBtnDisabled, cancelBtnDisabled } = this.state;
     const channel_user = channel_region.channel_user || {};
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
         <AvForm onSubmit={this.handleSubmit} >
-          <ModalHeader>新增区域</ModalHeader>
+          { cancelBtnDisabled && <ModalHeader>新增区域</ModalHeader> }
+          { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>新增区域</ModalHeader> }
           <ModalBody>
             <Container>
-              <AvField name="name"
+              <AvField
+                name="name"
                 value={channel_region.name}
-                label="区域名称" type="text"
+                label="区域名称"
+                type="text"
                 placeholder="输入区域名称"
                 grid={{md: 9}}
                 onChange={(e) => {
@@ -94,25 +111,26 @@ class NewChannelRegion extends Component {
                 validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
                 errorMessage={{required: '输入区域名称', pattern: '区域名称只支持中文、英文、数字'}}
               />
-              <AvField name="channel_user[name]"
+              <AvField
+                name="channel_user[name]"
                 value={channel_user.name}
-                label="主管名称" type="text"
+                label="主管名称"
+                type="text"
                 placeholder="输入主管名称"
                 grid={{md: 9}}
                 onChange={(e) => {
                   channel_region.channel_user.name = e.target.value;
-
-                  this.setState({
-                    channel_region
-                  })
+                  this.setState({ channel_region });
                 }}
                 required
                 validate={{pattern: { value: /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[A-Za-z0-9])*$/ }}}
                 errorMessage={{required: '输入主管名称', pattern: '区域名称只支持中文、英文、数字'}}
               />
-              <AvField name="channel_user[phone]"
+              <AvField
+                name="channel_user[phone]"
                 value={channel_user.phone}
-                label="主管手机号" type="phone"
+                label="主管手机号"
+                type="phone"
                 placeholder="输入主管手机号，将作为登录账号"
                 grid={{md: 9}}
                 onChange={(e) => {
@@ -122,9 +140,11 @@ class NewChannelRegion extends Component {
                 required
                 errorMessage={{required: '输入主管手机号', phone: '手机号格式不正确'}}
               />
-              <AvField name="channel_user[password]"
+              <AvField
+                name="channel_user[password]"
                 value={channel_user.password}
-                label="主管密码" type="password"
+                label="主管密码"
+                type="password"
                 placeholder="输入主管密码，将作为登录账号的密码"
                 grid={{md: 9}}
                 onChange={(e) => {
@@ -158,8 +178,8 @@ class NewChannelRegion extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-            <Button color="primary">保存</Button>
+            <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+            <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
           </ModalFooter>
         </AvForm>
       </Modal>

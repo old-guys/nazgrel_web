@@ -38,7 +38,7 @@ class ToggleStatus extends Component {
     const { channel_region } = this.props;
     const isLocked = channel_region.status === 'locked';
     const buttonText = isLocked ? '激活' : '冻结';
-    const buttonBSStyle = isLocked? 'warning' : 'danger'
+    const buttonBSStyle = isLocked? 'warning' : 'danger';
 
     return (
       <Confirm

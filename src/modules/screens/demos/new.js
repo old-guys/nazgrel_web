@@ -14,9 +14,12 @@ class NewDemo extends Component {
 
     this.state = {
       demo: this.defaultDemo(),
-      isOpen: false
+      isOpen: false,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
     };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -30,6 +33,8 @@ class NewDemo extends Component {
   showModal() {
     this.setState({
       isOpen: true,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false,
       demo: this.defaultDemo()
     });
   }
@@ -39,9 +44,13 @@ class NewDemo extends Component {
   }
 
   async handleSave() {
-    const { demo } = this.state;
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true
+    });
 
     try {
+      const { demo } = this.state;
       const res = await DemoApi.instance().create({ demo });
 
       if (Number(res.code) === 0) {
@@ -58,6 +67,11 @@ class NewDemo extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    });
   }
 
   handleSubmit(event, errors, values) {
@@ -65,12 +79,13 @@ class NewDemo extends Component {
   }
 
   render() {
-    const { isOpen, demo } = this.state;
+    const { isOpen, demo, saveBtnDisabled, cancelBtnDisabled } = this.state;
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
         <AvForm onSubmit={this.handleSubmit} >
-          <ModalHeader>新增DEMO</ModalHeader>
+          { cancelBtnDisabled && <ModalHeader>新增DEMO</ModalHeader> }
+          { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>新增DEMO</ModalHeader> }
           <ModalBody>
             <Container>
               <AvField
@@ -106,8 +121,8 @@ class NewDemo extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-            <Button color="primary">保存</Button>
+            <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+            <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
           </ModalFooter>
         </AvForm>
       </Modal>

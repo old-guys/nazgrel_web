@@ -12,12 +12,14 @@ class EditChannel extends Component {
     super(props);
 
     this.state = {
-      queryShopkeeperDisabled: false,
       channel: {},
       enumField: {},
-      isOpen: false
+      isOpen: false,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
     };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -28,6 +30,11 @@ class EditChannel extends Component {
   }
 
   async setEnumFieldInitialState(params = {}) {
+    this.setState({
+      cancelBtnDisabled: true,
+      saveBtnDisabled: true
+    });
+
     try {
       const res = await ConstantSettingApi.instance().enum_field();
       const data = res.data;
@@ -37,17 +44,28 @@ class EditChannel extends Component {
           channelCategory: data.channel.category,
           channelSource: data.channel.source,
           channelUserRoleType: data.channel_user.role_type
-        }
+        },
+        cancelBtnDisabled: false,
+        saveBtnDisabled: false
       });
     } catch(e) {
       console.error(`failure to load enum field, ${e}`)
     }
+
+    this.setState({
+      cancelBtnDisabled: false,
+      saveBtnDisabled: false
+    });
   }
 
   showModal(channel) {
     this.setChannelInitialState(channel);
     this.setEnumFieldInitialState();
-    this.setState({ isOpen: true });
+    this.setState({
+      isOpen: true,
+      cancelBtnDisabled: false,
+      saveBtnDisabled: false
+    });
   }
 
   hideModal() {
@@ -55,10 +73,13 @@ class EditChannel extends Component {
   }
 
   async handleSave() {
-    const { channel } = this.state;
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true
+    });
 
     try {
-      this.setState({ editDisabled: true });
+      const { channel } = this.state;
       const res = await ChannelApi.instance().update({
         channel: {
           id: channel.id,
@@ -80,14 +101,16 @@ class EditChannel extends Component {
       } else {
         this.props.notificator.error({ text: `更新渠道失败:${response.message}` });
       }
-      this.setState({editDisabled: false})
+
     } catch(e) {
       console.error(e);
-      this.setState({
-        networkError: true,
-        editDisabled: false
-      });
+      this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    })
   }
 
   handleSubmit(event, errors, values) {
@@ -95,13 +118,14 @@ class EditChannel extends Component {
   }
 
   render() {
-    const { isOpen, channel, editDisabled, enumField } = this.state;
+    const { isOpen, channel, enumField, saveBtnDisabled, cancelBtnDisabled } = this.state;
     const { channelCategory, channelSource, channelUserRoleType } = this.state.enumField;
 
     return (
       <Modal isOpen={isOpen} className='channel-modal'>
         <AvForm onSubmit={this.handleSubmit} >
-          <ModalHeader>编辑渠道</ModalHeader>
+          { cancelBtnDisabled && <ModalHeader>编辑渠道</ModalHeader> }
+          { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>编辑渠道</ModalHeader> }
           <ModalBody>
             <Container>
               <AvField
@@ -194,8 +218,8 @@ class EditChannel extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-            <Button color="primary" disabled={editDisabled} >保存</Button>
+            <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+            <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
           </ModalFooter>
         </AvForm>
       </Modal>

@@ -13,17 +13,16 @@ class NewChannel extends Component {
     super(props);
 
     this.state = {
-      queryShopkeeperDisabled: this.defaultQueryShopkeeperDisabled(),
       channel: this.defaultChannel(),
       enumField: this.defaultEnumField(),
-      isOpen: false
+      isOpen: false,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false,
+      queryBtnDisabled: false
     };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  defaultQueryShopkeeperDisabled() {
-    return false;
   }
 
   defaultChannel() {
@@ -49,11 +48,16 @@ class NewChannel extends Component {
     channel.password = Math.random().toString(36).substring(6);
     this.setState({
       channel,
-      queryShopkeeperDisabled: this.defaultQueryShopkeeperDisabled()
+      queryBtnDisabled: false
     });
   }
 
   async setEnumFieldInitialState(params = {}) {
+    this.setState({
+      cancelBtnDisabled: true,
+      saveBtnDisabled: true
+    });
+
     try {
       const res = await ConstantSettingApi.instance().enum_field();
       const data = res.data;
@@ -63,18 +67,29 @@ class NewChannel extends Component {
           channelCategory: data.channel.category,
           channelSource: data.channel.source,
           channelUserRoleType: data.channel_user.role_type
-        }
+        },
+        cancelBtnDisabled: false,
+        saveBtnDisabled: false
       });
     } catch(e) {
       console.error(`failure to load enum field, ${e}`)
     }
+
+    this.setState({
+      cancelBtnDisabled: false,
+      saveBtnDisabled: false
+    });
   }
 
   async queryShopkeeper() {
-    try {
-      this.setState({ queryShopkeeperDisabled: true });
+    this.setState({
+      queryBtnDisabled: true,
+      saveBtnDisabled: true
+    });
 
-      const res = await ShopkeeperApi.instance().check({ phone: this.state.channel.shopkeeperPhone });
+    try {
+      const {channel: {shopkeeperPhone}} = this.state;
+      const res = await ShopkeeperApi.instance().check({ phone: shopkeeperPhone });
 
       if (Number(res.code) === 0) {
         this.setState({
@@ -83,29 +98,31 @@ class NewChannel extends Component {
             shopkeeperName: res.data.user_name,
             shopkeeperUserId: res.data.user_id,
             city: res.data.city,
-          },
-          createDisabled: false
+          }
         });
       } else {
         this.props.notificator.info({ text: "查询店主失败！" });
-        this.setState({ createDisabled: true });
       }
-      this.setState({ queryShopkeeperDisabled: false });
     } catch(e) {
-
       console.error(e);
-      this.setState({
-        networkError: true,
-        queryShopkeeperDisabled: false
-      });
-
+      this.setState({ networkError: true });
     }
+
+    this.setState({
+      queryBtnDisabled: false,
+      saveBtnDisabled: false
+    });
   }
 
   showModal() {
     this.setChannelInitialState();
     this.setEnumFieldInitialState();
-    this.setState({ isOpen: true });
+    this.setState({
+      isOpen: true,
+      saveBtnDisabled: false,
+      queryBtnDisabled: false,
+      cancelBtnDisabled: false
+    });
   }
 
   hideModal() {
@@ -113,10 +130,14 @@ class NewChannel extends Component {
   }
 
   async handleSave () {
-    const { channel } = this.state
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true,
+      queryBtnDisabled: true
+    });
 
     try {
-      this.setState({ createDisabled: true })
+      const { channel } = this.state
       const res = await ChannelApi.instance().create({
         channel: {
           name: channel.name,
@@ -139,14 +160,16 @@ class NewChannel extends Component {
       } else {
         this.props.notificator.error({ text: `创建渠道失败:${res.message}` });
       }
-      this.setState({createDisabled: false})
     } catch(e) {
       console.error(e)
-      this.setState({
-        networkError: true,
-        createDisabled: false
-      });
+      this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false,
+      queryBtnDisabled: false
+    });
   }
 
   handleSubmit(event, errors, values) {
@@ -154,13 +177,14 @@ class NewChannel extends Component {
   }
 
   render() {
-    const { isOpen, channel, queryShopkeeperDisabled, createDisabled } = this.state;
+    const { isOpen, channel, saveBtnDisabled, cancelBtnDisabled, queryBtnDisabled } = this.state;
     const { enumField: { channelCategory, channelSource } } = this.state;
 
     return (
       <Modal isOpen={isOpen} className='channel-modal'>
         <AvForm onSubmit={this.handleSubmit} >
-          <ModalHeader>新增渠道</ModalHeader>
+          { cancelBtnDisabled && <ModalHeader>新增渠道</ModalHeader> }
+          { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>新增渠道</ModalHeader> }
           <ModalBody>
             <Container>
               <AvGroup row>
@@ -181,7 +205,7 @@ class NewChannel extends Component {
                       validate={{pattern: { value: /^([0-9])*$/ }}}
                       errorMessage={{required: '输入店主手机号', pattern: '手机号只支持数字'}}
                      />
-                    <Button disabled={queryShopkeeperDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
+                    <Button disabled={queryBtnDisabled} onClick={() => this.queryShopkeeper()} color="primary">查询</Button>
                   </InputGroup>
                   <AvFeedback>输入店主手机号,只支持数字!</AvFeedback>
                 </Col>
@@ -292,8 +316,8 @@ class NewChannel extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-            <Button color="primary" disabled={createDisabled}>保存</Button>
+            <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+            <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
           </ModalFooter>
         </AvForm>
       </Modal>
