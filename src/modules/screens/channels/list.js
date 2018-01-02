@@ -27,15 +27,16 @@ class Channel extends Component {
 
     this.state = {
 
-    }
+    };
+
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   handlePageChange(params = {}) {
     this.fetchChannel(params);
   }
 
-  componentDidMount () {
-    this.notificator = this.refs.notificator;
+  componentDidMount() {
     this.fetchChannel();
   }
 
@@ -106,16 +107,15 @@ class Channel extends Component {
   }
 
   renderNotificator() {
-    return (
-      <Notificator ref="notificator" />
-    );
+    return <Notificator ref="notificator" />;
   }
 
   renderPaginator() {
     const { channels } = this.props.channels;
+    const { isLoading }  = this.state;
 
     return (
-      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ channels } />
+      !isLoading &&  <Paginator handlePageChange={this.handlePageChange} collection={ channels } />
     );
   }
 

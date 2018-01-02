@@ -26,7 +26,9 @@ class Demo extends Component {
 
     this.state = {
 
-    }
+    };
+
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   handlePageChange(params = {}) {
@@ -34,7 +36,6 @@ class Demo extends Component {
   }
 
   componentDidMount() {
-    this.notificator = this.refs.notificator;
     this.fetch();
   }
 
@@ -107,16 +108,15 @@ class Demo extends Component {
   }
 
   renderNotificator() {
-    return (
-      <Notificator ref="notificator" />
-    );
+    return <Notificator ref="notificator" />;
   }
 
   renderPaginator() {
     const { demos } = this.props.demos;
+    const { isLoading }  = this.state;
 
     return (
-      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={ demos } />
+      !isLoading && <Paginator handlePageChange={this.handlePageChange} collection={ demos } />
     );
   }
 

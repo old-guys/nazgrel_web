@@ -12,7 +12,8 @@ export default class Selector extends React.Component {
       options: [],
       value: null,
       more: true,
-      page: 1
+      page: 1,
+      isLoading: false
     }
 
     this.multi = props.multi || false;
@@ -122,11 +123,14 @@ export default class Selector extends React.Component {
   }
 
   fetchOptions(params = {}) {
-    const options = params.options || this.state.options;
+    const { isLoading } = this.state;
+    if (isLoading) return;
+
     const more = params.more || this.state.more;
     const page = params.page || this.state.page;
     const query = _.hasIn(params, 'query') ? params.query : this.state.query;
     const filters = this.filters;
+    let options = params.options || this.state.options;
 
     this.setState({
       page,
@@ -136,6 +140,8 @@ export default class Selector extends React.Component {
     });
 
     if (!more) return null;
+    options.push({id: 0, name: '正在加载......'});
+    this.setState({ isLoading: true });
 
     let optimizes = {
       page,
@@ -145,9 +151,11 @@ export default class Selector extends React.Component {
 
     this.fetchData(optimizes).then((res) => {
       if (res.code === 0 || res.code === '0') {
+        options.pop();
         this.setState({
           more: !!res.data.next_page,
-          options: [...options, ...res.data.models]
+          options: [...options, ...res.data.models],
+          isLoading: false
         });
         this.autoloadNextPageOptions();
       }
@@ -159,6 +167,7 @@ export default class Selector extends React.Component {
 
     return (
       <Select
+        isLoading={this.state.isLoading}
         ref={this.selectRef}
         multi={this.multi}
         name={this.name}
@@ -176,6 +185,7 @@ export default class Selector extends React.Component {
         onClose={this.handleOnClose}
         clearable={this.clearable}
         searchable={this.searchable}
+        disabled={this.props.disabled}
         scrollMenuIntoView={this.scrollMenuIntoView}
         noResultsText="没有找到匹配项"
       />

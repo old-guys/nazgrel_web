@@ -13,8 +13,9 @@ class ResetPassword extends Component {
     this.state = {
       isOpen: false,
       channel_user: props.channel_user
-    }
+    };
 
+    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.validConfirmPassword = this.validConfirmPassword.bind(this);
   }
@@ -22,7 +23,9 @@ class ResetPassword extends Component {
   showModal(channel_user) {
     this.setState({
       isOpen: true,
-      channel_user
+      channel_user,
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
     });
   }
 
@@ -34,11 +37,16 @@ class ResetPassword extends Component {
   }
 
   async handleSave() {
-    const { channel_user } = this.state;
-    const opts = _.pick(channel_user, ['id', 'password']);
+    this.setState({
+      saveBtnDisabled: true,
+      cancelBtnDisabled: true
+    });
 
     try {
+      const { channel_user } = this.state;
+      const opts = _.pick(channel_user, ['id', 'password']);
       const res = await ChannelUserApi.instance().update({ channel_user: opts });
+
       if (Number(res.code) === 0) {
         this.props.notificator.success({ text: '修改密码成功' });
         this.setState({
@@ -52,6 +60,11 @@ class ResetPassword extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({
+      saveBtnDisabled: false,
+      cancelBtnDisabled: false
+    });
   }
 
   validConfirmPassword() {
@@ -66,16 +79,19 @@ class ResetPassword extends Component {
   }
 
   render() {
-    const { isOpen, channel_user } = this.state;
+    const { isOpen, channel_user, saveBtnDisabled, cancelBtnDisabled } = this.state;
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
         <AvForm onSubmit={this.handleSubmit}>
-        <ModalHeader>修改密码</ModalHeader>
+        { cancelBtnDisabled && <ModalHeader>修改密码</ModalHeader> }
+        { !cancelBtnDisabled && <ModalHeader toggle={this.hideModal}>修改密码</ModalHeader> }
         <ModalBody>
           <Container>
-            <AvField name="password"
-              label="密码" type="password"
+            <AvField
+              name="password"
+              label="密码"
+              type="password"
               placeholder="输入密码"
               grid={{md: 9}}
               onChange={(e) => {
@@ -86,8 +102,10 @@ class ResetPassword extends Component {
               minLength="6"
               errorMessage={{required: '密码不能为空', minLength: '密码不能少于6位'}}
               />
-            <AvField name="confirm_password"
-              label="确认密码" type="password"
+            <AvField
+              name="confirm_password"
+              label="确认密码"
+              type="password"
               placeholder="输入确认密码"
               grid={{md: 9}}
               onChange={(e) => {
@@ -101,8 +119,8 @@ class ResetPassword extends Component {
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={() => this.hideModal() }>取消</Button>
-          <Button color="primary">保存</Button>
+          <Button color="secondary" onClick={this.hideModal} disabled={cancelBtnDisabled}>取消</Button>
+          <Button color="primary" disabled={saveBtnDisabled}>保存</Button>
         </ModalFooter>
         </AvForm>
       </Modal>

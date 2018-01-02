@@ -13,7 +13,7 @@ import EditChannelRegion from './edit'
 import DestroyChannel from './destroy_channel'
 import Channels from './channels'
 import { default as ChannelRegionToggleStatus } from './toggle_status'
-import { default as ChannelUserResetPassword } from '../channel_users/reset_password'
+import { default as ChannelUserResetPassword } from 'screens/channel_users/reset_password'
 
 import {
   fetchChannelRegionAll
@@ -31,12 +31,12 @@ class ChannelRegion extends Component {
     this.state = {
       networkError: false,
       isLoading: true
-    }
+    };
 
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   componentDidMount() {
-    this.notificator = this.refs.notificator;
     this.fetch();
   }
 
@@ -101,7 +101,7 @@ class ChannelRegion extends Component {
           this.fetch();
         }}
       />
-    )
+    );
   }
 
   renderChannelUserResetPasswordModal() {
@@ -112,20 +112,19 @@ class ChannelRegion extends Component {
         channel_user={{}}
         success={(data) => {}}
       />
-    )
+    );
   }
 
   renderNotificator() {
-    return (
-      <Notificator ref="notificator" />
-    );
+    return <Notificator ref="notificator" />;
   }
 
   renderPaginator() {
     const { channel_regions } = this.props.channel_region;
+    const { isLoading }  = this.state;
 
     return (
-      <Paginator handlePageChange={::this.handlePageChange} {...this.props} collection={channel_regions} />
+      !isLoading && <Paginator handlePageChange={this.handlePageChange} collection={channel_regions} />
     );
   }
 

@@ -18,7 +18,9 @@ class Channels extends Component {
       channel_region: {},
       channel_region_maps: [],
       destroyed: false
-    }
+    };
+
+    this.hideModal = this.hideModal.bind(this);
   }
 
   async fetchDetail() {
@@ -29,10 +31,7 @@ class Channels extends Component {
       const res = await ChannelRegionApi.instance().show({ id });
 
       if (Number(res.code) === 0) {
-        this.setState({
-          channel_region_maps: res.data.channel_region_maps,
-          isLoading: false
-        });
+        this.setState({ channel_region_maps: res.data.channel_region_maps });
       } else {
         this.props.notificator.error({ text: '获取区域详情失败' });
 
@@ -42,6 +41,8 @@ class Channels extends Component {
       console.error(e);
       this.setState({ networkError: true });
     }
+
+    this.setState({ isLoading: false });
   }
 
   showModal(channel_region = {}) {
@@ -85,11 +86,11 @@ class Channels extends Component {
     const { channel_region_maps, isLoading, networkError }  = this.state;
 
     if (isLoading) {
-      return <Loading isLoading={isLoading} type='tr' th={{colSpan: 4}} />
+      return <Loading isLoading={isLoading} type='tr' th={{colSpan: 4}} />;
     } else if (networkError) {
-      return <Nodata isNodata={networkError} info="网络错误..." type='tr' th={{colSpan: 4}}  />
+      return <Nodata isNodata={networkError} info="网络错误..." type='tr' th={{colSpan: 4}}  />;
     } else if (!channel_region_maps.length) {
-      return <Nodata isNodata={!channel_region_maps.length} type='tr' th={{colSpan: 4}}  />
+      return <Nodata isNodata={!channel_region_maps.length} type='tr' th={{colSpan: 4}}  />;
     }
 
     return _.map(channel_region_maps, (map) => {
@@ -116,18 +117,18 @@ class Channels extends Component {
   }
 
   render() {
-    const { isOpen, channel_region } = this.state;
+    const { isOpen, channel_region, isLoading } = this.state;
 
     return (
       <Modal isOpen={isOpen} className='modal-input'>
-        <ModalHeader toggle={() => this.hideModal() }>{ channel_region.name } 的渠道列表</ModalHeader>
+        <ModalHeader toggle={this.hideModal}>{ channel_region.name } 的渠道列表</ModalHeader>
         <ModalBody className='modal-body-channels'>
           <Container>
             { this.renderChannelTable() }
           </Container>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={() => this.hideModal() }>确定</Button>
+          <Button color="primary" onClick={this.hideModal} disabled={isLoading}>确定</Button>
         </ModalFooter>
       </Modal>
     );
