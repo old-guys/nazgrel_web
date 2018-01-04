@@ -1,4 +1,6 @@
+// import zhCN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
 import 'antd/dist/antd.css';
@@ -8,6 +10,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { Button, Table, Card, CardBody, Input, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import fecha from 'fecha';
+import qs from 'qs';
 
 import Paginator from 'components/Paginator/';
 import Loading from 'components/Loading/';
@@ -16,13 +19,18 @@ import ChannelSelector from 'components/Selector/channel';
 import {
   fetchReport
 } from 'reducers/report/channel_shop_newer';
+import {
+  fetchChannelShow
+} from 'reducers/channel';
 
 const { MonthPicker } = DatePicker;
 
 @connect(state => ({
-  report_channel_shop_newer: state.report_channel_shop_newer
+  report_channel_shop_newer: state.report_channel_shop_newer,
+  channel: state.channel
 }), {
-  fetchReport
+  fetchReport,
+  fetchChannelShow
 })
 class Report extends Component {
   constructor(props) {
@@ -34,50 +42,130 @@ class Report extends Component {
       time_type: 'day',
       day_value: fecha.format(this.nowTime, 'YYYY-MM-DD'),
       month_value: fecha.format(this.nowTime, 'YYYY-MM'),
-      report_date: null,
-      channel_id: null
+      report_date: fecha.format(this.nowTime, 'YYYY-MM-DD'),
+      channel_id: null,
+      channel: null
     };
 
     this.handleTimeTypeChange = this.handleTimeTypeChange.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.handleD = this.handleTimeTypeChange.bind(this);
+    this.handleTimeTypeChange = this.handleTimeTypeChange.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const nextLocation = nextProps.location;
+    const currentLocation = this.props.location;
+
+    if (nextLocation !== currentLocation) {
+      const params = this.parseUrlParams(nextLocation);
+
+      this.fetchFilters(params);
+      this.fetch(params);
+    }
+  }
+
+  parseUrlParams(obj) {
+    const location = obj || this.props.location;
+    const params = qs.parse(location.search, {
+      ignoreQueryPrefix: true
+    });
+
+    if (params.report_date) {
+      const date = new Date(params.report_date);
+
+      if (params.time_type === 'day') params.day_value = fecha.format(date, 'YYYY-MM-DD');
+      if (params.time_type === 'month') params.month_value = fecha.format(date, 'YYYY-MM');
+    }
+
+    return params;
+  }
+
+  updateUrlParams(params = {}) {
+    const location = this.props.location;
+    let urlParams = this.parseUrlParams();
+    urlParams = _.assign(urlParams, params);
+
+    _.forEach(urlParams, (value, key) => {
+       urlParams[key] = urlParams[key] || null;
+    });
+
+    const filterStateParams = this.filterStateParams(urlParams);
+
+    this.setState(filterStateParams, () => {
+      const filterUrlParams = this.filterUrlParams(urlParams);
+      const query = qs.stringify(filterUrlParams, {
+        arrayFormat: 'brackets',
+        addQueryPrefix: true
+      });
+
+      this.props.history.push(`${location.pathname}${query}`);
+    });
   }
 
   componentDidMount() {
-    this.fetch();
+    const params = this.parseUrlParams();
+
+    this.fetchFilters(params);
+    this.fetch(params);
   }
 
-  getReportDate(time_type) {
-    const type = time_type || this.state.time_type;
-    const { day_value, month_value } = this.state;
+  filterUrlParams(obj) {
+    return _.pick(obj,
+      [
+        'page',
+        'per_page',
+        'time_type',
+        'channel_id',
+        'report_date',
+      ]
+    );
+  }
 
-    if (time_type === time_type) return day_value;
-    return `${month_value}-01`;
+  filterStateParams(obj) {
+    return _.pick(obj,
+      [
+        'page',
+        'per_page',
+        'time_type',
+        'channel_id',
+        'report_date',
+        'day_value',
+        'month_value',
+        'channel'
+      ]
+    );
+  }
+
+  fetchFilters(params) {
+    this.fetchFilterChannel(params.channel_id);
+  }
+
+  async fetchFilterChannel(id) {
+    if (!id) {
+      this.setState({ channel: null });
+      return;
+    }
+
+    const channel = this.state.channel || {};
+    if (Number(id) === channel.id) return;
+
+    try {
+      const res = await this.props.fetchChannelShow({ id });
+      this.setState({ channel: res.data });
+    } catch(e) {
+      this.setState({ networkError: true });
+    }
   }
 
   async fetch(params = {}) {
     this.setState({ isLoading: true });
+    this.setState(this.filterStateParams(params));
 
-    const page = params.page || this.state.page || 1;
-    const per_page = params.per_page || this.state.per_page;
-    const time_type = params.time_type || this.state.time_type;
-    const channel_id = _.hasIn(params, 'channel_id') ? params.channel_id : this.state.channel_id;
-    const report_date = params.report_date || this.getReportDate(time_type);
-    const day_value = params.day_value || this.state.day_value;
-    const month_value = params.month_value || this.state.month_value;
-    const optimizes = { page, per_page, time_type, channel_id, report_date };
-
-    this.setState({
-      page,
-      per_page,
-      time_type,
-      channel_id,
-      report_date,
-      day_value,
-      month_value
-    });
+    const filterStateParams = this.filterStateParams(this.state);
+    _.assign(filterStateParams, params);
 
     try {
+      const optimizes = this.filterUrlParams(filterStateParams);
       const res = await this.props.fetchReport(optimizes);
       this.setState({ isLoading: false });
     } catch(e) {
@@ -86,7 +174,7 @@ class Report extends Component {
   }
 
   handlePageChange(params = {}) {
-    this.fetch(params);
+    this.updateUrlParams(params);
   }
 
   handleTimeTypeChange(event) {
@@ -94,7 +182,8 @@ class Report extends Component {
     const day_value = fecha.format(this.nowTime, 'YYYY-MM-DD');
     const month_value = fecha.format(this.nowTime, 'YYYY-MM');
 
-    this.fetch({
+    this.updateUrlParams({
+      page: 1,
       time_type,
       day_value,
       month_value,
@@ -109,7 +198,7 @@ class Report extends Component {
       return (
         <DatePicker
           onChange={(date, dateString) => {
-            this.fetch({ report_date: dateString, time_type: 'day', day_value: dateString });
+            this.updateUrlParams({ page: 1, report_date: dateString, time_type: 'day', day_value: dateString });
           }}
           value={moment(day_value, 'YYYY-MM-DD')}
           placeholder="选择日期"
@@ -121,7 +210,7 @@ class Report extends Component {
       return (
         <MonthPicker
           onChange={(date, dateString) => {
-            this.fetch({ report_date: `${dateString}-01`, time_type: 'month', month_value: dateString });
+            this.updateUrlParams({ page: 1, report_date: `${dateString}-01`, time_type: 'month', month_value: dateString });
           }}
           value={moment(month_value, 'YYYY-MM')}
           placeholder="选择月份"
@@ -132,7 +221,7 @@ class Report extends Component {
   }
 
   renderFilters() {
-    const { time_type } = this.state;
+    const { time_type, channel } = this.state;
 
     return (
       <div>
@@ -153,11 +242,11 @@ class Report extends Component {
           <Col xs="2">
             <ChannelSelector
               multi={false}
-              clearable={false}
-              searchable={false}
+              value={channel}
+              async={true}
               onChange={(value) => {
                 const channel = value || {};
-                this.fetch({ channel_id: channel.id });
+                this.updateUrlParams({ page: 1, channel_id: channel.id, channel: value });
               }}
             />
           </Col>
@@ -187,7 +276,7 @@ class Report extends Component {
         <th>{ summary.year_grade_platinum }</th>
         <th>{ summary.year_grade_gold }</th>
       </tr>
-    )
+    );
   }
 
   renderReportTr(item) {

@@ -160,9 +160,8 @@ class NewChannelRegion extends Component {
                 <Col xs='9'>
                   <ChannelSelector
                     multi={true}
+                    async={true}
                     value={channel_region.selectedOptions}
-                    clearable={false}
-                    searchable={false}
                     onChange={(values) => {
                       channel_region.channel_ids = _.map(values, 'id');
                       this.setState({ channel_region });

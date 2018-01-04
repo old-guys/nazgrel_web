@@ -132,8 +132,7 @@ class EditChannelRegion extends Component {
                   <ChannelSelector
                     multi={true}
                     value={channel_region.selectedOptions}
-                    clearable={false}
-                    searchable={false}
+                    async={true}
                     onChange={(values) => {
                       channel_region.channel_ids = _.map(values, 'id');
                       this.setState({ channel_region });

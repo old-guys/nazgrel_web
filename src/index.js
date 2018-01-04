@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, Switch, Router, browserHistory, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Router, Redirect } from 'react-router-dom';
 import { Provider, connect } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';

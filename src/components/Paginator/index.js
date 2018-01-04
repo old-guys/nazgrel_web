@@ -10,8 +10,8 @@ export default class Paginator extends React.Component{
       linkNum: 5,
       left: 2,
       right: 2,
-      go_to_page: 1,
-      per_page: null
+      go_to_page: props.collection.current_page || 1,
+      per_page: props.collection.per_page
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
@@ -33,19 +33,20 @@ export default class Paginator extends React.Component{
   }
 
   handleChangeGoToPage(event) {
-    const { go_to_page } = this.state;
     const value = event.target.value;
 
     if (_.isEmpty(value) || /^\d*$/.test(value)) {
-      this.setState({ go_to_page: event.target.value });
+      this.setState({ go_to_page: value });
     }
   }
 
   handleClickGoToPage(event) {
     const { go_to_page } = this.state;
+    const { total_pages } = this.props.collection;
+    const page = Number(go_to_page) > total_pages ? total_pages : go_to_page;
 
-    this.props.handlePageChange({ page: go_to_page });
-    this.setState({ current_page: go_to_page });
+    this.props.handlePageChange({ page });
+    this.setState({ current_page: page, go_to_page: page });
   }
 
   handleChangePerPage(event) {
@@ -61,12 +62,10 @@ export default class Paginator extends React.Component{
 
   handleOnKeyPress(event) {
     const isEnter = event.charCode === 13;
-    const { go_to_page } = this.state;
-
     if (!isEnter) return;
+
     event.target.blur();
-    this.props.handlePageChange({ page: go_to_page });
-    this.setState({ current_page: go_to_page });
+    this.handleClickGoToPage();
   }
 
   renderFirst() {
@@ -149,9 +148,9 @@ export default class Paginator extends React.Component{
 
   render() {
     const { total_pages, total_count, current_page, per_page } = this.props.collection;
-    const { go_to_page } = this.state;
-
     if (!total_pages) return null;
+
+    const { go_to_page } = this.state;
 
     return (
       <Row className='page-footer'>

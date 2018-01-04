@@ -2,16 +2,17 @@ import React, {Component} from 'react';
 import { Card, CardBody, Button, Table } from 'reactstrap';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
+import qs from 'qs';
 
 import { Confirm } from 'components/Confirm/';
-import Paginator from 'components/Paginator/'
-import Notificator from 'components/Notificator/'
-import Loading from 'components/Loading/'
-import Nodata from 'components/Nodata/'
+import Paginator from 'components/Paginator/';
+import Notificator from 'components/Notificator/';
+import Loading from 'components/Loading/';
+import Nodata from 'components/Nodata/';
 // import NewDemo from './new';
 // import EditDemo from './edit';
 // import DestroyDemo from './destroy';
-import { NewDemo, EditDemo, DestroyDemo } from './'
+import { NewDemo, EditDemo, DestroyDemo } from './';
 
 import { fetchDemoAll } from 'reducers/demo';
 
@@ -24,45 +25,55 @@ class Demo extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-
-    };
+    this.state = {};
 
     this.handlePageChange = this.handlePageChange.bind(this);
   }
 
-  handlePageChange(params = {}) {
-    this.fetch(params);
+  componentWillReceiveProps(nextProps) {
+    const nextLocation = nextProps.location;
+    const currentLocation = this.props.location;
+
+    if (nextLocation !== currentLocation) {
+      const params = this.parseUrlParams(nextLocation);
+      this.fetch(params);
+    }
+  }
+
+  parseUrlParams(obj) {
+    const location = obj || this.props.location;
+
+    return qs.parse(location.search, {
+      ignoreQueryPrefix: true
+    });
+  }
+
+  updateUrlParams(params = {}) {
+    const location = this.props.location;
+    const urlParams = _.assign(this.parseUrlParams(), params);
+    const query = qs.stringify(urlParams, {
+      arrayFormat: 'brackets',
+      addQueryPrefix: true
+    });
+
+    this.props.history.push(`${location.pathname}${query}`);
   }
 
   componentDidMount() {
-    this.fetch();
+    const params = this.parseUrlParams();
+
+    this.fetch(params);
+  }
+
+  handlePageChange(params = {}) {
+    this.updateUrlParams(params);
   }
 
   async fetch(params = {}) {
     this.setState({ isLoading: true });
 
-    const page = params.page || this.state.page || 1;
-    const per_page = params.per_page || this.state.per_page;
-    const filters = params.filters || this.state.filters;
-    const json_key = params.json_key || this.state.json_key;
-    let optimizes = {
-      page,
-      per_page,
-      filters,
-      json_key,
-    };
-
-    this.setState({
-      page: optimizes.page,
-      per_page: optimizes.per_page,
-      query: params.query,
-      filters: optimizes.filters,
-      json_key: optimizes.json_key,
-    });
-    delete optimizes.query;
-
     try {
+      const optimizes = _.pick(params, ['page', 'per_page', 'filters', 'query']);
       const res = await this.props.fetchDemoAll(optimizes);
       this.setState({ isLoading: false });
     } catch(e) {
