@@ -9,16 +9,14 @@ export default class Selector extends React.Component {
 
     this.state = {
       query: null,
-      options: [],
+      options: props.options || [],
       value: null,
       more: true,
       page: 1,
-      isLoading: false
-    }
+      isLoading: false,
+      async: props.async
+    };
 
-    this.multi = props.multi || false;
-    this.clearable= props.clearable || true;
-    this.searchable= props.searchable || true;
     this.filters = props.filters;
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -35,6 +33,9 @@ export default class Selector extends React.Component {
   }
 
   componentWillUnmount() {
+    const {async} = this.state;
+    if (!async) return;
+
     this.setState({
       query: null,
       options: [],
@@ -42,6 +43,15 @@ export default class Selector extends React.Component {
       more: true,
       page: 1
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const nextValue = nextProps.value;
+    const currentValue = this.props.value;
+
+    if (nextValue !== currentValue) {
+      this.setState({ value: nextValue });
+    }
   }
 
   handleOnChange(values) {
@@ -57,6 +67,8 @@ export default class Selector extends React.Component {
 
   handleOnOpen(event) {
     console.log('onOpen');
+    const {async} = this.state;
+    if (!async) return;
 
     this.fetchOptions({
       page: 1,
@@ -81,6 +93,8 @@ export default class Selector extends React.Component {
 
   handleOnMenuScrollToBottom(event) {
     console.log('onMenuScrollToBottom');
+    const {async} = this.state;
+    if (!async) return;
 
     const { page } = this.state;
     this.fetchOptions({ page: page + 1 });
@@ -90,6 +104,8 @@ export default class Selector extends React.Component {
 
   handleOnInputChange(value) {
     console.log('onInputChange');
+    const {async} = this.state;
+    if (!async) return;
 
     setTimeout(() => {
       const dom = this.refs[this.selectRef];
@@ -113,6 +129,8 @@ export default class Selector extends React.Component {
 
   handleOnClose(event) {
     console.log('onClose');
+    const {async} = this.state;
+    if (!async) return;
 
     this.setState({
       query: null,
@@ -140,7 +158,7 @@ export default class Selector extends React.Component {
     });
 
     if (!more) return null;
-    options.push({id: 0, name: '正在加载......'});
+    options.push({ id: 0, name: '正在加载......', disabled: true });
     this.setState({ isLoading: true });
 
     let optimizes = {
@@ -164,18 +182,23 @@ export default class Selector extends React.Component {
 
   render() {
     const value = this.state.value || this.props.value;
+    const multi = _.hasIn(this.props, 'multi') ? this.props.multi : false;
+    const valueKey = _.hasIn(this.props, 'valueKey') ? this.props.valueKey : 'id';
+    const labelKey = _.hasIn(this.props, 'labelKey') ? this.props.labelKey : 'name';
+    const clearable = _.hasIn(this.props, 'clearable') ? this.props.clearable : true;
+    const searchable = _.hasIn(this.props, 'searchable') ? this.props.searchable : true;
 
     return (
       <Select
         isLoading={this.state.isLoading}
         ref={this.selectRef}
-        multi={this.multi}
+        multi={multi}
         name={this.name}
         placeholder={this.placeholder}
         value={value}
         options={this.state.options}
-        valueKey="id"
-        labelKey="name"
+        valueKey={valueKey}
+        labelKey={labelKey}
         onChange={this.handleOnChange}
         onFocus={this.handleOnFocus}
         onOpen={this.handleOnOpen}
@@ -183,8 +206,8 @@ export default class Selector extends React.Component {
         onInputChange={this.handleOnInputChange}
         onBlur={this.handleOnBlur}
         onClose={this.handleOnClose}
-        clearable={this.clearable}
-        searchable={this.searchable}
+        clearable={clearable}
+        searchable={searchable}
         disabled={this.props.disabled}
         scrollMenuIntoView={this.scrollMenuIntoView}
         noResultsText="没有找到匹配项"

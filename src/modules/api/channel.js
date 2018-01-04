@@ -37,12 +37,14 @@ export default class ChannelApi {
 
   async show(config = {}) {
     const resolvedConfig = { ...this.config, ...config };
+    const { id } = resolvedConfig;
 
+    this.resource = channelResource({ path: `/${id}` });
     const show = this.resource.get(resolvedConfig);
     const response = await fetchResource(show);
     const json = await response.json()
 
-    return show;
+    return json;
   }
 
   async create(config = {}) {
