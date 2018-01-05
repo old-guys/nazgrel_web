@@ -7,6 +7,7 @@
 		"transform-class-properties",
 		"transform-decorators-legacy",
 		"babel-plugin-transform-runtime",
-		"syntax-dynamic-import"
+		"syntax-dynamic-import",
+		["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
 	]
 }
