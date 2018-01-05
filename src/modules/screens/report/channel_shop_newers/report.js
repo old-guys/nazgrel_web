@@ -3,9 +3,9 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import React, { Component } from 'react'
-import DatePicker from 'antd/lib/date-picker';
+import { DatePicker } from 'antd';
 
 import { Button, Table, Card, CardBody, Input, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
