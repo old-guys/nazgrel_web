@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, CardTitle, CardBody, Button, FormGroup, Inpu
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom'
+// import { Redirect } from 'react-router-dom'
 import { fetchAuthLogin } from 'reducers/auth';
 import Notificator from 'components/Notificator/'
 
@@ -33,15 +33,16 @@ export default class Login extends Component {
   }
 
   async userLogin() {
-    const { login, password } = this.state;
-
     try {
+      const location = this.props.auth.getStoreLocation();
+      const { login, password } = this.state;
       const res = await this.props.fetchAuthLogin({ login, password });
       const { userToken } = this.props.loginUser;
 
       if (Number(res.code) === 0 && userToken) {
         this.props.auth.login(res.data);
-        this.setState({ redirect: true });
+        this.props.history.push(location || '/');
+        // this.setState({ redirect: true });
       } else {
         this.notificator.error({ text: '账号或密码错误' });
       }
@@ -52,9 +53,9 @@ export default class Login extends Component {
 
   render() {
 
-    if (this.state.redirect) {
-      return <Redirect push to="/"/>;
-    }
+    // if (this.state.redirect) {
+    //   return <Redirect push to="/"/>;
+    // }
 
     return (
       <div className="app flex-row align-items-center">

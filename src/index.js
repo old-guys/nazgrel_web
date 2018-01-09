@@ -38,13 +38,14 @@ class App extends Component{
       <HashRouter>
 				<Switch>
 				  <Route path="/login" name="Login" render={(props)=>{
-            return <Login auth={auth} {...props} />
+            return <Login auth={auth} {...props} />;
           }} />
           <Route path="/" name="Home" render={(props)=> {
             if (auth.isLogin()) {
-              return <Full {...props} />
+              return <Full {...props} />;
             } else {
-              return <Redirect to="/login" />
+              auth.setStoreLocation(props.location);
+              return <Redirect to="/login" />;
             }
           }} />
           <Redirect from="/" to="/channel" />

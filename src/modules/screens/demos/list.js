@@ -3,6 +3,7 @@ import { Card, CardBody, Button, Table } from 'reactstrap';
 import fecha from 'fecha';
 import { connect } from 'react-redux';
 import qs from 'qs';
+import PropTypes from 'prop-types';
 
 import { Confirm } from 'components/Confirm/';
 import Paginator from 'components/Paginator/';
@@ -16,14 +17,19 @@ import { NewDemo, EditDemo, DestroyDemo } from './';
 
 import { fetchDemoAll } from 'reducers/demo';
 
-@connect(state => ({
-  demos: state.demo
-}), {
-  fetchDemoAll
-})
+// @connect(state => ({
+//   demos: state.demo
+// }), {
+//   fetchDemoAll
+// })
 class Demo extends Component {
-  constructor (props) {
-    super(props)
+
+  static contextTypes = {
+    router: PropTypes.object
+  }
+
+  constructor (props, context) {
+    super(props, context)
 
     this.state = {};
 
@@ -57,6 +63,18 @@ class Demo extends Component {
     });
 
     this.props.history.push(`${location.pathname}${query}`);
+
+    // this.props.history.push({
+    //   pathname: location.pathname,
+    //   search: query,
+    //   state: { }
+    // });
+
+    // this.context.router.history.push({
+    //   pathname: location.pathname,
+    //   search: query,
+    //   state: { }
+    // });
   }
 
   componentDidMount() {
@@ -215,4 +233,9 @@ class Demo extends Component {
   }
 }
 
-export default Demo;
+export default connect(state => ({
+  demos: state.demo
+}), {
+  fetchDemoAll
+})(Demo)
+// export default Demo;
