@@ -9,6 +9,7 @@ import ChannelRegionApi from './channel_region';
 import ChannelUserApi from './channel_user';
 
 import { default as ReportChannelShopNewerApi } from './report/channel_shop_newer';
+import { default as ReportChannelShopActivityApi } from './report/channel_shop_activity';
 
 export {
   ConstantSettingApi,
@@ -17,5 +18,6 @@ export {
   AuthApi,
   ChannelRegionApi,
   ChannelUserApi,
-  ReportChannelShopNewerApi
+  ReportChannelShopNewerApi,
+  ReportChannelShopActivityApi
 };

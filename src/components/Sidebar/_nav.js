@@ -25,6 +25,11 @@ const defaultItems = [
         name: '渠道新增店主',
         url: '/report/channel_shop_newer/report',
         icon: 'icon-star'
+      },
+      {
+        name: '渠道店主行为',
+        url: '/report/channel_shop_activities/report',
+        icon: 'icon-star'
       }
     ]
   }
