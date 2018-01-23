@@ -15,7 +15,7 @@ module.exports = (env = {}) => {
   return {
     entry: {
       index: './src/index.js',
-      vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap']
+      vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap', 'jquery']
     },
     output: {
       filename: `[name].${uuid}.js`,
@@ -33,6 +33,7 @@ module.exports = (env = {}) => {
         resources: path.resolve('./src/modules/resources'),
         screens: path.resolve('./src/modules/screens'),
         services: path.resolve('./src/modules/services'),
+        // jquery: 'jquery/dist/jquery.min.js',
       }
     },
     devtool: env.prod ? 'source-map' : 'cheap-module-eval-source-map',
@@ -119,6 +120,12 @@ module.exports = (env = {}) => {
         newrelicJsPath: `/vendor/newrelic.${uuid}.js`,
         pleaseWaitJsPath: `/vendor/please-wait.${uuid}.js`,
         pleaseWaitCssPath: `/vendor/please-wait.${uuid}.css`
+      }),
+      new webpack.ProvidePlugin({
+       $: 'jquery',
+       jQuery: 'jquery',
+       'window.jQuery': 'jquery',
+       'window.$': 'jquery',
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development'),
