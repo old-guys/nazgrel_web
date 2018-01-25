@@ -3,7 +3,8 @@ let defaultRoutes = {
   '/channel': '渠道设置',
   '/channel_region': '渠道管理员',
   '/report/channel_shop_newer/report': '新增店主',
-  '/report/channel_shop_activities/report': '渠道店主行为'
+  '/report/channel_shop_activities/report': '渠道店主行为',
+  '/report/shop_ecns': '店主ECN'
 };
 
 let envRotues = {

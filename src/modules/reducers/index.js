@@ -8,6 +8,7 @@ import channel_user from './channel_user';
 import demo from './demo';
 import report_channel_shop_newer from './report/channel_shop_newer';
 import report_channel_shop_activity from './report/channel_shop_activity';
+import report_shop_ecn from './report/shop_ecn';
 
 export default combineReducers({
   constant_setting,
@@ -18,5 +19,6 @@ export default combineReducers({
   channel_user,
   demo,
   report_channel_shop_newer,
-  report_channel_shop_activity
+  report_channel_shop_activity,
+  report_shop_ecn
 });
