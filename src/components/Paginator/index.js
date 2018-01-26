@@ -154,7 +154,7 @@ export default class Paginator extends React.Component{
 
     return (
       <Row className='page-footer'>
-        <Col xs='12'>
+        <Col xs='11'>
           <Row>
             <Col xs="auto">共{total_count}条</Col>
             <Col xs="auto">

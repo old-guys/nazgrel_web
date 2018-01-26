@@ -3,8 +3,8 @@ import ReportChannelShopActivityApi from 'api/report/channel_shop_activity';
 
 const REPORT_CHANNEL_SHOP_ACTIVITY_REPORT = '@REPORT_CHANNEL_SHOP_ACTIVITY_REPORT';
 
-function response(res) {
-  if (res.code === 0 || res.code === '0') return true;
+function response(res, params) {
+  if ((res.code === 0 || res.code === '0') && params.action_type !== 'export') return true;
   return false;
 }
 
@@ -12,7 +12,7 @@ export function fetchReport(params) {
   return dispatch => {
     return ReportChannelShopActivityApi.instance().report(params)
       .then((res) => {
-        if (response(res)) {
+        if (response(res, params)) {
           dispatch({
             type: REPORT_CHANNEL_SHOP_ACTIVITY_REPORT,
             data: res.data,

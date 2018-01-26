@@ -34,6 +34,7 @@
     // <location>: top, right , bottom , left
     // -----------------------------------------
     .mart#{$value} { margin-top: #{$value}px; }
+    .martm#{$value} { margin-top: -#{$value}px; }
     .marr#{$value} { margin-right: #{$value}px; }
     .marb#{$value} { margin-bottom: #{$value}px; }
     .marbm#{$value} { margin-bottom: -#{$value}px; }
