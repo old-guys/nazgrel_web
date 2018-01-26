@@ -3,8 +3,8 @@ import ReportShopEcnApi from 'api/report/shop_ecn';
 
 const REPORT_SHOP_ECN = '@REPORT_SHOP_ECN';
 
-function response(res) {
-  if (res.code === 0 || res.code === '0') return true;
+function response(res, params) {
+  if ((res.code === 0 || res.code === '0') && params.action_type !== 'export') return true;
   return false;
 }
 
@@ -12,7 +12,7 @@ export function fetchIndex(params) {
   return dispatch => {
     return ReportShopEcnApi.instance().index(params)
       .then((res) => {
-        if (response(res)) {
+        if (response(res, params)) {
           dispatch({
             type: REPORT_SHOP_ECN,
             data: res.data,

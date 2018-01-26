@@ -14,6 +14,7 @@ import qs from 'qs';
 import Paginator from 'components/Paginator/';
 import Loading from 'components/Loading/';
 import Nodata from 'components/Nodata/';
+import Export from 'components/Export/';
 import {
   fetchIndex
 } from 'reducers/report/shop_ecn';
@@ -43,6 +44,7 @@ class Index extends Component {
     this.handleShopkeeperUserNameChange = this.handleShopkeeperUserNameChange.bind(this);
     this.handleShopkeeperUserPhoneChange = this.handleShopkeeperUserPhoneChange.bind(this);
     this.handleCreatedAtChange = this.handleCreatedAtChange.bind(this);
+    this.handleExport = this.handleExport.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -208,6 +210,26 @@ class Index extends Component {
     });
   }
 
+  handleExport() {
+    try {
+
+      this.refs.export.showExportModal(() => {
+        const filterStateParams = this.filterStateParams(this.state);
+        const optimizes = this.filterUrlParams(filterStateParams);
+        _.assign(optimizes, {
+          action_type: 'export',
+          page: 1
+        });
+
+        this.props.fetchIndex(optimizes).then((res) => {
+          this.refs.export.updateVariables(res.data);
+        });
+      });
+    } catch(e) {
+
+    }
+  }
+
   renderFilters() {
     const { ecn_count_value, created_ats, shopkeeper: {user_name, user_phone}} = this.state;
 
@@ -326,6 +348,19 @@ class Index extends Component {
     );
   }
 
+  renderExport() {
+    const { shop_ecns: { isFetching, list, current_page } } = this.props.listData;
+
+    if (!list.length) return null;
+
+    return (
+      <div className="padl10 lineh30 pull-right marr20 martm25">
+        <Export ref="export" actionName="店主ECN" />
+        <a href="javascript:;" onClick={this.handleExport}>导出</a>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className='newly-shop'>
@@ -334,6 +369,7 @@ class Index extends Component {
             { this.renderFilters() }
             { this.renderReportTable() }
             { this.renderPaginator() }
+            { this.renderExport() }
           </CardBody>
         </Card>
       </div>
