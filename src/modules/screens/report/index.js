@@ -10,3 +10,8 @@ export const ReportChannelShopActivityReport = Loadable({
   loader: () => import('./channel_shop_activities/report'),
   loading: PageLoading
 });
+
+export const ReportShopEcn = Loadable({
+  loader: () => import('./shop_ecns/'),
+  loading: PageLoading
+});
