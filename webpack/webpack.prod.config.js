@@ -116,7 +116,9 @@ module.exports = (env = {}) => {
         inject: true,
         template: path.resolve('./src/index.html'),
         newrelicJsPath: `/vendor/newrelic.${uuid}.js`,
+        sentryApmUrl: platformConfig.sentryApmUrl,
         pleaseWaitJsPath: `/vendor/please-wait.${uuid}.js`,
+        ravenJsPath: `/vendor/raven.min.${uuid}.js`,
         pleaseWaitCssPath: `/vendor/please-wait.${uuid}.css`
       }),
       new webpack.ProvidePlugin({

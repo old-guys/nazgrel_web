@@ -117,7 +117,9 @@ module.exports = (env = {}) => {
       new HtmlWebpackPlugin({
         ENV: platformConfig,
         template: path.resolve('./src/index.html'),
+        sentryApmUrl: platformConfig.sentryApmUrl,
         newrelicJsPath: `/vendor/newrelic.${uuid}.js`,
+        ravenJsPath: `/vendor/raven.min.${uuid}.js`,
         pleaseWaitJsPath: `/vendor/please-wait.${uuid}.js`,
         pleaseWaitCssPath: `/vendor/please-wait.${uuid}.css`
       }),

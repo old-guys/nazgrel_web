@@ -15,9 +15,17 @@
   <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
     <div id="root"></div>
     <script type="text/javascript" src="<%= htmlWebpackPlugin.options.pleaseWaitJsPath %>"></script>
+      <script src="https://cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
+      var sentryApmUrl = "<%= htmlWebpackPlugin.options.sentryApmUrl %>";
       var loadingHtml = "<p class='loading-message text-muted'>欢迎使用芝蚂城营销管理系统，请稍后...</p>" +
         '<div class="spinner"><div class="dot1"></div><div class="dot2"></div></div>';
+
+      if (sentryApmUrl) {
+        Raven.config(sentryApmUrl).install();
+      } else {
+        console.log("sentryApmUrl is missing")
+      }
       window.loading_screen = window.pleaseWait({
         logo: "/images/favicon.png",
         loadingHtml: loadingHtml
