@@ -20,7 +20,7 @@ var refresh_cdn = function (urls) {
 
     if (respInfo.statusCode == 200) {
       var jsonBody = JSON.parse(respBody);
-      console.log("refresh", jsonBody.error);
+      console.log(`refresh ${urls}`, jsonBody.error);
     } else {
       console.log(jsonBody);
     }
@@ -35,7 +35,7 @@ cdnManager.prefetchUrls(urlsToPrefetch, function(err, respBody, respInfo) {
 
   if (respInfo.statusCode == 200) {
     var jsonBody = JSON.parse(respBody);
-    console.log("prefetch ", jsonBody.error);
+    console.log(`prefetch: ${urlsToPrefetch}`, jsonBody.error);
 
     refresh_cdn(urlsToRefresh);
   } else {
