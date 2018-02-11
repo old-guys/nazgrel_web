@@ -16,8 +16,9 @@ import '../assets/scss/style.scss'
 import '../assets/scss/core/_dropdown-menu-right.scss'
 
 import reducers from 'reducers';
-import { Login } from 'screens'
-import { Auth } from 'services'
+import { Login } from 'screens';
+import { Auth, logger } from 'services';
+import ErrorBoundary from 'components/ErrorBoundary/';
 import Full from 'containers/Full/Full';
 
 const middleware = [ thunk ]
@@ -56,7 +57,9 @@ class App extends Component{
 }
 
 ReactDOM.render((
-  <Provider store={store}>
-	  <App/>
-  </Provider>
+  <ErrorBoundary>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ErrorBoundary>
 ), document.getElementById('root'));

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, {Component} from 'react';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Container

@@ -313,7 +313,7 @@ class Index extends Component {
   renderReportTable() {
     return (
       <div className='table-responsive' id='report'>
-        <Table bordered style={{"table-layout": 'fixed'}}>
+        <Table bordered style={{"tableLayout": 'fixed'}}>
           <thead>
             <tr align="center">
               <th headers="idrefs" width="60">序号</th>
