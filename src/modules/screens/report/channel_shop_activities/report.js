@@ -413,7 +413,7 @@ class Report extends Component {
   renderReportTable() {
     return (
       <div className='table-responsive' id='report'>
-        <Table bordered style={{"table-layout": 'fixed'}}>
+        <Table bordered style={{"tableLayout": 'fixed'}}>
           <thead>
             { this.renderReportTableCountTr() }
             <tr align="center">
