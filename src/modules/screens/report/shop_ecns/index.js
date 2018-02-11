@@ -236,7 +236,7 @@ class Index extends Component {
     return (
       <div>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">时间范围:</Col>
+          <Col xs="1" className="text align-self-center">时间范围:</Col>
           <Col xs="2">
             <Input type="select" name="ecn_count" value={ecn_count_value} onChange={this.handleEcnCountChange}>
               <option value="-1">全部</option>
@@ -247,20 +247,20 @@ class Index extends Component {
           </Col>
         </Row>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">店主姓名:</Col>
+          <Col xs="1" className="text align-self-center">店主姓名:</Col>
           <Col xs="2">
             <Input name="shopkeeper_user_name" value={user_name} onChange={this.handleShopkeeperUserNameChange} />
           </Col>
         </Row>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">手机号:</Col>
+          <Col xs="1" className="text align-self-center">手机号:</Col>
           <Col xs="2">
             <Input name="shopkeeper_user_phone" value={user_phone} onChange={this.handleShopkeeperUserPhoneChange} />
           </Col>
         </Row>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">时间范围:</Col>
-          <Col className='pr0-center mart2' xs="auto">
+          <Col xs="1" className="text align-self-center">时间范围:</Col>
+          <Col xs="auto">
             <RangePicker
               format="YYYY-MM-DD"
               onChange={this.handleCreatedAtChange}

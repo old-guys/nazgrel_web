@@ -248,19 +248,19 @@ class Report extends Component {
     return (
       <div>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">时间范围:</Col>
+          <Col xs="1" className="text align-self-center">时间范围:</Col>
           <Col xs="1">
             <Input type="select" name="time_type" value={time_type} onChange={this.handleTimeTypeChange}>
               <option value="day">天</option>
               <option value="month">月</option>
             </Input>
           </Col>
-          <Col className='pr0-center mart2' xs="auto">
+          <Col xs="auto">
             { this.renderFilterDatePicker() }
           </Col>
         </Row>
         <Row className='sort'>
-          <Col className='pr0-center' xs="auto">所属渠道:</Col>
+          <Col xs="1" className="text align-self-center">所属渠道:</Col>
           <Col xs="2">
             <ChannelSelector
               multi={false}
