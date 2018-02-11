@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardFooter,
   CardBody,
+  Collapse,
   Form,
   FormGroup,
   FormText,
@@ -18,14 +19,19 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-  InputGroupButton
+  InputGroupText
 } from 'reactstrap';
 
 class Forms extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.toggle = this.toggle.bind(this);
+    this.state = { collapse: true };
+  }
+
+  toggle() {
+    this.setState({ collapse: !this.state.collapse });
   }
 
   render() {
@@ -221,7 +227,7 @@ class Forms extends Component {
                       <Label htmlFor="selectLg">Select Large</Label>
                     </Col>
                     <Col xs="12" md="9" size="lg">
-                      <Input type="select" name="selectLg" id="selectLg" size="lg">
+                      <Input type="select" name="selectLg" id="selectLg" bsSize="lg">
                         <option value="0">Please select</option>
                         <option value="1">Option #1</option>
                         <option value="2">Option #2</option>
@@ -234,7 +240,7 @@ class Forms extends Component {
                       <Label htmlFor="selectSm">Select Small</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="select" name="selectSm" id="SelectLm" size="sm">
+                      <Input type="select" name="selectSm" id="SelectLm" bsSize="sm">
                         <option value="0">Please select</option>
                         <option value="1">Option #1</option>
                         <option value="2">Option #2</option>
@@ -281,77 +287,72 @@ class Forms extends Component {
                       <Label>Radios</Label>
                     </Col>
                     <Col md="9">
-                      <FormGroup check>
-                        <div className="radio">
-                          <Label check htmlFor="radio1">
-                            <Input type="radio" id="radio1" name="radios" value="option1"/> Option 1
-                          </Label>
-                        </div>
-                        <div className="radio">
-                          <Label check htmlFor="radio2">
-                            <Input type="radio" id="radio2" name="radios" value="option2"/> Option 2
-                          </Label>
-                        </div>
-                        <div className="radio">
-                          <Label check htmlFor="radio3">
-                            <Input type="radio" id="radio3" name="radios" value="option3"/> Option 3
-                          </Label>
-                        </div>
+                      <FormGroup check className="radio">
+                        <Input className="form-check-input" type="radio" id="radio1" name="radios" value="option1"/>
+                        <Label check className="form-check-label" htmlFor="radio1">Option 1</Label>
+                      </FormGroup>
+                      <FormGroup check className="radio">
+                        <Input className="form-check-input" type="radio" id="radio2" name="radios" value="option2"/>
+                        <Label check className="form-check-label" htmlFor="radio2">Option 2</Label>
+                      </FormGroup>
+                      <FormGroup check className="radio">
+                        <Input className="form-check-input" type="radio" id="radio3" name="radios" value="option3"/>
+                        <Label check className="form-check-label" htmlFor="radio3">Option 3</Label>
                       </FormGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
-                    <Col md="3"><Label>Inline Radios</Label></Col>
+                    <Col md="3">
+                      <Label>Inline Radios</Label>
+                    </Col>
                     <Col md="9">
-                      <FormGroup check className="form-check-inline">
-                        <Label check htmlFor="inline-radio1">
-                          <Input type="radio" id="inline-radio1" name="inline-radios" value="option1"/> One
-                        </Label>
-                        <Label check htmlFor="inline-radio2">
-                          <Input type="radio" id="inline-radio2" name="inline-radios" value="option2"/> Two
-                        </Label>
-                        <Label check htmlFor="inline-radio3">
-                          <Input type="radio" id="inline-radio3" name="inline-radios" value="option3"/> Three
-                        </Label>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="radio" id="inline-radio1" name="inline-radios" value="option1"/>
+                        <Label className="form-check-label" check htmlFor="inline-radio1">One</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="radio" id="inline-radio2" name="inline-radios" value="option2"/>
+                        <Label className="form-check-label" check htmlFor="inline-radio2">Two</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="radio" id="inline-radio3" name="inline-radios" value="option3"/>
+                        <Label className="form-check-label" check htmlFor="inline-radio3">Three</Label>
                       </FormGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3"><Label>Checkboxes</Label></Col>
                     <Col md="9">
-                      <FormGroup check>
-                        <div className="checkbox">
-                          <Label check htmlFor="checkbox1">
-                            <Input type="checkbox" id="checkbox1" name="checkbox1" value="option1"/> Option 1
-                          </Label>
-                        </div>
-                        <div className="checkbox">
-                          <Label check htmlFor="checkbox2">
-                            <Input type="checkbox" id="checkbox2" name="checkbox2" value="option2"/> Option 2
-                          </Label>
-                        </div>
-                        <div className="checkbox">
-                          <Label check htmlFor="checkbox3">
-                            <Input type="checkbox" id="checkbox3" name="checkbox3" value="option3"/> Option 3
-                          </Label>
-                        </div>
+                      <FormGroup check className="checkbox">
+                        <Input className="form-check-input" type="checkbox" id="checkbox1" name="checkbox1" value="option1"/>
+                        <Label check className="form-check-label" htmlFor="checkbox1">Option 1</Label>
+                      </FormGroup>
+                      <FormGroup check className="checkbox">
+                        <Input className="form-check-input" type="checkbox" id="checkbox2" name="checkbox2" value="option2"/>
+                        <Label check className="form-check-label" htmlFor="checkbox2">Option 2</Label>
+                      </FormGroup>
+                      <FormGroup check className="checkbox">
+                        <Input className="form-check-input" type="checkbox" id="checkbox3" name="checkbox3" value="option3"/>
+                        <Label check className="form-check-label" htmlFor="checkbox3">Option 3</Label>
                       </FormGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label>Inline Checkboxes</Label></Col>
+                      <Label>Inline Checkboxes</Label>
+                    </Col>
                     <Col md="9">
-                      <FormGroup check className="form-check-inline">
-                        <Label check htmlFor="inline-checkbox1">
-                          <Input type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1"/> One
-                        </Label>
-                        <Label check htmlFor="inline-checkbox2">
-                          <Input type="checkbox" id="inline-checkbox2" name="inline-checkbox2" value="option2"/> Two
-                        </Label>
-                        <Label check htmlFor="inline-checkbox3">
-                          <Input type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="option3"/> Three
-                        </Label>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1"/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox1">One</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox2" name="inline-checkbox2" value="option2"/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox2">Two</Label>
+                      </FormGroup>
+                      <FormGroup check inline>
+                        <Input className="form-check-input" type="checkbox" id="inline-checkbox3" name="inline-checkbox3" value="option3"/>
+                        <Label className="form-check-label" check htmlFor="inline-checkbox3">Three</Label>
                       </FormGroup>
                     </Col>
                   </FormGroup>
@@ -373,11 +374,11 @@ class Forms extends Component {
                   </FormGroup>
                   <FormGroup row hidden>
                     <Col md="3">
-                      <Label className="custom-file" htmlFor="file-input">Custom file input</Label>
+                      <Label className="custom-file" htmlFor="custom-file-input">Custom file input</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Label className="custom-file">
-                        <Input className="custom-file" type="file" id="file-input" name="file-input"/>
+                        <Input className="custom-file" type="file" id="custom-file-input" name="file-input"/>
                         <span className="custom-file-control"></span>
                       </Label>
                     </Col>
@@ -395,12 +396,12 @@ class Forms extends Component {
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" inline>
-                  <FormGroup>
+                  <FormGroup className="pr-1">
                     <Label htmlFor="exampleInputName2" className="pr-1">Name</Label>
                     <Input type="text" id="exampleInputName2" placeholder="Jane Doe" required/>
                   </FormGroup>
-                  <FormGroup>
-                    <Label htmlFor="exampleInputEmail2" className="px-1">Email</Label>
+                  <FormGroup className="pr-1">
+                    <Label htmlFor="exampleInputEmail2" className="pr-1">Email</Label>
                     <Input type="email" id="exampleInputEmail2" placeholder="jane.doe@example.com" required/>
                   </FormGroup>
                 </Form>
@@ -424,7 +425,7 @@ class Forms extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="email" id="hf-email" name="hf-email" placeholder="Enter Email..."/>
-                      <span className="help-block">Please enter your email</span>
+                      <FormText className="help-block">Please enter your email</FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -433,7 +434,7 @@ class Forms extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="password" id="hf-password" name="hf-password" placeholder="Enter Password..."/>
-                      <span className="help-block">Please enter your password</span>
+                      <FormText className="help-block">Please enter your password</FormText>
                     </Col>
                   </FormGroup>
                 </Form>
@@ -452,12 +453,12 @@ class Forms extends Component {
                   <FormGroup>
                     <Label htmlFor="nf-email">Email</Label>
                     <Input type="email" id="nf-email" name="nf-email" placeholder="Enter Email.."/>
-                    <span className="help-block">Please enter your email</span>
+                    <FormText className="help-block">Please enter your email</FormText>
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="nf-password">Password</Label>
                     <Input type="password" id="nf-password" name="nf-password" placeholder="Enter Password.."/>
-                    <span className="help-block">Please enter your password</span>
+                    <FormText className="help-block">Please enter your password</FormText>
                   </FormGroup>
                 </Form>
               </CardBody>
@@ -536,29 +537,21 @@ class Forms extends Component {
               <CardBody>
                 <Form action="" method="post" className="form-horizontal">
                   <FormGroup row>
-                    <Col sm="5">
-                      <Label htmlFor="input-small">Small Input</Label>
-                    </Col>
+                    <Label sm="5" size="sm" htmlFor="input-small">Small Input</Label>
                     <Col sm="6">
-                      <Input size="sm" type="text" id="input-small" name="input-small" className="input-sm"
-                             placeholder=".form-control-sm"/>
+                      <Input bsSize="sm" type="text" id="input-small" name="input-small" className="input-sm" placeholder=".form-control-sm"/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
-                    <Col sm="5">
-                      <Label htmlFor="input-normal">Normal Input</Label>
-                    </Col>
+                    <Label sm="5" htmlFor="input-normal">Normal Input</Label>
                     <Col sm="6">
                       <Input type="text" id="input-normal" name="input-normal" placeholder="Normal"/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
-                    <Col sm="5">
-                      <Label htmlFor="input-large">Large Input</Label>
-                    </Col>
+                    <Label sm="5" size="lg" htmlFor="input-large">Large Input</Label>
                     <Col sm="6">
-                      <Input size="lg" type="text" id="input-large" name="input-large" className="input-lg"
-                             placeholder=".form-control-lg"/>
+                      <Input bsSize="lg" type="text" id="input-large" name="input-large" className="input-lg" placeholder=".form-control-lg"/>
                     </Col>
                   </FormGroup>
                 </Form>
@@ -619,7 +612,11 @@ class Forms extends Component {
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupAddon><i className="fa fa-user"></i></InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fa fa-user"></i>
+                          </InputGroupText>
+                        </InputGroupAddon>
                         <Input type="text" id="input1-group1" name="input1-group1" placeholder="Username"/>
                       </InputGroup>
                     </Col>
@@ -628,16 +625,26 @@ class Forms extends Component {
                     <Col md="12">
                       <InputGroup>
                         <Input type="email" id="input2-group1" name="input2-group1" placeholder="Email"/>
-                        <InputGroupAddon><i className="fa fa-envelope-o"></i></InputGroupAddon>
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>
+                            <i className="fa fa-envelope-o"></i>
+                          </InputGroupText>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupAddon><i className="fa fa-euro"></i></InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fa fa-euro"></i>
+                          </InputGroupText>
+                        </InputGroupAddon>
                         <Input type="text" id="input3-group1" name="input3-group1" placeholder=".."/>
-                        <InputGroupAddon>.00</InputGroupAddon>
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>.00</InputGroupText>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
@@ -652,16 +659,16 @@ class Forms extends Component {
           <Col xs="12" md="4">
             <Card>
               <CardHeader>
-                <strong>Buttons</strong> Groups
+                <strong>Button</strong> Groups
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" className="form-horizontal">
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupButton>
-                          <Button color="primary"><i className="fa fa-search"></i> Search</Button>
-                        </InputGroupButton>
+                        <InputGroupAddon addonType="prepend">
+                          <Button type="button" color="primary"><i className="fa fa-search"></i> Search</Button>
+                        </InputGroupAddon>
                         <Input type="text" id="input1-group2" name="input1-group2" placeholder="Username"/>
                       </InputGroup>
                     </Col>
@@ -670,22 +677,22 @@ class Forms extends Component {
                     <Col md="12">
                       <InputGroup>
                         <Input type="email" id="input2-group2" name="input2-group2" placeholder="Email"/>
-                        <InputGroupButton>
-                          <Button color="primary">Submit</Button>
-                        </InputGroupButton>
+                        <InputGroupAddon addonType="append">
+                          <Button type="button" color="primary">Submit</Button>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupButton>
-                          <Button color="primary"><i className="fa fa-facebook"></i></Button>
-                        </InputGroupButton>
+                        <InputGroupAddon addonType="prepend">
+                          <Button type="button" color="primary"><i className="fa fa-facebook"></i></Button>
+                        </InputGroupAddon>
                         <Input type="text" id="input3-group2" name="input3-group2" placeholder="Search"/>
-                        <InputGroupButton>
-                          <Button color="primary"><i className="fa fa-twitter"></i></Button>
-                        </InputGroupButton>
+                        <InputGroupAddon addonType="append">
+                          <Button type="button" color="primary"><i className="fa fa-twitter"></i></Button>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
@@ -707,7 +714,7 @@ class Forms extends Component {
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupButton>
+                        <InputGroupAddon addonType="prepend">
                           <ButtonDropdown isOpen={this.state.first}
                                           toggle={() => { this.setState({ first: !this.state.first }); }}>
                             <DropdownToggle caret color="primary">
@@ -721,7 +728,7 @@ class Forms extends Component {
                               <DropdownItem>Separated link</DropdownItem>
                             </DropdownMenu>
                           </ButtonDropdown>
-                        </InputGroupButton>
+                        </InputGroupAddon>
                         <Input type="text" id="input1-group3" name="input1-group3" placeholder="Username"/>
                       </InputGroup>
                     </Col>
@@ -730,7 +737,7 @@ class Forms extends Component {
                     <Col md="12">
                       <InputGroup>
                         <Input type="email" id="input2-group3" name="input2-group3" placeholder="Email"/>
-                        <InputGroupButton>
+                        <InputGroupAddon addonType="append">
                           <ButtonDropdown isOpen={this.state.second}
                                           toggle={() => { this.setState({ second: !this.state.second }); }}>
                             <DropdownToggle caret color="primary">
@@ -744,14 +751,14 @@ class Forms extends Component {
                               <DropdownItem>Separated link</DropdownItem>
                             </DropdownMenu>
                           </ButtonDropdown>
-                        </InputGroupButton>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="12">
                       <InputGroup>
-                        <InputGroupButton>
+                        <InputGroupAddon addonType="prepend">
                           <ButtonDropdown isOpen={this.state.third}
                                           toggle={() => { this.setState({ third: !this.state.third }); }}>
                             {/*<Button id="caret" color="primary">Action</Button>*/}
@@ -764,9 +771,9 @@ class Forms extends Component {
                               <DropdownItem>Separated link</DropdownItem>
                             </DropdownMenu>
                           </ButtonDropdown>
-                        </InputGroupButton>
+                        </InputGroupAddon>
                         <Input type="text" id="input3-group3" name="input3-group3" placeholder=".."/>
-                        <InputGroupButton>
+                        <InputGroupAddon addonType="append">
                           <ButtonDropdown isOpen={this.state.fourth}
                                           toggle={() => { this.setState({ fourth: !this.state.fourth }); }}>
                             <DropdownToggle caret color="primary">
@@ -780,7 +787,7 @@ class Forms extends Component {
                               <DropdownItem>Separated link</DropdownItem>
                             </DropdownMenu>
                           </ButtonDropdown>
-                        </InputGroupButton>
+                        </InputGroupAddon>
                       </InputGroup>
                     </Col>
                   </FormGroup>
@@ -923,23 +930,35 @@ class Forms extends Component {
                 <Form action="" method="post">
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon >Username</InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Username</InputGroupText>
+                      </InputGroupAddon>
                       <Input type="text" id="username3" name="username3"/>
-                      <InputGroupAddon><i className="fa fa-user"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-user"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon>Email</InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Email</InputGroupText>
+                      </InputGroupAddon>
                       <Input type="email" id="email3" name="email3"/>
-                      <InputGroupAddon><i className="fa fa-envelope"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-envelope"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon>Password</InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>Password</InputGroupText>
+                      </InputGroupAddon>
                       <Input type="password" id="password3" name="password3"/>
-                      <InputGroupAddon><i className="fa fa-asterisk"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup className="form-actions">
@@ -959,19 +978,25 @@ class Forms extends Component {
                   <FormGroup>
                     <InputGroup>
                       <Input type="text" id="username2" name="username2" placeholder="Username"/>
-                      <InputGroupAddon><i className="fa fa-user"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-user"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
                       <Input type="email" id="email2" name="email2" placeholder="Email"/>
-                      <InputGroupAddon><i className="fa fa-envelope"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-envelope"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
                       <Input type="password" id="password2" name="password2" placeholder="Password"/>
-                      <InputGroupAddon><i className="fa fa-asterisk"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="append">
+                        <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
+                      </InputGroupAddon>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup className="form-actions">
@@ -990,19 +1015,25 @@ class Forms extends Component {
                 <Form action="" method="post">
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon><i className="fa fa-user"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText><i className="fa fa-user"></i></InputGroupText>
+                      </InputGroupAddon>
                       <Input type="text" id="username" name="username" placeholder="Username"/>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon><i className="fa fa-envelope"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText><i className="fa fa-envelope"></i></InputGroupText>
+                      </InputGroupAddon>
                       <Input type="email" id="email" name="email" placeholder="Email"/>
                     </InputGroup>
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon><i className="fa fa-asterisk"></i></InputGroupAddon>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText><i className="fa fa-asterisk"></i></InputGroupText>
+                      </InputGroupAddon>
                       <Input type="password" id="password" name="password" placeholder="Password"/>
                     </InputGroup>
                   </FormGroup>
@@ -1021,17 +1052,20 @@ class Forms extends Component {
                 <i className="fa fa-edit"></i>Form Elements
                 <div className="card-actions">
                   <a href="#" className="btn-setting"><i className="icon-settings"></i></a>
-                  <a href="#" className="btn-minimize"><i className="icon-arrow-up"></i></a>
+                  <Button className="btn btn-minimize" data-target="#collapseExample" onClick={this.toggle}><i className="icon-arrow-up"></i></Button>
                   <a href="#" className="btn-close"><i className="icon-close"></i></a>
                 </div>
               </CardHeader>
-              <CardBody>
+              <Collapse isOpen={this.state.collapse} id="collapseExample">
+                <CardBody>
                 <Form className="form-horizontal">
                   <FormGroup>
                     <Label htmlFor="prependedInput">Prepended text</Label>
                     <div className="controls">
                       <InputGroup className="input-prepend">
-                        <InputGroupAddon>@</InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>@</InputGroupText>
+                        </InputGroupAddon>
                         <Input id="prependedInput" size="16" type="text"/>
                       </InputGroup>
                       <p className="help-block">Here's some help text</p>
@@ -1041,7 +1075,10 @@ class Forms extends Component {
                     <Label htmlFor="appendedInput">Appended text</Label>
                     <div className="controls">
                       <InputGroup>
-                        <Input id="appendedInput" size="16" type="text"/><InputGroupAddon>.00</InputGroupAddon>
+                        <Input id="appendedInput" size="16" type="text"/>
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>.00</InputGroupText>
+                        </InputGroupAddon>
                       </InputGroup>
                       <span className="help-block">Here's more help text</span>
                     </div>
@@ -1050,8 +1087,13 @@ class Forms extends Component {
                     <Label htmlFor="appendedPrependedInput">Append and prepend</Label>
                     <div className="controls">
                       <InputGroup className="input-prepend">
-                        <InputGroupAddon>$</InputGroupAddon>
-                        <Input id="appendedPrependedInput" size="16" type="text"/><InputGroupAddon>.00</InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>$</InputGroupText>
+                        </InputGroupAddon>
+                        <Input id="appendedPrependedInput" size="16" type="text"/>
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>.00</InputGroupText>
+                        </InputGroupAddon>
                       </InputGroup>
                     </div>
                   </FormGroup>
@@ -1060,7 +1102,9 @@ class Forms extends Component {
                     <div className="controls">
                       <InputGroup>
                         <Input id="appendedInputButton" size="16" type="text"/>
-                        <InputGroupButton><Button color="secondary">Go!</Button></InputGroupButton>
+                        <InputGroupAddon addonType="append">
+                          <Button color="secondary">Go!</Button>
+                        </InputGroupAddon>
                       </InputGroup>
                     </div>
                   </FormGroup>
@@ -1069,10 +1113,10 @@ class Forms extends Component {
                     <div className="controls">
                       <InputGroup>
                         <Input id="appendedInputButtons" size="16" type="text"/>
-                        <InputGroupButton>
+                        <InputGroupAddon addonType="append">
                           <Button color="secondary">Search</Button>
                           <Button color="secondary">Options</Button>
-                        </InputGroupButton>
+                        </InputGroupAddon>
                       </InputGroup>
                     </div>
                   </FormGroup>
@@ -1082,6 +1126,7 @@ class Forms extends Component {
                   </div>
                 </Form>
               </CardBody>
+              </Collapse>
             </Card>
           </Col>
         </Row>
