@@ -39,6 +39,7 @@ module.exports = (env = {}) => {
     devtool: env.prod ? 'source-map' : 'cheap-module-eval-source-map',
     devServer: {
       contentBase: path.resolve(`./www${platformConfig.buildPath}`),
+      host: '0.0.0.0',
       port: 9001,
       compress: true,
       hot: true,

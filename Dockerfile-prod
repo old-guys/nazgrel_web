@@ -1,0 +1,28 @@
+# build environment
+FROM node:9.6.1 AS builder
+
+# set working directory
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+COPY package.json /usr/src/app/package.json
+
+# https://npm.taobao.org/
+RUN npm install -g cnpm --silent --registry=https://registry.npm.taobao.org
+RUN cnpm install --silent
+RUN cnpm install react-scripts -g --silent
+COPY . /usr/src/app
+RUN WEBPACK_ENV=prod webpack --progress
+
+# production environment
+FROM nginx:1.13.9
+
+RUN rm -rf /etc/nginx/conf.d
+COPY conf /etc/nginx
+
+COPY --from=builder /usr/src/app/www /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
