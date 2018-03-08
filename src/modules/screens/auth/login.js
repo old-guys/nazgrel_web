@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Container, Row, Col, Card, CardTitle, CardBody, Button, FormGroup, InputGroup, InputGroupAddon} from 'reactstrap';
+import { Container, Row, Col, Card, CardTitle, CardBody, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText} from 'reactstrap';
 import { AvForm, AvGroup, AvField, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import { connect } from 'react-redux';
@@ -41,7 +41,7 @@ export default class Login extends Component {
 
       if (Number(res.code) === 0 && userToken) {
         this.props.auth.login(res.data);
-        this.props.history.push(location || '/');
+        this.props.history.push(location || '/channel');
         // this.setState({ redirect: true });
       } else {
         this.notificator.error({ text: '账号或密码错误' });
@@ -68,14 +68,18 @@ export default class Login extends Component {
                   <AvForm onSubmit={this.handleSubmit} >
                     <AvGroup row>
                       <Col xs={8} md={10}>
-                        <InputGroup size="lg">
-                          <InputGroupAddon><i className="icon-user"></i></InputGroupAddon>
+                        <InputGroup bssize="lg" className="mb-3">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="icon-user"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
                           <AvInput
                             name="login"
                             type="text"
                             placeholder="输入账号"
                             className="form-control"
-                            size="lg"
+                            bssize="lg"
                             block="true"
                             required
                             onChange={(e) => {
@@ -83,20 +87,24 @@ export default class Login extends Component {
                             }}
                             errorMessage={{required: '输入账号'}}
                           />
+                          <AvFeedback>输入账号</AvFeedback>
                         </InputGroup>
-                        <AvFeedback>输入账号</AvFeedback>
                       </Col>
                     </AvGroup>
                     <AvGroup row>
                       <Col xs={8} md={10}>
-                        <InputGroup size="lg">
-                          <InputGroupAddon><i className="icon-lock"></i></InputGroupAddon>
+                        <InputGroup bssize="lg" className="mb-4">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="icon-lock"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
                           <AvInput
                             name="password"
                             type="password"
                             placeholder="输入密码"
                             className="form-control"
-                            size="lg"
+                            bssize="lg"
                             block="true"
                             required
                             onChange={(e) => {
@@ -104,12 +112,12 @@ export default class Login extends Component {
                             }}
                             errorMessage={{required: '输入密码'}}
                           />
+                          <AvFeedback>输入密码</AvFeedback>
                         </InputGroup>
-                        <AvFeedback>输入密码</AvFeedback>
                       </Col>
                     </AvGroup>
                     <FormGroup>
-                      <Col smoffset={2} sm={10}>
+                      <Col lg={{ size: 'auto'}}>
                         <Button type="submit" color="primary" size="lg" >
                           登录
                         </Button>

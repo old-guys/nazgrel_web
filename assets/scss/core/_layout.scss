@@ -129,6 +129,9 @@ app-root {
         }
       }
     }
+    .sidebar-minimizer {
+      display: none;
+    }
   }
 
   .sidebar-minimized {
@@ -338,17 +341,16 @@ app-root {
     }
   }
 
-  .sidebar,
-  .sidebar-fixed .sidebar {
+  .sidebar {
     position: fixed;
     z-index: $zindex-sticky - 1;
     width: $mobile-sidebar-width;
-    // height: 100%;
+    height: calc(100vh - #{$navbar-height});
     margin-left: - $mobile-sidebar-width;
 
     .sidebar-nav,
     .nav {
-      width: $mobile-sidebar-width !important;
+      width: $mobile-sidebar-width;
       min-height: calc(100vh - #{$navbar-height});
     }
 

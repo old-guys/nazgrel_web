@@ -1,6 +1,7 @@
 import Config, { environment } from 'webpack-config';
 import webpack from 'webpack';
 import path from 'path';
+const DashboardPlugin = require('webpack-dashboard/plugin');
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
@@ -110,6 +111,7 @@ module.exports = (env = {}) => {
       ]
     },
     plugins: [
+      new DashboardPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
       new webpack.NamedModulesPlugin(),
