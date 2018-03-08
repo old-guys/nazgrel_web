@@ -5,7 +5,8 @@ Welcome To Nazgrel Web!
 
 Dependencies can be handled by **npm**.
 
-## 安装
+### 安装本机开发环境
+
 - **npm i** - to install dependencies
 
 ### 构建 docker 开发环境
