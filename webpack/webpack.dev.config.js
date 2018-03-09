@@ -2,18 +2,17 @@ import Config, { environment } from 'webpack-config';
 import webpack from 'webpack';
 import path from 'path';
 const DashboardPlugin = require('webpack-dashboard/plugin');
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 import uuidv1 from 'uuid/v1';
 
 const uuid = uuidv1();
-const extractCSS = new ExtractTextPlugin('[name].fonts.css');
-const extractSCSS = new ExtractTextPlugin('[name].styles.css');
 const platformConfig = require(path.resolve(`./config/${environment.getOrDefault('platform')}.config`));
 
 module.exports = (env = {}) => {
   return {
+    mode: 'development',
     entry: {
       index: './src/index.js',
       vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap', 'jquery']
@@ -66,28 +65,24 @@ module.exports = (env = {}) => {
           ],
         },
         {
-          test: /\.(scss)$/,
-          use: ['css-hot-loader'].concat(extractSCSS.extract({
-            fallback: 'style-loader',
+            test: /\.scss$/,
             use: [
+              'css-hot-loader',
               {
-                loader: 'css-loader',
-                options: {
-                  // alias: {'../img': '../public/img' }
-                }
-              },
-              {
-                loader: 'sass-loader'
+                  loader: "style-loader" // creates style nodes from JS strings
+              }, {
+                  loader: "css-loader" // translates CSS into CommonJS
+              }, {
+                  loader: "sass-loader" // compiles Sass to CSS
               }
             ]
-          }))
         },
         {
           test: /\.css$/,
-          use: extractCSS.extract({
-            fallback: 'style-loader',
-            use: 'css-loader'
-          })
+          use: [
+            MiniCssExtractPlugin.loader,
+            "css-loader"
+          ]
         },
         {
           test: /\.(png|jpg|jpeg|gif|ico)$/,
@@ -113,10 +108,19 @@ module.exports = (env = {}) => {
     plugins: [
       new DashboardPlugin(),
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
       new webpack.NamedModulesPlugin(),
-      extractCSS,
-      extractSCSS,
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "[name].${uuid}.fonts.css",
+        chunkFilename: "[id].[hash].fonts.css"
+      }),
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "[name].${uuid}.styles.css",
+        chunkFilename: "[id].[hash].styles.css"
+      }),
       new HtmlWebpackPlugin({
         ENV: platformConfig,
         template: path.resolve('./src/index.html'),
