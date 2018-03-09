@@ -22,7 +22,8 @@ module.exports = (env = {}) => {
       filename: `[name].${uuid}.js`,
       chunkFilename: `[name].${uuid}.js`,
       path: path.resolve(`./www${platformConfig.buildPath}`),
-      publicPath: platformConfig.publicPath
+      publicPath: platformConfig.publicPath,
+      pathinfo: true
     },
     resolve: {
       extensions: ['.js', '.jsx', '.scss', '.css'],
