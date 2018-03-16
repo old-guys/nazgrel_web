@@ -1,20 +1,19 @@
 import Config, { environment } from 'webpack-config';
 import webpack from 'webpack';
 import path from 'path';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 import uuidv1 from 'uuid/v1';
 import fecha from 'fecha';
 
 const date = new Date();
 const uuid = `${fecha.format(date, 'YYYYMMDDHHmmss')}${uuidv1().replace(/-/g, '').slice(0, 18)}`;
-const extractCSS = new ExtractTextPlugin(`[name].${uuid}.fonts.css`);
-const extractSCSS = new ExtractTextPlugin(`[name].${uuid}.styles.css`);
 const platformConfig = require(path.resolve(`./config/${environment.getOrDefault('platform')}.config`));
 
 module.exports = (env = {}) => {
   return {
+    mode: 'production',
     entry: {
       index: './src/index.js',
       vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux', 'redux', 'redux-thunk', 'reactstrap']
@@ -23,7 +22,8 @@ module.exports = (env = {}) => {
       filename: `[name].${uuid}.js`,
       chunkFilename: `[name].${uuid}.js`,
       path: path.resolve(`./www${platformConfig.buildPath}`),
-      publicPath: platformConfig.publicPath
+      publicPath: platformConfig.publicPath,
+      pathinfo: true
     },
     resolve: {
       extensions: ['.js', '.jsx', '.scss', '.css'],
@@ -58,25 +58,24 @@ module.exports = (env = {}) => {
           ],
         },
         {
-          test: /\.(scss)$/,
-          use: ['css-hot-loader'].concat(extractSCSS.extract({
-            fallback: 'style-loader',
-            use: [
-              {
-                loader: 'css-loader',
-              },
-              {
-                loader: 'sass-loader'
-              }
-            ]
-          }))
+          test: /\.scss$/,
+          use: [
+            'css-hot-loader',
+            {
+                loader: "style-loader" // creates style nodes from JS strings
+            }, {
+                loader: "css-loader" // translates CSS into CommonJS
+            }, {
+                loader: "sass-loader" // compiles Sass to CSS
+            }
+          ]
         },
         {
           test: /\.css$/,
-          use: extractCSS.extract({
-            fallback: 'style-loader',
-            use: 'css-loader'
-          })
+          use: [
+            MiniCssExtractPlugin.loader,
+            "css-loader"
+          ]
         },
         {
           test: /\.(png|jpg|jpeg|gif|ico)$/,
@@ -100,17 +99,19 @@ module.exports = (env = {}) => {
       ]
     },
     plugins: [
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true
-      }),
-      // new webpack.optimize.CommonsChunkPlugin({
-      //   name: 'commons',
-      //   filename: '[name].[hash].js',
-      //   minChunks: 2,
-      // }),
       new webpack.NamedModulesPlugin(),
-      extractCSS,
-      extractSCSS,
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "[name].${uuid}.fonts.css",
+        chunkFilename: "[id].[hash].fonts.css"
+      }),
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "[name].${uuid}.styles.css",
+        chunkFilename: "[id].[hash].styles.css"
+      }),
       new HtmlWebpackPlugin({
         ENV: platformConfig,
         inject: true,
@@ -131,9 +132,6 @@ module.exports = (env = {}) => {
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.platformConfig': JSON.stringify(platformConfig),
         PRODUCTION: JSON.stringify(true),
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        comments: false
       }),
       new CopyWebpackPlugin(
         [
