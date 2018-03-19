@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Notification } from 'react-pnotify';
+import { Alert, AlertList } from "react-bs-notifier";
 
 export default class Notificator extends React.Component{
   constructor(props) {
     super(props);
 
     this.state = {
-      notification: {}
+      alerts: [],
+      position: 'top-right',
+      timeout: 5000
     }
   }
 
@@ -15,11 +17,6 @@ export default class Notificator extends React.Component{
     let defaultOpts = {
       type: 'notice',
       title: '提示',
-      delay: 500,
-      shadow: false,
-      hide: true,
-      nonblock: true,
-      desktop: true
     };
 
     this.addNotify(_.merge(defaultOpts, opts));
@@ -29,11 +26,6 @@ export default class Notificator extends React.Component{
     let defaultOpts = {
       type: 'success',
       title: '提示',
-      delay: 500,
-      shadow: false,
-      hide: true,
-      nonblock: true,
-      desktop: true
     };
 
     this.addNotify(_.merge(defaultOpts, opts));
@@ -43,11 +35,6 @@ export default class Notificator extends React.Component{
     let defaultOpts = {
       type: 'error',
       title: '提示',
-      delay: 500,
-      shadow: false,
-      hide: true,
-      nonblock: true,
-      desktop: true
     };
 
     this.addNotify(_.merge(defaultOpts, opts));
@@ -57,41 +44,52 @@ export default class Notificator extends React.Component{
     let defaultOpts = {
       type: 'info',
       title: '提示',
-      delay: 500,
-      shadow: false,
-      hide: true,
-      nonblock: true,
-      desktop: true
     };
 
     this.addNotify(_.merge(defaultOpts, opts));
   }
 
   addNotify(opts = {}) {
-    this.setState({
-      notification: {
+    let { alerts } = this.state;
+    alerts.push(
+      {
         ...opts,
-        display: true
+        id: alerts.length + 1,
+        headline: (opts.title || opts.headline),
+        message: (opts.message || opts.text)
       }
+    )
+
+    this.setState({
+      alerts: alerts
     });
   }
 
-  render() {
-    const { display } = this.state.notification;
-    const options = { ...this.state.notification };
+  onAlertDismissed(alert) {
+    const alerts = this.state.alerts;
 
-    if (!display) {
-      return null;
-    }
+    // find the index of the alert that was dismissed
+    const idx = alerts.indexOf(alert);
 
-    setTimeout(() => {
+    if (idx >= 0) {
       this.setState({
-        notification: {}
+        // remove the alert from the array
+        alerts: [...alerts.slice(0, idx), ...alerts.slice(idx + 1)]
       });
-    }, options.delay || 1000)
+    }
+  }
+
+  render() {
+    let { alerts, timeout, position } = this.state;
 
     return (
-      <Notification {...options} />
+      <AlertList
+        alerts={alerts}
+
+        position={position}
+        timeout={this.state.timeout}
+        onDismiss={this.onAlertDismissed.bind(this)}
+      />
     );
   }
 
