@@ -122,12 +122,6 @@ module.exports = (env = {}) => {
         ravenJsPath: `/vendor/raven.min.${uuid}.js`,
         pleaseWaitCssPath: `/vendor/please-wait.${uuid}.css`
       }),
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery',
-        'window.$': 'jquery',
-      }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.platformConfig': JSON.stringify(platformConfig),

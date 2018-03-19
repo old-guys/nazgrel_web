@@ -11,7 +11,10 @@ class Export extends Component {
     super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: false,
+      loading: null,
+      success: null,
+      exportMessage: "导出数据任务正在加入队列任务中，请耐心等待..."
     }
 
     this.initElements();
@@ -156,11 +159,13 @@ class Export extends Component {
     if (this.isComplete()) return;
 
     progress = (progress || this.currentProgress).toFixed(2);
-    this.exportModal.find('p.success').hide();
-    this.exportModal.find('p.loading').show();
-    this.exportModal.find('p.fz14').html(`
-      正在导出${this.props.actionName}，导出进度 <span class="export-progress" style="color: red;">${progress}%</span>，请不要关闭当前窗口或刷新页面...
-    `);
+
+    this.setState({
+      exportMessage: <p className="fz14">
+        正在导出{this.props.actionName}，导出进度 <span className="export-progress text-danger">{progress}%</span>，请不要关闭当前窗口或刷新页面...
+      </p>,
+      loading: true
+    });
   }
 
 
@@ -170,18 +175,22 @@ class Export extends Component {
 
     this.downloadFile();
 
-    this.exportModal.find('p.success').show();
-    this.exportModal.find('p.loading').hide();
-    this.exportModal.find('p.fz14').html(`
-      导出${this.props.actionName}数据任务成功，请<a class="download-file" href="javascript:;" data-href="${this.filePath}">点击下载文件</a>
-    `);
+    this.setState({
+      exportMessage: <p className="fz14">
+        导出{this.props.actionName}数据任务成功，请<a className="download-file" href="javascript:;" data-href="{this.filePath}">点击下载文件</a>
+      </p>,
+      loading: null,
+      success: true
+    });
   }
 
   // 任务失败后的操作
   failure() {
-    this.exportModal.find('p.success').hide();
-    this.exportModal.find('p.loading').hide();
-    this.exportModal.find('p.fz14').html('导出工作报告数据任务失败，请重新导出。');
+    this.setState({
+      exportMessage: <p className="fz14">
+        导出{this.props.actionName}数据任务失败，请重新导出。
+      </p>
+    });
   }
 
   updateView(data) {
@@ -269,14 +278,6 @@ class Export extends Component {
       isOpenClose: false,
       isOpenDelete: false
     });
-
-    setTimeout(() => {
-      const self = this;
-      this.exportModal = $("#export-modal");
-      this.exportModal.on('click', 'a.download-file', (e) => {
-        this.downloadFile(e)
-      });
-    }, 0);
   }
 
   hideExportModal() {
@@ -316,21 +317,26 @@ class Export extends Component {
   }
 
   render() {
-    const { isOpenExport, isOpenClose, isOpenDelete } = this.state;
+    const { isOpenExport, isOpenClose, isOpenDelete, success, loading, exportMessage } = this.state;
     const { actionName } = this.props;
+
+    let noticeMessage;
+    if (success) {
+      noticeMessage = <p className="success"><i className="fa fa-check-circle-o fz30 text-primary"></i></p>;
+    }
+    if (loading) {
+      noticeMessage = <p className="loading"><i className="fa fa-spinner fa-spin fz30"></i></p>;
+    }
 
     return (
       <div ref='export'>
-        <Modal isOpen={isOpenExport} id="export-modal" style={{'max-width': '550px'}}>
+        <Modal isOpen={isOpenExport} id="export-modal" style={{'maxWidth': '550px'}}>
           <ModalHeader toggle={this.hideExportModal}>导出 { actionName }</ModalHeader>
           <ModalBody>
             <Container>
               <div className="text-center padv20">
-                <p className="success" style={{'display': 'none'}}><i className="fa fa-check-circle-o fz30 text-primary"></i></p>
-                <p className="loading" style={{'display': 'none'}}><i className="fa fa-spinner fa-spin fz30"></i></p>
-                <p className="fz14">
-                  导出{actionName}数据任务正在加入队列任务中，请耐心等待...
-                </p>
+                { noticeMessage }
+                { exportMessage }
               </div>
             </Container>
           </ModalBody>
