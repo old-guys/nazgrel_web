@@ -1,11 +1,11 @@
 module.exports = {
   prefetch_urls: [
-    'http://bi.admin.ishanggang.com/',
-    'http://bi.admin.ishanggang.com/index.html'
+    'http://bi.admin.99zmall.com/',
+    'http://bi.admin.99zmall.com/index.html'
   ],
   refresh_urls: [
-    'http://bi.admin.ishanggang.com/',
-    'http://bi.admin.ishanggang.com/index.html'
+    'http://bi.admin.99zmall.com/',
+    'http://bi.admin.99zmall.com/index.html'
   ],
   accessKey: 'xxxxxxxxxxxxxxxx',
   secretKey: 'xxxxxxxxxxxx',

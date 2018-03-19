@@ -6,7 +6,7 @@ class Footer extends Component {
 
     return (
       <footer className="app-footer">
-        <span><a href="http://bi.ishanggang.com">芝蚂城 BI</a> &copy; 2016-{date.getFullYear()} 爱上岗.</span>
+        <span><a href="http://bi.99zmall.com">芝蚂城 BI</a> &copy; 2016-{date.getFullYear()} 爱上岗.</span>
         <span className="ml-auto">Powered by <a href="http://coreui.io">CoreUI</a></span>
       </footer>
     )
