@@ -4,6 +4,7 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ManifestPlugin = require('webpack-manifest-plugin');
 import uuidv1 from 'uuid/v1';
 import fecha from 'fecha';
 
@@ -103,14 +104,14 @@ module.exports = (env = {}) => {
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
-        filename: "[name].${uuid}.fonts.css",
-        chunkFilename: "[id].[hash].fonts.css"
+        filename: `[name].${uuid}.fonts.css`,
+        chunkFilename: `[id].[hash].fonts.css`
       }),
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
-        filename: "[name].${uuid}.styles.css",
-        chunkFilename: "[id].[hash].styles.css"
+        filename: `[name].${uuid}.styles.css`,
+        chunkFilename: `[id].[hash].styles.css`
       }),
       new HtmlWebpackPlugin({
         ENV: platformConfig,
@@ -135,7 +136,8 @@ module.exports = (env = {}) => {
           { from: "./vendor/stylesheets/please-wait.css", to: `./vendor/[name].${uuid}.[ext]` },
         ],
         { copyUnmodified: false }
-      )
+      ),
+      new ManifestPlugin()
     ]
   }
 };

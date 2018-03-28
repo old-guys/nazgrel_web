@@ -23,6 +23,14 @@ docker run -it \
   nazgrel_web-dev
 ```
 
+### [webdash](https://webdash.xyz/) 仪表盘
+
+可以通过仪表盘监控, 管理以及执行脚本
+
+```shell
+npx webdash serve
+```
+
 更多参见 `wiki/docker.md`
 
 ## 脚本

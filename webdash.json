@@ -1,0 +1,10 @@
+{
+    "src": "./src/",
+    "dist": "./www/",
+    "jsBudgetLimit": 200,
+    "jsBudgetPath": "./www/*.js",
+    "manifestPath": "./www/manifest.json",
+    "readableAssets": {
+        "./assets/": "/assets/"
+    }
+}
