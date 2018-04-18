@@ -15,7 +15,7 @@ export default class Notificator extends React.Component{
 
   notice(opts = {}) {
     let defaultOpts = {
-      type: 'notice',
+      type: 'info',
       title: '提示',
     };
 
@@ -33,7 +33,7 @@ export default class Notificator extends React.Component{
 
   error(opts = {}) {
     let defaultOpts = {
-      type: 'error',
+      type: 'danger',
       title: '提示',
     };
 

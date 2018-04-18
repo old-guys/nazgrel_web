@@ -1,51 +1,64 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
-import Header from 'components/Header/';
-import Sidebar from 'components/Sidebar/';
-import Breadcrumb from 'components/Breadcrumb/';
-import Aside from 'components/Aside/';
-import Footer from 'components/Footer/';
-
-import Dashboard from '../../views/Dashboard/';
-
 import {
-  Channel, ChannelRegion,
-  ReportChannelShopNewerReport, ReportChannelShopActivityReport, ReportShopEcn
-} from 'screens'
-
-let ViewDemo = null;
-if (process.env.NODE_ENV === 'development') {
-  ViewDemo = require('./ViewDemo').ViewDemo;
-}
+  AppAside,
+  AppBreadcrumb,
+  AppFooter,
+  AppHeader,
+  AppSidebar,
+  AppSidebarFooter,
+  AppSidebarForm,
+  AppSidebarHeader,
+  AppSidebarMinimizer,
+  AppSidebarNav,
+} from '@coreui/react';
+// sidebar nav config
+import navigation from '../../_nav';
+// routes config
+import routes from '../../routes';
+import FullAside from './FullAside';
+import FullFooter from './FullFooter';
+import FullHeader from './FullHeader';
 
 class Full extends Component {
-
   render() {
     return (
       <div className="app">
-        <Header />
+        <AppHeader fixed>
+          <FullHeader />
+        </AppHeader>
         <div className="app-body">
-          <Sidebar {...this.props} />
+          <AppSidebar fixed display="lg">
+            <AppSidebarHeader />
+            <AppSidebarForm />
+            <AppSidebarNav navConfig={navigation} {...this.props} />
+            <AppSidebarFooter />
+            <AppSidebarMinimizer />
+          </AppSidebar>
           <main className="main">
-            <Breadcrumb />
+            <AppBreadcrumb appRoutes={routes}/>
             <Container fluid>
               <Switch>
-                <Route path="/dashboard" name="Dashboard" component={Dashboard}/>
-                <Route path="/channel" name="Channel" component={Channel}/>
-                <Route path="/channel_region" name="ChannelRegion" component={ChannelRegion}/>
-                <Route path="/report/channel_shop_newer/report" name="newly_shop" component={ReportChannelShopNewerReport} />
-                <Route path="/report/channel_shop_activities/report" component={ReportChannelShopActivityReport} />
-                <Route path="/report/shop_ecns" component={ReportShopEcn} />
-                { ViewDemo ? <ViewDemo /> : '' }
-                <Redirect from="/" to="/channel" />
+                {routes.map((route, idx) => {
+                    return (route && route.component) ? (<Route key={idx} path={route.path} exact={route.exact} name={route.name} render={props => (
+                        <route.component {...props} />
+                      )} />)
+                      : (null);
+                  },
+                )}
+                <Redirect from="/" to="/dashboard" />
               </Switch>
             </Container>
           </main>
-          <Aside />
+          <AppAside fixed hidden>
+            <FullAside />
+          </AppAside>
         </div>
-        <Footer />
+        <AppFooter>
+          <FullFooter />
+        </AppFooter>
       </div>
     );
   }

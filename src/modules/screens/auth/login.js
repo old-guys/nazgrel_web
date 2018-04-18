@@ -53,10 +53,6 @@ export default class Login extends Component {
 
   render() {
 
-    // if (this.state.redirect) {
-    //   return <Redirect push to="/"/>;
-    // }
-
     return (
       <div className="app flex-row align-items-center">
         <Container>

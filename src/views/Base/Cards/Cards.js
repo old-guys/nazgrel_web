@@ -1,7 +1,27 @@
-import React, {Component} from 'react';
-import {Badge, Row, Col, Card, CardHeader, CardFooter, CardBody, Label, Input} from 'reactstrap';
+import React, { Component } from 'react';
+import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Input, Label, Row, Collapse, Fade } from 'reactstrap';
 
 class Cards extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.toggleFade = this.toggleFade.bind(this);
+    this.state = {
+      collapse: true,
+      fadeIn: true,
+      timeout: 300
+    };
+  }
+
+  toggle() {
+    this.setState({ collapse: !this.state.collapse });
+  }
+
+  toggleFade() {
+    this.setState({ fadeIn: !this.state.fadeIn });
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -45,7 +65,7 @@ class Cards extends Component {
               <CardHeader>
                 Card with switch
                 <Label className="switch switch-sm switch-text switch-info float-right mb-0">
-                  <Input type="checkbox" className="switch-input"/>
+                  <Input type="checkbox" className="switch-input" />
                   <span className="switch-label" data-on="On" data-off="Off"></span>
                   <span className="switch-handle"></span>
                 </Label>
@@ -239,7 +259,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -249,7 +269,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -259,7 +279,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -269,7 +289,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -279,7 +299,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -289,7 +309,7 @@ class Cards extends Component {
               <CardBody>
                 <blockquote className="card-bodyquote">
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                  <footer>Someone famous in <cite title="Source Title">Source Title</cite> </footer>
+                  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
                 </blockquote>
               </CardBody>
             </Card>
@@ -356,10 +376,31 @@ class Cards extends Component {
               </CardBody>
             </Card>
           </Col>
+          <Col xs="12" sm="6" md="4">
+            <Fade timeout={this.state.timeout} in={this.state.fadeIn}>
+              <Card>
+                <CardHeader>
+                  Card actions
+                  <div className="card-header-actions">
+                    <a href="#" className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
+                    <a className="card-header-action btn btn-minimize" data-target="#collapseExample" onClick={this.toggle}><i className="icon-arrow-up"></i></a>
+                    <a className="card-header-action btn btn-close" onClick={this.toggleFade}><i className="icon-close"></i></a>
+                  </div>
+                </CardHeader>
+                <Collapse isOpen={this.state.collapse} id="collapseExample">
+                  <CardBody>
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
+                    laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                    ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+                  </CardBody>
+                </Collapse>
+              </Card>
+            </Fade>
+          </Col>
+
         </Row>
       </div>
-
-    )
+    );
   }
 }
 

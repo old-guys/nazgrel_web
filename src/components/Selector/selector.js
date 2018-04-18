@@ -29,22 +29,18 @@ export default class Selector extends React.Component {
     this.handleOnClose = this.handleOnClose.bind(this);
   }
 
-  componentDidMount() {
-    console.log(this.selectRef);
-  }
-
-  componentWillUnmount() {
-    const {async} = this.state;
-    if (!async) return;
-
-    this.setState({
-      query: null,
-      options: [],
-      value: null,
-      more: true,
-      page: 1
-    });
-  }
+  // componentWillUnmount() {
+  //   const {async} = this.state;
+  //   if (!async) return;
+  //
+  //   this.setState({
+  //     query: null,
+  //     options: [],
+  //     value: null,
+  //     more: true,
+  //     page: 1
+  //   });
+  // }
 
   componentWillReceiveProps(nextProps) {
     const nextValue = nextProps.value;
@@ -56,18 +52,14 @@ export default class Selector extends React.Component {
   }
 
   handleOnChange(values) {
-    console.log('onChange');
-
     this.setState({ value: values });
     if (this.props.onChange) this.props.onChange(values);
   }
 
   handleOnFocus(event) {
-    console.log('onFocus');
   }
 
   handleOnOpen(event) {
-    console.log('onOpen');
     const {async} = this.state;
     if (!async) return;
 
@@ -93,7 +85,6 @@ export default class Selector extends React.Component {
   }
 
   handleOnMenuScrollToBottom(event) {
-    console.log('onMenuScrollToBottom');
     const {async} = this.state;
     if (!async) return;
 
@@ -104,7 +95,6 @@ export default class Selector extends React.Component {
   }
 
   handleOnInputChange(value) {
-    console.log('onInputChange');
     const {async} = this.state;
     if (!async) return;
 
@@ -125,11 +115,9 @@ export default class Selector extends React.Component {
   }
 
   handleOnBlur(event) {
-    console.log('onBlur');
   }
 
   handleOnClose(event) {
-    console.log('onClose');
     const {async} = this.state;
     if (!async) return;
 
