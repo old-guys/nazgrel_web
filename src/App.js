@@ -38,8 +38,8 @@ class App extends Component{
   render() {
     return (
       <HashRouter>
-				<Switch>
-				  <Route path="/login" name="Login" render={(props)=>{
+        <Switch>
+          <Route path="/login" name="Login" render={(props)=>{
             return <Login auth={auth} {...props} />;
           }} />
           <Route path="/" name="Home" render={(props)=> {
@@ -51,8 +51,8 @@ class App extends Component{
             }
           }} />
           <Redirect from="/" to="/channel" />
-				</Switch>
-			</HashRouter>
+        </Switch>
+      </HashRouter>
     );
   }
 }

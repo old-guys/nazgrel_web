@@ -10,7 +10,9 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidMount() {
-    window.loading_screen.finish();
+    if (! window.loading_screen.finishing) {
+      window.loading_screen.finish();
+    }
   }
 
   componentDidCatch(error, errorInfo) {
