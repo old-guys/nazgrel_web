@@ -42,10 +42,10 @@
     "webdash-performance-budget": "^1.2.0",
     "webdash-pwa-manifest": "^1.2.0",
     "webpack": "^4.3.0",
-    "webpack-cli": "^2.0.13",
+    "webpack-cli": "^3.3.3",
     "webpack-config": "^7.5.0",
-    "webpack-dashboard": "^1.1.1",
-    "webpack-dev-server": "^3.1.1",
+    "webpack-dashboard": "^3.0.7",
+    "webpack-dev-server": "^3.7.1",
     "webpack-manifest-plugin": "^2.0.0-rc.2"
   },
   "dependencies": {
@@ -79,7 +79,7 @@
   "scripts": {
     "local": "WEBPACK_ENV=local webpack-dashboard --  webpack-dev-server --progress",
     "start": "WEBPACK_ENV=dev webpack-dashboard -- webpack-dev-server --progress",
-    "www": "rm -rf www && WEBPACK_ENV=prod webpack --progress && webpack-dev-server --content-base www/",
+    "www": "rm -rf www/* && WEBPACK_ENV=prod webpack --progress && serve -p 9001 www/",
     "deploy-local": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/local.sh",
     "deploy-dev": "rm -rf www && WEBPACK_ENV=prod webpack --progress && ./config/deploy/dev.sh",
     "deploy-test": "rm -rf www && WEBPACK_ENV=test webpack --progress && ./config/deploy/test.sh && ./config/cdn/test.sh",
