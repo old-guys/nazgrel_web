@@ -130,7 +130,7 @@ module.exports = (env = {}) => {
       }),
       new CopyWebpackPlugin(
         [
-          { from: './assets/images', to: './images/' },
+          { from: './public', to: './' },
           { from: "./vendor/javascripts", to: `./vendor/[name].${uuid}.[ext]` },
           { from: "./node_modules/please-wait/build/please-wait.js", to: `./vendor/[name].${uuid}.[ext]` },
           { from: "./vendor/stylesheets/please-wait.css", to: `./vendor/[name].${uuid}.[ext]` },

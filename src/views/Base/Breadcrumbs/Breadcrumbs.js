@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Row, Col, Card, CardHeader, CardBody, CardFooter, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from 'react';
+import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 
 class Breadcrumbs extends Component {
   render() {
@@ -10,8 +10,8 @@ class Breadcrumbs extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Breadcrumbs</strong>
-                <div className="card-actions">
-                  <a href="https://reactstrap.github.io/components/breadcrumbs/" target="_blank">
+                <div className="card-header-actions">
+                  <a href="https://reactstrap.github.io/components/breadcrumbs/" rel="noreferrer noopener" target="_blank" className="card-header-action">
                     <small className="text-muted">docs</small>
                   </a>
                 </div>
@@ -21,11 +21,14 @@ class Breadcrumbs extends Component {
                   <BreadcrumbItem active>Home</BreadcrumbItem>
                 </Breadcrumb>
                 <Breadcrumb>
+                  {/*eslint-disable-next-line*/}
                   <BreadcrumbItem><a href="#">Home</a></BreadcrumbItem>
                   <BreadcrumbItem active>Library</BreadcrumbItem>
                 </Breadcrumb>
                 <Breadcrumb>
+                  {/*eslint-disable-next-line*/}
                   <BreadcrumbItem><a href="#">Home</a></BreadcrumbItem>
+                  {/* eslint-disable-next-line*/}
                   <BreadcrumbItem><a href="#">Library</a></BreadcrumbItem>
                   <BreadcrumbItem active>Data</BreadcrumbItem>
                 </Breadcrumb>
@@ -40,7 +43,7 @@ class Breadcrumbs extends Component {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 

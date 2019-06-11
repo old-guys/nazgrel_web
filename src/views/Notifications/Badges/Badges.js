@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Row, Col, Card, CardHeader, CardBody, CardFooter, Badge, Button} from 'reactstrap';
+import React, { Component } from 'react';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, Row } from 'reactstrap';
 
 class Badges extends Component {
   render() {
@@ -10,8 +10,8 @@ class Badges extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Badges</strong>
-                <div className="card-actions">
-                  <a href="https://reactstrap.github.io/components/badge/" target="_blank">
+                <div className="card-header-actions">
+                  <a href="https://reactstrap.github.io/components/badge/" rel="noreferrer noopener" target="_blank" className="card-header-action">
                     <small className="text-muted">docs</small>
                   </a>
                 </div>
@@ -26,7 +26,7 @@ class Badges extends Component {
               </CardBody>
               <CardFooter>
                 <Button color="primary" outline>
-                  Notifications <Badge color="secondary" style={{position: 'static'}}>4</Badge>
+                  Notifications <Badge color="secondary" pill style={{ position: 'static' }}>9</Badge>
                 </Button>
               </CardFooter>
             </Card>
@@ -80,7 +80,7 @@ class Badges extends Component {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 

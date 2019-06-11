@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 
 export default class Selector extends React.Component {
   constructor(props) {

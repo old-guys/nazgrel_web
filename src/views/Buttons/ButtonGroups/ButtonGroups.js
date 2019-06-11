@@ -1,5 +1,22 @@
-import React, {Component} from 'react';
-import {Row, Col, Card, CardHeader, CardBody, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, ButtonGroup, ButtonToolbar, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+import React, { Component } from 'react';
+import {
+  Button,
+  ButtonDropdown,
+  ButtonGroup,
+  ButtonToolbar,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row,
+} from 'reactstrap';
 
 class ButtonGroups extends Component {
 
@@ -8,14 +25,14 @@ class ButtonGroups extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      dropdownOpen: new Array(2).fill(false)
+      dropdownOpen: new Array(2).fill(false),
     };
   }
 
   toggle(i) {
     const newArray = this.state.dropdownOpen.map((element, index) => { return (index === i ? !element : false); });
     this.setState({
-      dropdownOpen: newArray
+      dropdownOpen: newArray,
     });
   }
 
@@ -23,12 +40,12 @@ class ButtonGroups extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12">
+          <Col md="6">
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Button Group</strong>
-                <div className="card-actions">
-                  <a href="https://reactstrap.github.io/components/button-group/" target="_blank">
+                <div className="card-header-actions">
+                  <a href="https://reactstrap.github.io/components/button-group/" rel="noreferrer noopener" target="_blank" className="card-header-action">
                     <small className="text-muted">docs</small>
                   </a>
                 </div>
@@ -38,6 +55,26 @@ class ButtonGroups extends Component {
                   <Button>Left</Button>
                   <Button>Middle</Button>
                   <Button>Right</Button>
+                </ButtonGroup>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i><strong>Vertical variation</strong>
+              </CardHeader>
+              <CardBody>
+                <ButtonGroup vertical>
+                  <Button>1</Button>
+                  <Button>2</Button>
+                  <ButtonDropdown isOpen={this.state.dropdownOpen[0]} toggle={() => { this.toggle(0); }}>
+                    <DropdownToggle caret>
+                      Dropdown
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem>Dropdown Link</DropdownItem>
+                      <DropdownItem>Dropdown Link</DropdownItem>
+                    </DropdownMenu>
+                  </ButtonDropdown>
                 </ButtonGroup>
               </CardBody>
             </Card>
@@ -64,9 +101,59 @@ class ButtonGroups extends Component {
                 </ButtonToolbar>
               </CardBody>
             </Card>
+          </Col>
+          <Col md={6}>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>Button Toolbar</strong> <small>mix with input groups</small>
+                <i className="fa fa-align-justify"></i><strong>Sizing</strong>
+              </CardHeader>
+              <CardBody>
+                <ButtonGroup size="lg">
+                  <Button>Left</Button>
+                  <Button>Middle</Button>
+                  <Button>Right</Button>
+                </ButtonGroup>
+                <hr />
+                <ButtonGroup>
+                  <Button>Left</Button>
+                  <Button>Middle</Button>
+                  <Button>Right</Button>
+                </ButtonGroup>
+                <hr />
+                <ButtonGroup size="sm">
+                  <Button>Left</Button>
+                  <Button>Middle</Button>
+                  <Button>Right</Button>
+                </ButtonGroup>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i><strong>Nesting</strong>
+              </CardHeader>
+              <CardBody>
+                <ButtonGroup>
+                  <Button>1</Button>
+                  <Button>2</Button>
+                  <ButtonDropdown isOpen={this.state.dropdownOpen[1]} toggle={() => { this.toggle(1); }}>
+                    <DropdownToggle caret>
+                      Dropdown
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem>Dropdown Link</DropdownItem>
+                      <DropdownItem>Dropdown Link</DropdownItem>
+                    </DropdownMenu>
+                  </ButtonDropdown>
+                </ButtonGroup>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i><strong>Button Toolbar</strong> <small>with input groups</small>
               </CardHeader>
               <CardBody>
                 <ButtonToolbar className="mb-3">
@@ -95,74 +182,10 @@ class ButtonGroups extends Component {
                 </ButtonToolbar>
               </CardBody>
             </Card>
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>Sizing</strong>
-              </CardHeader>
-              <CardBody>
-                <ButtonGroup size="lg">
-                  <Button>Left</Button>
-                  <Button>Middle</Button>
-                  <Button>Right</Button>
-                </ButtonGroup>
-                <hr/>
-                <ButtonGroup>
-                  <Button>Left</Button>
-                  <Button>Middle</Button>
-                  <Button>Right</Button>
-                </ButtonGroup>
-                <hr/>
-                <ButtonGroup size="sm">
-                  <Button>Left</Button>
-                  <Button>Middle</Button>
-                  <Button>Right</Button>
-                </ButtonGroup>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>Nesting</strong>
-              </CardHeader>
-              <CardBody>
-                <ButtonGroup>
-                  <Button>1</Button>
-                  <Button>2</Button>
-                  <ButtonDropdown isOpen={this.state.dropdownOpen[0]} toggle={() => { this.toggle(0); }}>
-                    <DropdownToggle caret>
-                      Dropdown
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem>Dropdown Link</DropdownItem>
-                      <DropdownItem>Dropdown Link</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>Vertical variation</strong>
-              </CardHeader>
-              <CardBody>
-                <ButtonGroup vertical>
-                  <Button>1</Button>
-                  <Button>2</Button>
-                  <ButtonDropdown isOpen={this.state.dropdownOpen[1]} toggle={() => { this.toggle(1); }}>
-                    <DropdownToggle caret>
-                      Dropdown
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem>Dropdown Link</DropdownItem>
-                      <DropdownItem>Dropdown Link</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-              </CardBody>
-            </Card>
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 
