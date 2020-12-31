@@ -78,7 +78,7 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "simple-line-icons": "^2.4.1",
-    "urijs": "^1.19.1"
+    "urijs": "^1.19.4"
   },
   "scripts": {
     "local": "WEBPACK_ENV=local webpack-dashboard --  webpack-dev-server --progress",
